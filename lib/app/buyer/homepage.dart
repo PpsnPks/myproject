@@ -99,9 +99,13 @@ BottomAppBar buyerFooter(BuildContext context, String selected){
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.person_outline_rounded,size: 34),
+                  icon: Icon(Icons.person_outline_rounded,
+                  color: selected == 'profile'? const 
+                  Color(0xFFFA5A2A): const Color(0xFFA5A9B6),
+                    size: 34,  // ขนาดไอคอน
+                  ),
                   onPressed: () {
-                    // Handle profile button press
+                    Navigator.pushNamed(context, '/profile');
                   },
                 ),
               ],
