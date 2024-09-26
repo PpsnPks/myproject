@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 import 'package:myproject/app/buyer/likepage.dart';
 
+import 'app/buyer/profilepage.dart';
+
 void main() {
   //runApp(const MyApp());
 
@@ -20,6 +22,7 @@ void main() {
       '/furniture': (context) => const HomePage(),
       '/fashion': (context) => const HomePage(),
       '/others': (context) => const HomePage(),
+      '/profile': (context) => const ProfilePage(),
     },
   ));
 }
