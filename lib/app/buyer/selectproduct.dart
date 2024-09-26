@@ -168,7 +168,7 @@ int selectedQuantity = 1;
               Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('คลัง : ${product.stock}', style: TextStyle(fontSize: 18)),
+                Text('คลัง : ${product.stock}', style: const TextStyle(fontSize: 18)),
                 Row(
                   children: [
                     IconButton(
