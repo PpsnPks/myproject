@@ -22,6 +22,7 @@ void main() {
       '/furniture': (context) => const HomePage(),
       '/fashion': (context) => const HomePage(),
       '/others': (context) => const HomePage(),
+      '/selectproduct': (context) => const SelectProductPage(),
       '/confirm': (context) => const Confirm(),
     },
   ));

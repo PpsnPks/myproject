@@ -53,8 +53,7 @@ class _LikePageState extends State<LikePage> {
                 final product = products[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context,
-                        '/confirm'); // เปลี่ยนหน้าไปที่ '/confirm' เมื่อกดคาร์ด
+                    Navigator.pushNamed(context,'/selectproduct'); // เปลี่ยนหน้าไปที่ '/confirm' เมื่อกดคาร์ด
                   },
                   child: Card(
                     margin: const EdgeInsets.only(

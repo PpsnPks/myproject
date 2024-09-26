@@ -59,6 +59,7 @@ Widget buildStatusMessage() {
   );
 } else if (confirmData.status == '3') {
     return const Padding(
+      
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Align(
         alignment: Alignment.centerLeft,
@@ -201,41 +202,41 @@ Widget buildStatusMessage() {
                 const SizedBox(height: 10),
                 buildStatusMessage(),
 
-                if (confirmData.status == '3') 
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const SizedBox(width: 20),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  confirmData.status == '4';
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
-                                ),
-                                child: const Text('ยกเลิก'),
-                              ),
-                            ),
-                            const SizedBox(width: 20), // เว้นระยะระหว่างปุ่ม
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  confirmData.status == '5';
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
-                                ),
-                                child: const Text('ยืนยัน'),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                          ],
-                        ),
-                      ),
+                // if (confirmData.status == '3')
+                      // const Spacer(),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //     children: [
+                      //       const SizedBox(width: 20),
+                      //       Expanded(
+                      //         child: ElevatedButton(
+                      //           onPressed: () {
+                      //             confirmData.status == '4';
+                      //           },
+                      //           style: ElevatedButton.styleFrom(
+                      //             padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
+                      //           ),
+                      //           child: const Text('ยกเลิก'),
+                      //         ),
+                      //       ),
+                      //       const SizedBox(width: 20), // เว้นระยะระหว่างปุ่ม
+                      //       Expanded(
+                      //         child: ElevatedButton(
+                      //           onPressed: () {
+                      //             confirmData.status == '5';
+                      //           },
+                      //           style: ElevatedButton.styleFrom(
+                      //             padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
+                      //           ),
+                      //           child: const Text('ยืนยัน'),
+                      //         ),
+                      //       ),
+                      //       const SizedBox(width: 20),
+                      //     ],
+                      //   ),
+                      // ),
               ],
             );
           }
