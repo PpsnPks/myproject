@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +24,9 @@ class ProfilePage extends StatelessWidget {
                   backgroundImage: AssetImage('assets/images/profile_pic.png'),
                 ),
                 const SizedBox(width: 16),
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'ภูมิ ไพรศรี',
                       style: TextStyle(
@@ -64,7 +64,7 @@ class ProfilePage extends StatelessWidget {
                   //     fontWeight: FontWeight.bold,
                   //   ),
                   // ),
-                  child: Text(
+                  child: const Text(
                     'ดูโปรไฟล์',
                     style: TextStyle(
                       fontSize: 16,
