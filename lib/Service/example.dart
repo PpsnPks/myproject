@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 class LikeService {
   Future<List<Product>> getLikedProducts() async {
     // URL ของ API ที่จะเรียก
+    // ignore: prefer_const_declarations
     final url = 'https://your-api-url.com/liked-products'; // เปลี่ยนเป็น URL ที่แท้จริง
 
     // ทำการเรียก API
