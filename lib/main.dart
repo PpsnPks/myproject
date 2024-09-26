@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/app/buyer/confirm.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 import 'package:myproject/app/buyer/likepage.dart';
 import 'package:myproject/app/buyer/selectproduct.dart';
@@ -20,12 +21,11 @@ void main() {
       '/education': (context) => const HomePage(),
       '/furniture': (context) => const HomePage(),
       '/fashion': (context) => const HomePage(),
-      '/others': (context) => const SelectProductPage(),
+      '/others': (context) => const HomePage(),
+      '/confirm': (context) => const Confirm(),
     },
   ));
 }
-
-
 
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});

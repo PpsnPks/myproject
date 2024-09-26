@@ -11,7 +11,7 @@ class SelectProductPage extends StatefulWidget {
 
 class _SelectProductPageState extends State<SelectProductPage> {
   bool isFavorited = false; // ย้ายตัวแปรออกมาที่นี่
-int selectedQuantity = 1;
+  int selectedQuantity = 1;
   @override
   Widget build(BuildContext context) {
     // เรียกใช้ข้อมูลสินค้า
@@ -54,7 +54,7 @@ int selectedQuantity = 1;
               child: PageView.builder(
                 itemCount: product.imageUrl.length,
                 itemBuilder: (context, index) {
-                  return Image.network(product.imageUrl[index]);
+                  return Image.asset(product.imageUrl[index]);
                 },
               ),
             ),
@@ -165,52 +165,54 @@ int selectedQuantity = 1;
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-              Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('คลัง : ${product.stock}', style: const TextStyle(fontSize: 18)),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (selectedQuantity > 1) {
-                            selectedQuantity--; // ลดจำนวนเมื่อมากกว่า 1
-                          }
-                        });
-                      },
-                      icon: const Icon(Icons.remove, color: Colors.orange),
-                    ),
-                    Text('$selectedQuantity', style: const TextStyle(fontSize: 18)),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (selectedQuantity < product.stock) {
-                            selectedQuantity++; // เพิ่มจำนวนเมื่อไม่เกิน stock
-                          }
-                        });
-                      },
-                      icon: const Icon(Icons.add, color: Colors.orange),
+                    Text('คลัง : ${product.stock}',
+                        style: const TextStyle(fontSize: 18)),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (selectedQuantity > 1) {
+                                selectedQuantity--; // ลดจำนวนเมื่อมากกว่า 1
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.remove, color: Colors.orange),
+                        ),
+                        Text('$selectedQuantity',
+                            style: const TextStyle(fontSize: 18)),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (selectedQuantity < product.stock) {
+                                selectedQuantity++; // เพิ่มจำนวนเมื่อไม่เกิน stock
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.add, color: Colors.orange),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Buy product action
+                    Navigator.pushNamed(context, '/confirm');
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),
-                    backgroundColor: const Color.fromARGB(255, 247, 144, 0),
+                    backgroundColor: const Color(0xFFFA5A2A),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: const Text(
                     'ซื้อสินค้า',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: Colors.black),
                   ),
                 ),
               ],

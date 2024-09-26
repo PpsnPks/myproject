@@ -38,8 +38,8 @@ class ProductService {
       description:'Xiaomi Mi Smart Standing Fan 2 Lite พัดลมที่มาพร้อมดีไซน์อันเรียบหรู',
       category: 'เครื่องใช้ไฟฟ้า',
       size: '1000 มม. x 343 มม.',
-      deliveryLocation: 'วิศวกรรมศาสตร์',
-      deliveryDate: '25 ธ.ค. 2567',
+      deliveryLocation: 'วิศวกรรมศาสตร์ ECC ',
+      deliveryDate: '25 ธ.ค. 2567 10:00',
       seller: '64010724 รัชพล รุจิเวช ',
       stock: 3,
     );

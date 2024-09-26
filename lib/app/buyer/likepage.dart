@@ -28,6 +28,7 @@ class _LikePageState extends State<LikePage> {
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
+      
       body: FutureBuilder<List<Product>>(
         future: likedProducts,
         builder: (context, snapshot) {
@@ -39,22 +40,81 @@ class _LikePageState extends State<LikePage> {
             return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
           } else {
             final products = snapshot.data!;
+            
             return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1,
-                childAspectRatio: 2,
+                childAspectRatio: 2.5, // คงไว้เพื่อให้มีสัดส่วนที่เหมาะสม
                 crossAxisSpacing: 1,
                 mainAxisSpacing: 1,
               ),
               itemCount: products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-                return ProductCard(
-                  imageUrl: product.imageUrl,
-                  title: product.title,
-                  detail: product.detail,
-                  price: product.price,
-                  category: product.category,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context,
+                        '/confirm'); // เปลี่ยนหน้าไปที่ '/confirm' เมื่อกดคาร์ด
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.only(
+                      left: 20.0, // มาร์จินซ้าย
+                      right: 20.0, // มาร์จินขวา
+                      top: 7.0, // มาร์จินด้านบน
+                      bottom: 7.0, // มาร์จินด้านล่าง
+                    ),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              product.imageUrl, // ใช้ imageUrl จาก product
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  product.title, // ใช้ title จาก product
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  product.detail, // ใช้ detail จาก product
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  product.price, // ใช้ price จาก product
+                                  style: const TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             );
@@ -107,12 +167,14 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     detail,
-                    style: const TextStyle(color: Color.fromARGB(255, 24, 52, 177), fontSize: 16),
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 24, 52, 177), fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   Text(
