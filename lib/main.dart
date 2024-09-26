@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/homepage.dart';
-import 'package:myproject/likepage.dart';
+import 'package:myproject/app/buyer/homepage.dart';
+import 'package:myproject/app/buyer/likepage.dart';
 
 void main() {
   //runApp(const MyApp());
 
   runApp(MaterialApp(
-    title: "My title",
+    debugShowCheckedModeBanner: false,
+    title: "KMITL APP",
     home: const HomePage(),
     routes: {
       '/home': (context) => const HomePage(),

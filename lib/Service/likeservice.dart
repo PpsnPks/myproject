@@ -1,0 +1,42 @@
+
+class LikeService {
+  Future<List<Product>> getLikedProducts() async {
+    // จำลองข้อมูล
+    await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
+    return [
+      Product(
+        imageUrl: 'assets/images/fan_example.png',
+        title: 'พัดลม',
+        detail: 'พัดลม Hatashi ขนาดเล็ก สภาพดี',
+        price: '200 ฿',
+        category: 'เครื่องใช้ไฟฟ้า',
+      ),
+      Product(
+        imageUrl: 'assets/images/fan_example.png',
+        title: 'หนังสือ',
+        detail: 'หนังสืออ่านเล่น สภาพใหม่',
+        price: '150 ฿',
+        category: 'หนังสือ',
+      ),
+    ];
+  }
+}
+
+class Product {
+  final String imageUrl;
+  final String title;
+  final String detail;
+  final String price;
+  final String category;
+
+  Product({
+    required this.imageUrl,
+    required this.title,
+    required this.detail,
+    required this.price,
+    required this.category,
+  });
+}
+
+
+
