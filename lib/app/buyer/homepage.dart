@@ -88,7 +88,7 @@ Widget build(BuildContext context) {
                       CatergoryButton(context, 'assets/icons/home_page/education-ruler-pen.svg', 'การศึกษา', '/category'),
                       CatergoryButton(context, 'assets/icons/home_page/furniture-bed.svg', 'เฟอร์นิเจอร์', '/category'),
                       CatergoryButton(context, 'assets/icons/home_page/fashion-shirt.svg', 'แฟชั่น', '/category'),
-                      CatergoryButton(context, 'assets/icons/home_page/other-3dots.svg', 'อื่นๆ', '/seller'),
+                      CatergoryButton(context, 'assets/icons/home_page/other-3dots.svg', 'อื่นๆ', '/role'),
                     ],
                   ),
                   CarouselSlider(

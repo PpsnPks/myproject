@@ -7,7 +7,7 @@ BottomAppBar sellerFooter(BuildContext context, String selected){
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.add,  // ใช้ไอคอน home outline
+                  icon: Icon(Icons.all_inbox,  // ใช้ไอคอน home outline
                     color: selected == 'home'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),  // กำหนดสีเป็น #FA5A2A
                     size: 38,  // ขนาดไอคอน
                   ),
@@ -17,13 +17,13 @@ BottomAppBar sellerFooter(BuildContext context, String selected){
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.add,  // ใช้ไอคอน home outline
+                  icon: Icon(Icons.add_box_outlined,  // ใช้ไอคอน home outline
                     //color: Color(0xFFFA5A2A),  // กำหนดสีเป็น #FA5A2A
                     color: selected == 'like'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),
                     size: 34,  // ขนาดไอคอน
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/like');
+                    Navigator.pushNamed(context, '/addproduct');
                   },
                 ),
                 IconButton(
