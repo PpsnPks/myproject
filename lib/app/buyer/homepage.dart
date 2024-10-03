@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
             //    style: TextStyle(fontSize: 24),
             //  ),
             //),
-            Flexible (
+            Expanded (
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0),
                 child: GridView.count(
@@ -51,13 +51,29 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                aspectRatio: 2.0,
-                enlargeCenterPage: true,
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: true,
+                  aspectRatio: 2.0,
+                  enlargeCenterPage: true,
+                ),
+                items: imageSliders,
               ),
-              items: imageSliders,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('สินค้าใหม่'),
+                TextButton(
+                  onPressed: () => {},
+                  child: const Text(
+                    'Flat Button',
+                  ),
+                ),
+                const Text('ทั้งหมด'),
+              ],
             )
           ],
         ),
@@ -215,7 +231,7 @@ final List<Widget> imageSliders = imgList
           borderRadius: const BorderRadius.all(Radius.circular(10.0)),
           child: Stack(
             children: <Widget>[
-              Image.network(item, fit: BoxFit.cover, width: 1000.0),
+              Image.asset(item, fit: BoxFit.cover, width: 1000.0),
             ],
           )),
     ))
