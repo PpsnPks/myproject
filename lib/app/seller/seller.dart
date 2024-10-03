@@ -24,7 +24,7 @@ class _SellerPageState extends State<SellerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("หมวดหมู่"),
+        title: const Text("seller"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
