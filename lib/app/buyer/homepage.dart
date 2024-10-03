@@ -361,7 +361,7 @@ final List<Widget> imageSliders = imgList
           borderRadius: const BorderRadius.all(Radius.circular(10.0)),
           child: Stack(
             children: <Widget>[
-              Image.network(item, fit: BoxFit.cover, width: 1000.0),
+              Image.asset(item, fit: BoxFit.cover, width: 1000.0),
             ],
           )),
     ))
