@@ -6,6 +6,7 @@ import 'package:myproject/app/buyer/likepage.dart';
 import 'package:myproject/app/buyer/selectproduct.dart';
 import 'package:myproject/app/main/role.dart';
 import 'package:myproject/app/seller/seller.dart';
+import 'package:myproject/app/seller/addpage.dart';
 
 import 'app/buyer/profilepage.dart';
 
@@ -33,6 +34,7 @@ void main() {
       '/category': (context) => const CategoryPage(),
       '/role': (context) => const RolePage(),
       '/seller': (context) => const SellerPage(),
+      '/addproduct': (context) => const AddProductPage(),
     },
   ));
 }
