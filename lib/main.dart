@@ -3,6 +3,7 @@ import 'package:myproject/app/buyer/confirm.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 import 'package:myproject/app/buyer/likepage.dart';
 import 'package:myproject/app/buyer/selectproduct.dart';
+import 'package:myproject/app/seller/addpage.dart';
 
 import 'app/buyer/profilepage.dart';
 
@@ -27,6 +28,7 @@ void main() {
       '/profile': (context) => const ProfilePage(),
       '/selectproduct': (context) => const SelectProductPage(),
       '/confirm': (context) => const Confirm(),
+      '/addproduct': (context) => const AddProductPage(),
     },
   ));
 }

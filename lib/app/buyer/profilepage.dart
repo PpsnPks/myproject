@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  bool isBuyerSelected = false;
+  bool isSellerSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +63,13 @@ class ProfilePage extends StatelessWidget {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {},
-                  // style: ElevatedButton.styleFrom(
-                  //   backgroundColor: const Color(0xFFF26522),
-                  //   padding:
-                  //       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  //   textStyle: const TextStyle(
-                  //     fontSize: 16,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   child: const Text(
                     'ดูโปรไฟล์',
                     style: TextStyle(
@@ -75,6 +81,58 @@ class ProfilePage extends StatelessWidget {
               ],
             ),
           ),
+          
+          // Add buttons for Buyer and Seller
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              children: [
+                // Buyer Button
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isBuyerSelected = true;
+                        isSellerSelected = false;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isBuyerSelected ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA), // Background color
+                      foregroundColor: isBuyerSelected ? Colors.white : const Color(0xFFFA5A2A), // Text color
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      'คนซื้อ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8), // Add spacing between buttons
+                // Seller Button
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isBuyerSelected = false;
+                        isSellerSelected = true;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isSellerSelected ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA), // Background color
+                      foregroundColor: isSellerSelected ? Colors.white : const Color(0xFFFA5A2A), // Text color
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      'คนขาย',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          
           const Divider(
             height: 1,
             thickness: 1,
