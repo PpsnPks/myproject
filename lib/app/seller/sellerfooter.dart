@@ -23,7 +23,7 @@ BottomAppBar sellerFooter(BuildContext context, String selected){
                     size: 34,  // ขนาดไอคอน
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/like');
+                    Navigator.pushNamed(context, '/addproduct');
                   },
                 ),
                 IconButton(
