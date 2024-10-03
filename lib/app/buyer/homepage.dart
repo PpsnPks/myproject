@@ -64,24 +64,29 @@ Widget build(BuildContext context) {
                     items: imageSliders,
                   ),
                   const SizedBox(height: 20), // เพิ่มช่องว่างระหว่าง CarouselSlider กับ Row
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40.0), // กำหนด padding ซ้ายและขวา
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0), // กำหนด padding ซ้ายและขวา
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
                       children: [
-                        Text(
+                        const Text(
                           'สินค้าเเนะนำ',
                           style: TextStyle(
                             fontSize: 17, // ขนาดฟอนต์
                             fontWeight: FontWeight.bold, // หนา
                           ),
                         ),
-                        Text(
-                          'ทั้งหมด',
-                          style: TextStyle(
-                            fontSize: 12, // ขนาดฟอนต์
-                            fontWeight: FontWeight.bold, // หนา
-                            color: Color(0xFFFA5A2A),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/category');
+                          },
+                          child: const Text(
+                            'ทั้งหมด',
+                            style: TextStyle(
+                              fontSize: 12, // ขนาดฟอนต์
+                              fontWeight: FontWeight.bold, // หนา
+                              color: Color(0xFFFA5A2A),
+                            ),
                           ),
                         ),
                       ],
