@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/app/buyer/homepage.dart';
+import 'package:myproject/app/buyer/buyerfooter.dart';
+
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

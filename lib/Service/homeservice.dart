@@ -1,6 +1,6 @@
 
-class LikeService {
-  Future<List<Product>> getLikedProducts() async {
+class Homeservice {
+  Future<List<Product>> getHomeProducts() async {
     // จำลองข้อมูล
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
@@ -14,7 +14,23 @@ class LikeService {
       ),
       Product(
         imageUrl: 'assets/images/fan_example.png',
-        title: 'หนังสือ',
+        title: 'พัดลม',
+        detail: 'เครื่องใช้ไฟฟ้า',
+        types: 'เครื่องใช้ไฟฟ้า',
+        price: '150',
+        category: 'หนังสือ',
+      ),
+      Product(
+        imageUrl: 'assets/images/fan_example.png',
+        title: 'พัดลม',
+        detail: 'เครื่องใช้ไฟฟ้า',
+        types: 'เครื่องใช้ไฟฟ้า',
+        price: '150',
+        category: 'หนังสือ',
+      ),
+      Product(
+        imageUrl: 'assets/images/fan_example.png',
+        title: 'พัดลม',
         detail: 'เครื่องใช้ไฟฟ้า',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '150',
