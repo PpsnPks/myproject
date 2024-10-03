@@ -33,7 +33,40 @@ Widget build(BuildContext context) {
           mainAxisAlignment: MainAxisAlignment.start, // จัดตำแหน่งให้อยู่บน-ล่าง
           children: [
             const SearchInputField(), // เรียกใช้คลาส SearchInputField
-
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(right: 24.0, left: 24.0, top: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/home_page/pin.svg',
+                    width: 24.0,  // Icon width
+                    height: 24.0,  // Icon height
+                    // ignore: deprecated_member_use
+                    color: const Color(0xFFFA5A2A),
+                  ),
+                  const SizedBox(width: 4.0,),
+                  const Text('ที่อยู่ :',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontFamily: 'Roboto',
+                      color: Color(0xFFA5A9B6),
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  const Text(
+                        '701 ซอย ฉลองกรุง 1 แขวงลาดกระบัง เขต...',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontFamily: 'Roboto',
+                          color: Color(0xFF000000),
+                          //fontWeight: FontWeight.bold,
+                        )
+                      ),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0),
               child: Column(
@@ -65,7 +98,7 @@ Widget build(BuildContext context) {
                   ),
                   const SizedBox(height: 20), // เพิ่มช่องว่างระหว่าง CarouselSlider กับ Row
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40.0), // กำหนด padding ซ้ายและขวา
+                    padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
                       children: [
@@ -103,7 +136,7 @@ Widget build(BuildContext context) {
                         final products = snapshot.data!;
 
                         return GridView.builder(
-                          padding: const EdgeInsets.all(16), // เพิ่ม padding ให้ดูสมส่วน
+                          padding: const EdgeInsets.all(14), // เพิ่ม padding ให้ดูสมส่วน
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2, // 2 คอลัมน์
                             childAspectRatio: 0.7,
@@ -125,7 +158,9 @@ Widget build(BuildContext context) {
                                   double aspectRatio = (product.title.length > 20) ? 0.6 : 0.8; // ปรับค่า childAspectRatio ตามความยาว
 
                                   return Card(
+                                    color: const Color(0xFFFFFFFF),
                                     shape: RoundedRectangleBorder(
+                                      side: const BorderSide(color: Color(0xFFDFE2EC), width: 1.0),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     elevation: 4,
