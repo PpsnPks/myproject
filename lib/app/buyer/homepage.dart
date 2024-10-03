@@ -55,15 +55,18 @@ Widget build(BuildContext context) {
                     ),
                   ),
                   const SizedBox(width: 8.0),
-                  const Text(
-                        '701 ซอย ฉลองกรุง 1 แขวงลาดกระบัง เขต...',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontFamily: 'Roboto',
-                          color: Color(0xFF000000),
-                          //fontWeight: FontWeight.bold,
-                        )
-                      ),
+                  const Flexible(
+                    child: Text(
+                          '701 ซอย ฉลองกรุง 1 แขวงลาดกระบัง เขตลาดกระบัง',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontFamily: 'Roboto',
+                            color: Color(0xFF000000),
+                            //fontWeight: FontWeight.bold,
+                          )
+                        ),
+                  ),
                 ],
               ),
             ),
@@ -139,9 +142,9 @@ Widget build(BuildContext context) {
                           padding: const EdgeInsets.all(14), // เพิ่ม padding ให้ดูสมส่วน
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2, // 2 คอลัมน์
-                            childAspectRatio: 0.7,
+                            childAspectRatio: 0.67,
                             crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
+                            mainAxisSpacing: 8,
                           ),
                           itemCount: products.length,
                           shrinkWrap: true, // ย่อ GridView ตามเนื้อหา
@@ -163,9 +166,9 @@ Widget build(BuildContext context) {
                                       side: const BorderSide(color: Color(0xFFDFE2EC), width: 1.0),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    elevation: 4,
+                                    elevation: 0,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.fromLTRB(8,8,8,8),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
                                         children: [
@@ -173,7 +176,7 @@ Widget build(BuildContext context) {
                                             borderRadius: BorderRadius.circular(8),
                                             child: Image.asset(
                                               product.imageUrl, // ใช้ imageUrl จาก product
-                                              height: 120, // ปรับขนาดรูปภาพ
+                                              height: 130, // ปรับขนาดรูปภาพ
                                               width: double.infinity,
                                               fit: BoxFit.contain,
                                             ),
