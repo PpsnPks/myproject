@@ -42,7 +42,7 @@ class RoleSelectionPage extends StatelessWidget {
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
-                // Navigate to Buyer page
+                Navigator.pushNamed(context, '/home');
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, backgroundColor: Colors.orange,
@@ -54,7 +54,7 @@ class RoleSelectionPage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Navigate to Seller page
+                Navigator.pushNamed(context, '/seller');
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, backgroundColor: Colors.orange,
