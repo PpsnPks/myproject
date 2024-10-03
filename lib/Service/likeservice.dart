@@ -11,13 +11,13 @@ class LikeService {
         price: '200 ฿',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'หนังสือ',
-        detail: 'หนังสืออ่านเล่น สภาพใหม่',
-        price: '150 ฿',
-        category: 'หนังสือ',
-      ),
+      // Product(
+      //   imageUrl: 'assets/images/fan_example.png',
+      //   title: 'หนังสือ',
+      //   detail: 'หนังสืออ่านเล่น สภาพใหม่',
+      //   price: '150 ฿',
+      //   category: 'หนังสือ',
+      // ),
     ];
   }
 }

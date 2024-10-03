@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/app/buyer/confirm.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 import 'package:myproject/app/buyer/likepage.dart';
+import 'package:myproject/app/buyer/selectproduct.dart';
 
 import 'app/buyer/profilepage.dart';
 
@@ -23,11 +25,11 @@ void main() {
       '/fashion': (context) => const HomePage(),
       '/others': (context) => const HomePage(),
       '/profile': (context) => const ProfilePage(),
+      '/selectproduct': (context) => const SelectProductPage(),
+      '/confirm': (context) => const Confirm(),
     },
   ));
 }
-
-
 
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});
