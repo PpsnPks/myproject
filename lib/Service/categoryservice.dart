@@ -1,6 +1,6 @@
 
-class LikeService {
-  Future<List<Product>> getLikedProducts() async {
+class Categoryservice {
+  Future<List<Product>> getCategoryProducts() async {
     // จำลองข้อมูล
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
