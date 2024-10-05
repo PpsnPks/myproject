@@ -212,7 +212,7 @@ class _SelectProductPageState extends State<SelectProductPage> {
                   ),
                   child: const Text(
                     'ซื้อสินค้า',
-                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ],
