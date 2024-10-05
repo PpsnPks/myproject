@@ -16,7 +16,7 @@ class  Confirm {
 class Confirmservice {
   static  Confirm getConfirm() {
     return Confirm(
-      status: '4',
+      status: '1',
       date: '25 ธ.ค. 2567 10:00',
       place:'วิศวกรรมศาสตร์ ECC',
     );

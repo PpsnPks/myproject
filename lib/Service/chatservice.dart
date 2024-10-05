@@ -1,24 +1,24 @@
 
-class Categoryservice {
-  Future<List<Product>> getCategoryProducts() async {
+class Chatservice {
+  Future<List<Product>> getLikedProducts() async {
     // จำลองข้อมูล
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
       Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'พัดลม',
+        imageUrl: 'assets/images/a.jpg',
+        title: '64010724',
         detail: 'พัดลม Xiaomi สภาพดี',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
       Product(
-        imageUrl: 'assets/images/tuyen.png',
-        title: 'ตู้เย็น',
-        detail: 'เครื่องใช้ไฟฟ้า',
+        imageUrl: 'assets/images/image1.png',
+        title: '64525879',
+        detail: 'พัดลม Xiaomi สภาพดี',
         types: 'เครื่องใช้ไฟฟ้า',
-        price: '1500',
-        category: 'เครื่องใช้ไฟฟ้า',
+        price: '150',
+        category: 'หนังสือ',
       ),
     ];
   }

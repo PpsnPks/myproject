@@ -24,9 +24,17 @@ class _SellerPageState extends State<SellerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("seller"),
+        title: const Text("คลัง"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_active_outlined),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/noti');
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Product>>(
         future: likedProducts,
