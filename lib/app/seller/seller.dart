@@ -31,7 +31,7 @@ class _SellerPageState extends State<SellerPage> {
           IconButton(
             icon: const Icon(Icons.notifications_active_outlined),
             onPressed: () {
-              // เพิ่มการทำงานเมื่อไอคอนถูกกด
+              Navigator.of(context).pushNamed('/noti');
             },
           ),
         ],

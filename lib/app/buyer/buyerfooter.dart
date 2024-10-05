@@ -29,7 +29,7 @@ BottomAppBar buyerFooter(BuildContext context, String selected){
                 IconButton(
                   icon: const Icon(Icons.chat_outlined,size: 30),
                   onPressed: () {
-                    // Handle notifications button press
+                    Navigator.pushNamed(context, '/chat');
                   },
                 ),
                 IconButton(
