@@ -27,7 +27,7 @@ BottomAppBar buyerFooter(BuildContext context, String selected){
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.chat_outlined,size: 30),
+                  icon: Icon(Icons.chat_outlined,color: selected == 'chat'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),size: 30),
                   onPressed: () {
                     Navigator.pushNamed(context, '/chat');
                   },
