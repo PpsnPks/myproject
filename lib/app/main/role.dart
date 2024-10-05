@@ -19,7 +19,7 @@ class RolePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'เลือกบทบาทของคุณ',
+                'คุณต้องการ',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -42,7 +42,7 @@ class RolePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
                     ),
                   ),
-                  child: const Text('ผู้ซื้อ'),
+                  child: const Text('ซื้อ'),
                 ),
               ),
               const SizedBox(height: 20),
@@ -61,7 +61,7 @@ class RolePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
                     ),
                   ),
-                  child: const Text('ผู้ขาย'),
+                  child: const Text('ขาย'),
                 ),
               ),
               const SizedBox(height: 40),

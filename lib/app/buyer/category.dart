@@ -5,7 +5,11 @@ import 'package:myproject/app/buyer/buyerfooter.dart';
 // import 'package:myproject/service/likeservice.dart';
 
 class CategoryPage extends StatefulWidget {
-  const CategoryPage({super.key});
+  final String category;
+
+  // รับค่าพารามิเตอร์ category ผ่านคอนสตรัคเตอร์
+  const CategoryPage(this.category, {super.key});
+  //const CategoryPage({super.key});
 
   @override
   State<CategoryPage> createState() => _CategoryPageState();
@@ -25,7 +29,7 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("หมวดหมู่"),
+        title: Text(widget.category),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
@@ -42,13 +46,13 @@ class _CategoryPageState extends State<CategoryPage> {
             final products = snapshot.data!;
 
             return GridView.builder(
-              padding: const EdgeInsets.all(16), // เพิ่ม padding ให้ดูสมส่วน
+              padding: const EdgeInsets.only(left:12, right:12, top:16),//padding: const EdgeInsets.all(16), // เพิ่ม padding ให้ดูสมส่วน
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, // 2 คอลัมน์
                 // เริ่มต้นด้วย childAspectRatio = 0.7
-                childAspectRatio: 0.7,
+                childAspectRatio: 0.67,
                 crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+                mainAxisSpacing: 8,
               ),
               itemCount: products.length,
               itemBuilder: (context, index) {
@@ -67,78 +71,72 @@ class _CategoryPageState extends State<CategoryPage> {
                           : 0.8; // ปรับค่า childAspectRatio ตามความยาว
 
                       return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.asset(
-                                  product.imageUrl, // ใช้ imageUrl จาก product
-                                  height: 120, // ปรับขนาดรูปภาพ
-                                  width: double.infinity,
-                                  fit: BoxFit.contain,
+                                color: const Color(0xFFFFFFFF),
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                              // ใช้ Flexible เพื่อให้ข้อความสามารถขยายได้
-                              Flexible(
-                                child: Text(
-                                  product.title, // ใช้ title จาก product
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  overflow: TextOverflow
-                                      .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
-                                  maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // จัดตำแหน่งให้ห่างกัน
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey), // กำหนดสีขอบ
-                                      borderRadius: BorderRadius.circular(
-                                          12), // กำหนดมุมโค้งมนของกรอบ
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                      horizontal: 8,
-                                    ),
-                                    child: Text(
-                                      product.category, // หมวดหมู่ของสินค้า
-                                      style: TextStyle(
-                                        color: Colors.blueGrey[400],
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
+                                elevation: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(10,10,10,10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.asset(
+                                          product.imageUrl, // ใช้ imageUrl จาก product
+                                          height: constraints.maxWidth - 28, // ปรับขนาดรูปภาพ
+                                          width: constraints.maxWidth - 28,
+                                          fit: BoxFit.contain,
+                                          alignment: Alignment.topCenter,
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(height: 18),
+                                      Flexible(
+                                        child: Text(
+                                          product.title, // ใช้ title จาก product
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
+                                          maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
+                                        ),
+                                      ),
+                                      const SizedBox(height: 36),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ห่างกัน
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey), // กำหนดสีขอบ
+                                              borderRadius: BorderRadius.circular(12), // กำหนดมุมโค้งมนของกรอบ
+                                            ),
+                                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                            child: Text(
+                                              product.category, // หมวดหมู่ของสินค้า
+                                              style: TextStyle(
+                                                color: Colors.blueGrey[400],
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '${product.price} ฿', // ใช้ price จาก product พร้อมแสดงหน่วยเงิน
+                                            style: const TextStyle(
+                                              color: Colors.orange,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    '${product.price} ฿', // ใช้ price จาก product พร้อมแสดงหน่วยเงิน
-                                    style: const TextStyle(
-                                      color: Colors.orange,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                                ),
+                              );
                     },
                   ),
                 );

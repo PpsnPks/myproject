@@ -23,10 +23,20 @@ void main() {
       '/profile': (context) => const ProfilePage(),
       '/selectproduct': (context) => const SelectProductPage(),
       '/confirm': (context) => const Confirm(),
-      '/category': (context) => const CategoryPage(),
+      '/category': (context) => const CategoryPage('หมวดหมู่'),
       '/role': (context) => const RolePage(),
       '/seller': (context) => const SellerPage(),
       '/addproduct': (context) => const AddProductPage(),
+
+      '/general': (context) => const CategoryPage('ของใช้ทั่วไป'),
+      '/electronics': (context) => const CategoryPage('อิเล็กทรอนิกส์'),
+      '/appliances': (context) => const CategoryPage('เครื่องใช้ไฟฟ้า'),
+      '/books': (context) => const CategoryPage('หนังสือ'),
+      '/education': (context) => const CategoryPage('การศึกษา'),
+      '/furniture': (context) => const CategoryPage('เฟอร์นิเจอร์'),
+      '/fashion': (context) => const CategoryPage('แฟชั่น'),
+      '/others': (context) => const CategoryPage('อื่นๆ'),
+
     },
   ));
 }

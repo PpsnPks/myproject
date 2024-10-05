@@ -13,12 +13,12 @@ class Categoryservice {
         category: 'เครื่องใช้ไฟฟ้า',
       ),
       Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'หนังสือ',
+        imageUrl: 'assets/images/tuyen.png',
+        title: 'ตู้เย็น',
         detail: 'เครื่องใช้ไฟฟ้า',
         types: 'เครื่องใช้ไฟฟ้า',
-        price: '150',
-        category: 'หนังสือ',
+        price: '1500',
+        category: 'เครื่องใช้ไฟฟ้า',
       ),
     ];
   }
