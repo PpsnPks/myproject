@@ -100,13 +100,8 @@ Widget build(BuildContext context) {
                     items: imageSliders,
                   ),
                   const SizedBox(height: 20), // เพิ่มช่องว่างระหว่าง CarouselSlider กับ Row
-<<<<<<< HEAD
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0), // กำหนด padding ซ้ายและขวา
-=======
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
->>>>>>> a6d3778855b315143ed9b788ceaa3ff1c52b2287
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
                       children: [

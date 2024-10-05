@@ -27,22 +27,6 @@ class RolePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-<<<<<<< HEAD
-              _buildRoleButton(
-                context: context,
-                role: 'ผู้ซื้อ',
-                onTap: () {
-                  Navigator.of(context).pushNamed('/home');
-                },
-              ),
-              const SizedBox(height: 20),
-              _buildRoleButton(
-                context: context,
-                role: 'ผู้ขาย',
-                onTap: () {
-                  Navigator.of(context).pushNamed('/seller');
-                },
-=======
               SizedBox(
                 width: 150,
                 child: ElevatedButton(
@@ -79,7 +63,6 @@ class RolePage extends StatelessWidget {
                   ),
                   child: const Text('ผู้ขาย'),
                 ),
->>>>>>> a6d3778855b315143ed9b788ceaa3ff1c52b2287
               ),
               const SizedBox(height: 40),
               const Icon(
