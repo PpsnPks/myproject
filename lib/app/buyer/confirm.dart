@@ -242,7 +242,7 @@ Widget buildStatusMessage() {
           }
         },
       ),
-      bottomNavigationBar: buyerFooter(context, 'like'),
+      bottomNavigationBar: buyerFooter(context, 'cart-buyer'),
     );
   }
 }

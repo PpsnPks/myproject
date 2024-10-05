@@ -1,50 +1,156 @@
 import 'package:flutter/material.dart';
 
-
-BottomAppBar sellerFooter(BuildContext context, String selected){
-  return  BottomAppBar(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.all_inbox,  // ใช้ไอคอน home outline
-                    color: selected == 'home'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),  // กำหนดสีเป็น #FA5A2A
-                    size: 38,  // ขนาดไอคอน
-                  ),
-                  onPressed: () {
-                    // Handle home button press
-                    Navigator.pushNamed(context, '/home');
-                  },
+BottomAppBar sellerFooter(BuildContext context, String selected) {
+  return BottomAppBar(
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        // Home Button
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.all_inbox_rounded ,
+                  color: selected == 'seller'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  size: 24,
                 ),
-                IconButton(
-                  icon: Icon(Icons.add_box_outlined,  // ใช้ไอคอน home outline
-                    //color: Color(0xFFFA5A2A),  // กำหนดสีเป็น #FA5A2A
-                    color: selected == 'like'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),
-                    size: 34,  // ขนาดไอคอน
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/addproduct');
-                  },
+                onPressed: () {
+                  Navigator.pushNamed(context, '/seller');
+                },
+              ),
+              Text(
+                'คลัง',
+                style: TextStyle(
+                  color: selected == 'seller'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  fontSize: 9,
                 ),
-                IconButton(
-                  icon: Icon(Icons.chat_outlined,
-                    color: selected == 'like'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),
-                    size: 30),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/chat');
-                  },
+              ),
+            ],
+          ),
+        ),
+        // Favorite Button
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.add_circle_outline_rounded,
+                  color: selected == 'addproduct'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  size: 24,
                 ),
-                IconButton(
-                  icon: Icon(Icons.person_outline_rounded,
-                  color: selected == 'profile'? const 
-                  Color(0xFFFA5A2A): const Color(0xFFA5A9B6),
-                    size: 34,  // ขนาดไอคอน
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/profile');
-                  },
+                onPressed: () {
+                  Navigator.pushNamed(context, '/addproduct');
+                },
+              ),
+              Text(
+                'เพิ่ม',
+                style: TextStyle(
+                  color: selected == 'addproduct'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  fontSize: 9,
                 ),
-              ],
-            ),
-          );
+              ),
+            ],
+          ),
+        ),
+        // Cart Button
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: selected == 'cart-seller'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  size: 24,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/cart-seller');
+                },
+              ),
+              Text(
+                'รายการ',
+                style: TextStyle(
+                  color: selected == 'cart-seller'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  fontSize: 9,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Chat Button
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.sms_outlined,
+                  color: selected == 'chat'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  size: 24,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/chat');
+                },
+              ),
+              Text(
+                'แชท',
+                style: TextStyle(
+                  color: selected == 'chat'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  fontSize: 9,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Profile Button
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.person_outline_rounded,
+                  color: selected == 'profile'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  size: 24,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/profile');
+                },
+              ),
+              Text(
+                'โปรไฟล์',
+                style: TextStyle(
+                  color: selected == 'profile'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  fontSize: 10,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
