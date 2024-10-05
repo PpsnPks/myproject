@@ -147,7 +147,7 @@ class _CategoryPageState extends State<CategoryPage> {
           }
         },
       ),
-      bottomNavigationBar: buyerFooter(context, 'like'),
+      bottomNavigationBar: buyerFooter(context, 'home'),
     );
   }
 }
