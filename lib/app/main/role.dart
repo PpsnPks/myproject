@@ -27,36 +27,42 @@ class RolePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/home');
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.deepOrange,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
+              SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/home');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.deepOrange,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
+                    ),
                   ),
+                  child: const Text('ผู้ซื้อ'),
                 ),
-                child: const Text('ผู้ซื้อ'),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/seller');
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.deepOrange,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
+              SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/seller');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.deepOrange,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
+                    ),
                   ),
+                  child: const Text('ผู้ขาย'),
                 ),
-                child: const Text('ผู้ขาย'),
               ),
               const SizedBox(height: 40),
               // เพิ่ม icon หรือภาพประกอบเพื่อความน่าสนใจ

@@ -176,7 +176,7 @@ Widget build(BuildContext context) {
                                             borderRadius: BorderRadius.circular(8),
                                             child: Image.asset(
                                               product.imageUrl, // ใช้ imageUrl จาก product
-                                              height: 130, // ปรับขนาดรูปภาพ
+                                              height: 140, // ปรับขนาดรูปภาพ
                                               width: double.infinity,
                                               fit: BoxFit.contain,
                                             ),
@@ -390,8 +390,8 @@ final List<Widget> imageSliders = imgList
       margin: const EdgeInsets.all(5.0),
       decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.blue, // สีกรอบ
-              width: 2.0, // ความหนาของกรอบ
+              color: const Color(0xFFFA5A2A), // สีกรอบ
+              width: 1.0, // ความหนาของกรอบ
             ),
             borderRadius: BorderRadius.circular(10.0), // มุมกรอบโค้ง
       ),
