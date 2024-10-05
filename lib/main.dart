@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/app/buyer/cartbpage.dart';
+import 'package:myproject/app/seller/cartspage.dart';
 import 'package:myproject/app/buyer/category.dart';
 import 'package:myproject/app/buyer/confirm.dart';
 import 'package:myproject/app/buyer/homepage.dart';
@@ -20,6 +22,8 @@ void main() {
     routes: {
       '/home': (context) => const HomePage(),
       '/like': (context) => const LikePage(),
+      '/cart-buyer': (context) => const CartBPage(),
+      '/cart-seller': (context) => const CartSPage(),
       '/profile': (context) => const ProfilePage(),
       '/selectproduct': (context) => const SelectProductPage(),
       '/confirm': (context) => const Confirm(),

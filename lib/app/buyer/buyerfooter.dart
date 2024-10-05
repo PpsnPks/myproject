@@ -71,19 +71,19 @@ BottomAppBar buyerFooter(BuildContext context, String selected) {
               IconButton(
                 icon: Icon(
                   Icons.shopping_cart_outlined,
-                  color: selected == 'cart'
+                  color: selected == 'cart-buyer'
                       ? const Color(0xFFFA5A2A)
                       : const Color(0xFFA5A9B6),
                   size: 24,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/cart');
+                  Navigator.pushNamed(context, '/cart-buyer');
                 },
               ),
               Text(
                 'รายการ',
                 style: TextStyle(
-                  color: selected == 'cart'
+                  color: selected == 'cart-buyer'
                       ? const Color(0xFFFA5A2A)
                       : const Color(0xFFA5A9B6),
                   fontSize: 9,
