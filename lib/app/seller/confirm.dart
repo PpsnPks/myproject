@@ -3,14 +3,14 @@ import 'package:myproject/Service/confirmservice.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
 import 'package:myproject/service/likeservice.dart';
 
-class Confirm extends StatefulWidget {
-  const Confirm({super.key});
+class ConfirmSeller extends StatefulWidget {
+  const ConfirmSeller({super.key});
 
   @override
-  State<Confirm> createState() => _ConfirmState();
+  State<ConfirmSeller> createState() => _ConfirmState();
 }
 
-class _ConfirmState extends State<Confirm> {
+class _ConfirmState extends State<ConfirmSeller> {
   late Future<List<Product>> likedProducts;
   // late Future<List<Confirm>> confirmData;
 //  final Confirm confirmData = Confirmservice.getConfirm();
@@ -40,7 +40,7 @@ Widget buildStatusMessage() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('รรอนัดรับสินค้า', style: TextStyle(color: Colors.orange, fontSize: 16)),
+          const Text('รอนัดรับสินค้า', style: TextStyle(color: Colors.orange, fontSize: 16)),
           const SizedBox(height: 20), 
           const Text('วันนัดรับสินค้า', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 16, fontWeight: FontWeight.bold)),
           Text(
@@ -84,7 +84,7 @@ Widget buildStatusMessage() {
     final confirmData = Confirmservice.getConfirm();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("รายละเอียดการสั่งสินค้า"),
+        title: const Text("รายการนัดรับสินค้า"),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 1,
@@ -242,7 +242,7 @@ Widget buildStatusMessage() {
           }
         },
       ),
-      bottomNavigationBar: buyerFooter(context, 'cart-buyer'),
+      bottomNavigationBar: buyerFooter(context, 'cart-seller'),
     );
   }
 }

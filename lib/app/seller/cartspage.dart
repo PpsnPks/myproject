@@ -98,7 +98,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
   Widget buildProductCard(Product product) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/productdetails');
+        Navigator.pushNamed(context, '/confirm-seller', arguments: product);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 7.0),
