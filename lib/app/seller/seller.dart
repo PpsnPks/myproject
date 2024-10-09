@@ -34,6 +34,7 @@ class _SellerPageState extends State<SellerPage> {
               Navigator.of(context).pushNamed('/noti');
             },
           ),
+  
         ],
       ),
       body: FutureBuilder<List<Product>>(
@@ -62,93 +63,145 @@ class _SellerPageState extends State<SellerPage> {
                 final product = products[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context,
-                        '/selectproduct'); // เปลี่ยนหน้าไปที่ '/confirm' เมื่อกดคาร์ด
+                    Navigator.pushNamed(context, '/selectproduct'); 
                   },
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      // ตรวจสอบความยาวของ title
-                      // ignore: unused_local_variable
-                      double aspectRatio = (product.title.length > 20)
-                          ? 0.6
-                          : 0.8; // ปรับค่า childAspectRatio ตามความยาว
+                      double aspectRatio = (product.title.length > 20) ? 0.6 : 0.8;
 
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.asset(
-                                  product.imageUrl, // ใช้ imageUrl จาก product
-                                  height: 120, // ปรับขนาดรูปภาพ
-                                  width: double.infinity,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              // ใช้ Flexible เพื่อให้ข้อความสามารถขยายได้
-                              Flexible(
-                                child: Text(
-                                  product.title, // ใช้ title จาก product
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  overflow: TextOverflow
-                                      .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
-                                  maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // จัดตำแหน่งให้ห่างกัน
+                      return Stack(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey), // กำหนดสีขอบ
-                                      borderRadius: BorderRadius.circular(
-                                          12), // กำหนดมุมโค้งมนของกรอบ
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                      horizontal: 8,
-                                    ),
-                                    child: Text(
-                                      product.category, // หมวดหมู่ของสินค้า
-                                      style: TextStyle(
-                                        color: Colors.blueGrey[400],
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      product.imageUrl,
+                                      height: 120,
+                                      width: double.infinity,
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
-                                  Text(
-                                    '${product.price} ฿', // ใช้ price จาก product พร้อมแสดงหน่วยเงิน
-                                    style: const TextStyle(
-                                      color: Colors.orange,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                                  const SizedBox(height: 20),
+                                  Flexible(
+                                    child: Text(
+                                      product.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
                                     ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 8,
+                                        ),
+                                        child: Text(
+                                          product.category,
+                                          style: TextStyle(
+                                            color: Colors.blueGrey[400],
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        '${product.price} ฿',
+                                        style: const TextStyle(
+                                          color: Colors.orange,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          // ปุ่มแก้ไขที่มุมขวาบน
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      padding: const EdgeInsets.all(16),
+                                      height: 150,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          ListTile(
+                                            leading: const Icon(Icons.edit, color: Colors.blue),
+                                            title: const Text('แก้ไข'),
+                                            onTap: () {
+                                              Navigator.pop(context); // ปิด BottomSheet
+                                              Navigator.pushNamed(
+                                                context, 
+                                                '/editproduct', 
+                                                arguments: product,
+                                              );
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: const Icon(Icons.delete, color: Colors.red),
+                                            title: const Text('ลบ'),
+                                            onTap: () {
+                                              Navigator.pop(context); // ปิด BottomSheet
+                                              // เรียกฟังก์ชันสำหรับลบสินค้า
+                                              _confirmDelete(context, product);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.orange,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          )
+
+                        ],
                       );
                     },
                   ),
                 );
+
               },
             );
           }
@@ -159,3 +212,30 @@ class _SellerPageState extends State<SellerPage> {
   }
 }
 
+void _confirmDelete(BuildContext context, Product product) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('ยืนยันการลบ'),
+        content: const Text('คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?'),
+        actions: [
+          TextButton(
+            child: const Text('ยกเลิก'),
+            onPressed: () {
+              Navigator.pop(context); // ปิด dialog
+            },
+          ),
+          TextButton(
+            child: const Text('ลบ'),
+            onPressed: () {
+              // เรียกใช้ฟังก์ชันลบสินค้าที่นี่
+              // ตัวอย่าง: productService.deleteProduct(product.id);
+              Navigator.pop(context); // ปิด dialog
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

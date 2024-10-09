@@ -142,12 +142,6 @@ class _ProfilePageState extends State<ProfilePage> {
             endIndent: 16,
           ),
           ListTile(
-            leading: const Icon(Icons.shopping_bag),
-            title: const Text('รายการสั่งสินค้า'),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {},
-          ),
-          ListTile(
             leading: const Icon(Icons.lock),
             title: const Text('ตั้งค่าความเป็นส่วนตัว'),
             trailing: const Icon(Icons.arrow_forward_ios),
