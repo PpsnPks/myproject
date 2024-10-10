@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/app/seller/sellerfooter.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -137,37 +138,19 @@ class _AddProductPageState extends State<AddProductPage> {
               ),
               const SizedBox(height: 8),
               Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'ขนาด',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อน
-                          borderRadius: BorderRadius.circular(12), // ขอบมน
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อนเมื่อ focus
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8), // เพิ่มระยะห่างระหว่างช่องกรอก
-                  
-                  // ตรวจสอบสถานะ isRenting เพื่อแสดงหรือซ่อนช่องราคา
+                children: [ // Add spacing between fields
+                  // Check if the item is not for giving away (แจก) before showing the 'ราคา' field
                   if (!isRenting)
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
                           labelText: 'ราคา',
                           enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อน
-                            borderRadius: BorderRadius.circular(12), // ขอบมน
+                            borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // Light grey border
+                            borderRadius: BorderRadius.circular(12), // Rounded border
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อนเมื่อ focus
+                            borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // Light grey border when focused
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -176,7 +159,6 @@ class _AddProductPageState extends State<AddProductPage> {
                     ),
                 ],
               ),
-
               const SizedBox(height: 8),
               const TextField(
                 maxLines: 3,
@@ -267,7 +249,7 @@ class _AddProductPageState extends State<AddProductPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFA5A2A), // Background color
-                      padding: const EdgeInsets.symmetric(vertical: 12), // Adjust padding
+                      padding: const EdgeInsets.symmetric(vertical: 18), // Adjust padding
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8), // Rounded corners
                       ),
@@ -280,6 +262,7 @@ class _AddProductPageState extends State<AddProductPage> {
           ),
         ),
       ),
+      bottomNavigationBar: sellerFooter(context, 'addproduct'),
     );
   }
 }
