@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
+import 'package:myproject/app/main/forgotpassword.dart';
+import 'package:myproject/app/main/login.dart';
+import 'package:myproject/app/main/register.dart';
 import 'package:myproject/app/seller/cartspage.dart';
 import 'package:myproject/app/buyer/category.dart';
 import 'package:myproject/app/buyer/confirm.dart';
@@ -47,6 +50,10 @@ void main() {
       '/noti': (context) => const NotiPage(),
       '/chat': (context) => const Chatpage(),
       '/confirm-seller': (context) => const ConfirmSeller(),
+      '/login': (context) => LoginPage(),
+      '/register': (context) => const RegisterPage(),
+      '/forgotpassword': (context) => const ForgotPasswordPage(),
+      
     },
   ));
 }
