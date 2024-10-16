@@ -22,62 +22,73 @@ class _ConfirmState extends State<Confirm> {
     likedProducts = LikeService().getLikedProducts();
   }
 
-Widget buildStatusMessage() {
-  final confirmData = Confirmservice.getConfirm();
-  if (confirmData.status == '1') {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text('รออนุมัติ', style: TextStyle(color: Colors.orange, fontSize: 16)),
-      ),
-    );
-  }else if (confirmData.status == '2') {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    child: Align(
-      alignment: Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('รรอนัดรับสินค้า', style: TextStyle(color: Colors.orange, fontSize: 16)),
-          const SizedBox(height: 20), 
-          const Text('วันนัดรับสินค้า', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 16, fontWeight: FontWeight.bold)),
-          Text(
-            confirmData.date,
-            style: const TextStyle(color: Colors.orange, fontSize: 16),
+  Widget buildStatusMessage() {
+    final confirmData = Confirmservice.getConfirm();
+    if (confirmData.status == '1') {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text('รออนุมัติ',
+              style: TextStyle(color: Colors.orange, fontSize: 16)),
+        ),
+      );
+    } else if (confirmData.status == '2') {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('รอนัดรับสินค้า',
+                  style: TextStyle(color: Colors.orange, fontSize: 16)),
+              const SizedBox(height: 20),
+              const Text('วันนัดรับสินค้า',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                confirmData.date,
+                style: const TextStyle(color: Colors.orange, fontSize: 16),
+              ),
+              const SizedBox(height: 20), // เว้นระยะระหว่างบรรทัด
+              const Text('สถานที่นัดรับสินค้า',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                confirmData.place,
+                style: const TextStyle(color: Colors.orange, fontSize: 16),
+              ),
+            ],
           ),
-          const SizedBox(height: 20), // เว้นระยะระหว่างบรรทัด
-          const Text('สถานที่นัดรับสินค้า', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0),fontSize: 16, fontWeight: FontWeight.bold)),
-          Text(
-            confirmData.place,
-            style: const TextStyle(color: Colors.orange, fontSize: 16),
-          ),
-        ],
-      ),
-    ),
-  );
-} else if (confirmData.status == '3') {
-    return const Padding(
-      
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text('ยืนยันการรับสินค้า', style: TextStyle(color: Colors.orange, fontSize: 16)),
-      ),
-    );
-  } else if (confirmData.status == '4') {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text('ได้รับสินค้าเเล้ว', style: TextStyle(color: Colors.orange, fontSize: 16)),
-      ),
-    );
-  } else {
-    return const SizedBox.shrink(); // กรณีไม่ตรงตามสถานะที่กำหนด
+        ),
+      );
+    } else if (confirmData.status == '3') {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text('ยืนยันการรับสินค้า',
+              style: TextStyle(color: Colors.orange, fontSize: 16)),
+        ),
+      );
+    } else if (confirmData.status == '4') {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text('ได้รับสินค้าเเล้ว',
+              style: TextStyle(color: Colors.orange, fontSize: 16)),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink(); // กรณีไม่ตรงตามสถานะที่กำหนด
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -177,13 +188,35 @@ Widget buildStatusMessage() {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      StepCircle(number: '1', isActive: confirmData.status == '1' || confirmData.status == '2' || confirmData.status == '3' || confirmData.status == '4'),
-                      StepLine(isActive: confirmData.status == '1' || confirmData.status == '2' || confirmData.status == '3' || confirmData.status == '4'),
-                      StepCircle(number: '2', isActive: confirmData.status == '2' || confirmData.status == '3' || confirmData.status == '4'),
-                      StepLine(isActive: confirmData.status == '2' || confirmData.status == '3' || confirmData.status == '4'),
-                      StepCircle(number: '3', isActive: confirmData.status == '3' || confirmData.status == '4'),
-                      StepLine(isActive: confirmData.status == '3' || confirmData.status == '4'),
-                      StepCircle(number: '4', isActive: confirmData.status == '4' ),
+                      StepCircle(
+                          number: '1',
+                          isActive: confirmData.status == '1' ||
+                              confirmData.status == '2' ||
+                              confirmData.status == '3' ||
+                              confirmData.status == '4'),
+                      StepLine(
+                          isActive: confirmData.status == '1' ||
+                              confirmData.status == '2' ||
+                              confirmData.status == '3' ||
+                              confirmData.status == '4'),
+                      StepCircle(
+                          number: '2',
+                          isActive: confirmData.status == '2' ||
+                              confirmData.status == '3' ||
+                              confirmData.status == '4'),
+                      StepLine(
+                          isActive: confirmData.status == '2' ||
+                              confirmData.status == '3' ||
+                              confirmData.status == '4'),
+                      StepCircle(
+                          number: '3',
+                          isActive: confirmData.status == '3' ||
+                              confirmData.status == '4'),
+                      StepLine(
+                          isActive: confirmData.status == '3' ||
+                              confirmData.status == '4'),
+                      StepCircle(
+                          number: '4', isActive: confirmData.status == '4'),
                     ],
                   ),
                 ),
@@ -203,40 +236,40 @@ Widget buildStatusMessage() {
                 buildStatusMessage(),
 
                 // if (confirmData.status == '3')
-                      // const Spacer(),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //     children: [
-                      //       const SizedBox(width: 20),
-                      //       Expanded(
-                      //         child: ElevatedButton(
-                      //           onPressed: () {
-                      //             confirmData.status == '4';
-                      //           },
-                      //           style: ElevatedButton.styleFrom(
-                      //             padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
-                      //           ),
-                      //           child: const Text('ยกเลิก'),
-                      //         ),
-                      //       ),
-                      //       const SizedBox(width: 20), // เว้นระยะระหว่างปุ่ม
-                      //       Expanded(
-                      //         child: ElevatedButton(
-                      //           onPressed: () {
-                      //             confirmData.status == '5';
-                      //           },
-                      //           style: ElevatedButton.styleFrom(
-                      //             padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
-                      //           ),
-                      //           child: const Text('ยืนยัน'),
-                      //         ),
-                      //       ),
-                      //       const SizedBox(width: 20),
-                      //     ],
-                      //   ),
-                      // ),
+                // const Spacer(),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //     children: [
+                //       const SizedBox(width: 20),
+                //       Expanded(
+                //         child: ElevatedButton(
+                //           onPressed: () {
+                //             confirmData.status == '4';
+                //           },
+                //           style: ElevatedButton.styleFrom(
+                //             padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
+                //           ),
+                //           child: const Text('ยกเลิก'),
+                //         ),
+                //       ),
+                //       const SizedBox(width: 20), // เว้นระยะระหว่างปุ่ม
+                //       Expanded(
+                //         child: ElevatedButton(
+                //           onPressed: () {
+                //             confirmData.status == '5';
+                //           },
+                //           style: ElevatedButton.styleFrom(
+                //             padding: const EdgeInsets.symmetric(vertical: 20), // เพิ่มความสูงของปุ่ม
+                //           ),
+                //           child: const Text('ยืนยัน'),
+                //         ),
+                //       ),
+                //       const SizedBox(width: 20),
+                //     ],
+                //   ),
+                // ),
               ],
             );
           }

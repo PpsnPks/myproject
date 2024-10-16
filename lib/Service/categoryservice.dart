@@ -1,4 +1,3 @@
-
 class Categoryservice {
   Future<List<Product>> getCategoryProducts() async {
     // จำลองข้อมูล
@@ -7,7 +6,7 @@ class Categoryservice {
       Product(
         imageUrl: 'assets/images/fan_example.png',
         title: 'พัดลม',
-        detail: 'พัดลม Xiaomi สภาพดี',
+        detail: 'พัดลม Xiaomi สภาพดี ใช้งานมาไม่นาน สภาพปกติไม่มีส่วนไหนชำรุด',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
@@ -15,7 +14,7 @@ class Categoryservice {
       Product(
         imageUrl: 'assets/images/tuyen.png',
         title: 'ตู้เย็น',
-        detail: 'เครื่องใช้ไฟฟ้า',
+        detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '1500',
         category: 'เครื่องใช้ไฟฟ้า',
@@ -41,6 +40,3 @@ class Product {
     required this.types,
   });
 }
-
-
-
