@@ -222,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                                                         Alignment.topCenter,
                                                   ),
                                                 ),
-                                                const SizedBox(height: 18),
+                                                const SizedBox(height: 10),
                                                 Flexible(
                                                   child: Text(
                                                     product
@@ -238,7 +238,32 @@ class _HomePageState extends State<HomePage> {
                                                         2, // จำกัดจำนวนบรรทัดที่จะแสดง
                                                   ),
                                                 ),
-                                                const SizedBox(height: 36),
+                                                SizedBox(
+                                                  height: 42,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 4.0),
+                                                    child: Expanded(
+                                                      child: Text(
+                                                        product
+                                                            .detail, // ใช้ title จาก product
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal,
+                                                            fontSize: 12,
+                                                            color: Color(
+                                                                0xFFA5A9B6)),
+                                                        overflow: TextOverflow
+                                                            .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
+                                                        maxLines:
+                                                            2, // จำกัดจำนวนบรรทัดที่จะแสดง
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                //const SizedBox(height: 36),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment

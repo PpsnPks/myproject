@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
+import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:myproject/service/Notiservice.dart';
 
 class NotiPage extends StatefulWidget {
@@ -54,7 +55,7 @@ class _NotiPageState extends State<NotiPage> {
           }
         },
       ),
-      bottomNavigationBar: buyerFooter(context, 'like'),
+      bottomNavigationBar: sellerFooter(context, 'seller'),
     );
   }
 }
@@ -99,7 +100,8 @@ class NotificationCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 5),
                   Text(

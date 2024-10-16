@@ -1,4 +1,3 @@
-
 class Homeservice {
   Future<List<Product>> getHomeProducts() async {
     // จำลองข้อมูล
@@ -7,31 +6,31 @@ class Homeservice {
       Product(
         imageUrl: 'assets/images/fan_example.png',
         title: 'พัดลม',
-        detail: 'พัดลม Xiaomi สภาพดี',
+        detail: 'พัดลม Xiaomi สภาพดี ใช้งานมาไม่นาน สภาพปกติไม่มีส่วนไหนชำรุด',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
       Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'พัดลม',
-        detail: 'เครื่องใช้ไฟฟ้า',
+        imageUrl: 'assets/images/tuyen.png',
+        title: 'ตู้เย็น',
+        detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
         types: 'เครื่องใช้ไฟฟ้า',
+        price: '150',
+        category: 'เครื่องใช้ไฟฟ้า',
+      ),
+      Product(
+        imageUrl: 'assets/images/sample_b1.jpg',
+        title: 'หนังสือ',
+        detail: 'หนังสือสภาพใหม่ ไม่มีตำหนิ',
+        types: 'หนังสือ',
         price: '150',
         category: 'หนังสือ',
       ),
       Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'พัดลม',
-        detail: 'เครื่องใช้ไฟฟ้า',
-        types: 'เครื่องใช้ไฟฟ้า',
-        price: '150',
-        category: 'หนังสือ',
-      ),
-      Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'พัดลม',
-        detail: 'เครื่องใช้ไฟฟ้า',
+        imageUrl: 'assets/images/sample_b1.jpg',
+        title: 'หนังสือ',
+        detail: 'หนังสือมือสอง',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '150',
         category: 'หนังสือ',
@@ -57,6 +56,3 @@ class Product {
     required this.types,
   });
 }
-
-
-
