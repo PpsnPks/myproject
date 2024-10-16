@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
+import 'package:myproject/app/main/forgotpassword.dart';
+import 'package:myproject/app/main/login.dart';
+import 'package:myproject/app/main/register.dart';
 import 'package:myproject/app/seller/cartspage.dart';
 import 'package:myproject/app/buyer/category.dart';
 import 'package:myproject/app/buyer/confirm.dart';
@@ -21,13 +24,13 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "KMITL APP",
-    home: const RolePage(),
+    home: LoginPage(),
     routes: {
       '/home': (context) => const HomePage(),
       '/like': (context) => const LikePage(),
       '/cart-buyer': (context) => const CartBPage(),
       '/cart-seller': (context) => const CartSPage(),
-      '/profile': (context) => const ProfilePage(),
+      
       '/selectproduct': (context) => const SelectProductPage(),
       '/confirm': (context) => const Confirm(),
       '/category': (context) => const CategoryPage('หมวดหมู่'),
@@ -46,7 +49,12 @@ void main() {
 
       '/noti': (context) => const NotiPage(),
       '/chat': (context) => const Chatpage(),
+      '/profile': (context) => const ProfilePage(),
       '/confirm-seller': (context) => const ConfirmSeller(),
+      '/login': (context) => LoginPage(),
+      '/register': (context) => const RegisterPage(),
+      '/forgotpassword': (context) => const ForgotPasswordPage(),
+      
     },
   ));
 }

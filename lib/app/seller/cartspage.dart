@@ -36,7 +36,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
           controller: _tabController,
           labelColor: Colors.black,
           unselectedLabelColor: Colors.grey,
-          indicatorColor: Colors.orange,
+          indicatorColor: const Color(0XFFE35205),
           tabs: const [
             Tab(text: 'รออนุมัติ'),
             Tab(text: 'รอนัดรับ'),
@@ -161,7 +161,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                         Text(
                           '${product.price} ฿',
                           style: const TextStyle(
-                            color: Colors.orange,
+                            color: const Color(0XFFE35205),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),

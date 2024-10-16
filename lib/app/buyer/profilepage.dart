@@ -61,24 +61,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ],
                 ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  child: const Text(
-                    'ดูโปรไฟล์',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFFF26522),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -98,8 +80,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isBuyerSelected ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA), // Background color
-                      foregroundColor: isBuyerSelected ? Colors.white : const Color(0xFFFA5A2A), // Text color
+                      backgroundColor: isBuyerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA), // Background color
+                      foregroundColor: isBuyerSelected ? Colors.white : const Color(0xFFE35205), // Text color
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text(
@@ -119,8 +101,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isSellerSelected ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA), // Background color
-                      foregroundColor: isSellerSelected ? Colors.white : const Color(0xFFFA5A2A), // Text color
+                      backgroundColor: isSellerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA), // Background color
+                      foregroundColor: isSellerSelected ? Colors.white : const Color(0xFFE35205), // Text color
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text(
@@ -132,34 +114,17 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-
-          
-          const Divider(
-            height: 1,
-            thickness: 1,
-            color: Colors.grey,
-            indent: 16,
-            endIndent: 16,
-          ),
-          ListTile(
-            leading: const Icon(Icons.lock),
-            title: const Text('ตั้งค่าความเป็นส่วนตัว'),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('ช่วยเหลือ'),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {},
-          ),
-          const SizedBox(height: 16),
-          const Center(
-            child: Text(
-              'ออกจากระบบ',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFFF26522),
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/login');
+            },
+            child: Center(
+              child: Text(
+                'ออกจากระบบ',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFFE35205),
+                ),
               ),
             ),
           ),
