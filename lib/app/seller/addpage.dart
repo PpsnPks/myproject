@@ -12,6 +12,9 @@ class _AddProductPageState extends State<AddProductPage> {
   bool isSelling = true;
   bool isRenting = false;
   bool isPreOrder = false;
+  String? selectedCondition;
+  String? selectedUsageTime; 
+  String? defect; 
   int quantity = 1;
 
   @override
@@ -222,23 +225,97 @@ class _AddProductPageState extends State<AddProductPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
               // Status dropdown
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               const Text('สถานที่นัดรับสินค้า', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 items: const [
-                  DropdownMenuItem(value: 'ready', child: Text('ยังจัดส่งได้ปกติ')),
-                  DropdownMenuItem(value: 'out_of_stock', child: Text('สินค้าหมดชั่วคราว')),
+                  DropdownMenuItem(value: 'เกกี 1', child: Text('เกกี 1')),
+                  DropdownMenuItem(value: 'เกกี 2', child: Text('เกกี 2')),
+                  DropdownMenuItem(value: 'เกกี 3', child: Text('เกกี 3')),
+                  DropdownMenuItem(value: 'เกกี 4', child: Text('เกกี 4')),
+                  DropdownMenuItem(value: 'ตึกโหล', child: Text('ตึกโหล')),
+                  DropdownMenuItem(value: 'ECC', child: Text('ECC')),
+                  DropdownMenuItem(value: 'หอสมุด', child: Text('หอสมุด')),
                 ],
                 onChanged: (value) {},
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
               ),
-
-              // Add to list button
+              const SizedBox(height: 16),
+              // Show สภาพสินค้า only when selling or giving away
+              if (isSelling || isRenting)
+                const SizedBox(height: 16),
+              if (isSelling || isRenting)
+                const Text('สภาพสินค้า', style: TextStyle(fontSize: 16)),
+              if (isSelling || isRenting)
+                const SizedBox(height: 8),
+              if (isSelling || isRenting)
+                DropdownButtonFormField<String>(
+                  value: selectedCondition,
+                  items: const [
+                    DropdownMenuItem(value: 'new', child: Text('มือหนึ่ง')),
+                    DropdownMenuItem(value: 'old', child: Text('มือสอง')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCondition = value;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              
+              // Show ระยะเวลาการใช้งาน and ตำหนิสินค้า only when มือสอง is selected
+              if (selectedCondition == 'old')
+                const SizedBox(height: 16),
+              if (selectedCondition == 'old')
+                const Text('ระยะเวลาการใช้งาน', style: TextStyle(fontSize: 16)),
+              if (selectedCondition == 'old')
+                const SizedBox(height: 8),
+              if (selectedCondition == 'old')
+                DropdownButtonFormField<String>(
+                  value: selectedUsageTime,
+                  items: const [
+                    DropdownMenuItem(value: '1', child: Text('ต่ำกว่า 1 ปี')),
+                    DropdownMenuItem(value: '2', child: Text('1-3 ปี')),
+                    DropdownMenuItem(value: '3', child: Text('4-5 ปี')),
+                    DropdownMenuItem(value: '4', child: Text('มากกว่า 5 ปี')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedUsageTime = value;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              if (selectedCondition == 'old')
+                const SizedBox(height: 16),
+              if (selectedCondition == 'old')
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      defect = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'ตำหนิสินค้า',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  ),
+                ),
               const SizedBox(height: 16),
               Center(
                 child: SizedBox(
