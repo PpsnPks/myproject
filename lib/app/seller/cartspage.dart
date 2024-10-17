@@ -39,10 +39,8 @@ class _CartPageState extends State<CartSPage>
           unselectedLabelColor: Colors.grey,
           indicatorColor: const Color(0XFFE35205),
           tabs: const [
-            Tab(text: 'รออนุมัติ'),
-            Tab(text: 'รอนัดรับ'),
-            Tab(text: 'ยืนยัน'),
-            Tab(text: 'ส่งสินค้า'),
+            Tab(text: 'รอดำเนินการ'),
+            Tab(text: 'ดำเนินการสำเร็จ'),
           ],
         ),
       ),
@@ -59,18 +57,14 @@ class _CartPageState extends State<CartSPage>
             final products = snapshot.data!;
 
             // Filter products by steps
-            final pendingApproval = filterByStep(products, 'รออนุมัติ');
-            final pendingCollection = filterByStep(products, 'รอนัดรับ');
-            final confirmReceipt = filterByStep(products, 'ยืนยัน');
-            final received = filterByStep(products, 'ส่งสินค้า');
+            final pendingApproval = filterByStep(products, 'รอดำเนินการ');
+            final pendingCollection = filterByStep(products, 'ดำเนินการสำเร็จ');
 
             return TabBarView(
               controller: _tabController,
               children: [
-                buildStepContent(pendingApproval, 'ไม่มีสินค้ารออนุมัติ'),
-                buildStepContent(pendingCollection, 'ไม่มีสินค้ารอนัดรับ'),
-                buildStepContent(confirmReceipt, 'ไม่มีสินค้ายืนยันการรับ'),
-                buildStepContent(received, 'ไม่มีสินค้าที่ได้รับ'),
+                buildStepContent(pendingApproval, 'ไม่มีสินค้ารอดำเนินการ'),
+                buildStepContent(pendingCollection, 'ไม่มีสินค้าดำเนินการสำเร็จ'),
               ],
             );
           }
