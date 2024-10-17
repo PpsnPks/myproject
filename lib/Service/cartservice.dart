@@ -8,7 +8,8 @@ class CartService {
       Product(
         imageUrl: 'assets/images/fan_example.png',
         title: 'พัดลม',
-        detail: 'พัดลม Xiaomi สภาพดี',
+        detail:
+            'พัดลม Xiaomi Mi Smart Standing Fan 2 Lite เป็นพัดลมที่ผสมผสานดีไซน์อันเรียบหรูเข้ากับฟังก์ชันการใช้งานที่ครบครัน เหมาะสำหรับทั้งบ้านและสำนักงาน ด้วยคุณสมบัติที่โดดเด่น',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',

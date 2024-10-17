@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -24,16 +23,16 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 30,
                   backgroundImage: AssetImage('assets/images/profile_pic.png'),
                 ),
-                const SizedBox(width: 16),
-                const Column(
+                SizedBox(width: 16),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -64,10 +63,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-          
+
           // Add buttons for Buyer and Seller
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.only(
+                left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
             child: Row(
               children: [
                 // Buyer Button
@@ -80,8 +80,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isBuyerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA), // Background color
-                      foregroundColor: isBuyerSelected ? Colors.white : const Color(0xFFE35205), // Text color
+                      backgroundColor: isBuyerSelected
+                          ? const Color(0xFFE35205)
+                          : const Color(0xFFFCEEEA), // Background color
+                      foregroundColor: isBuyerSelected
+                          ? Colors.white
+                          : const Color(0xFFE35205), // Text color
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text(
@@ -101,8 +105,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isSellerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA), // Background color
-                      foregroundColor: isSellerSelected ? Colors.white : const Color(0xFFE35205), // Text color
+                      backgroundColor: isSellerSelected
+                          ? const Color(0xFFE35205)
+                          : const Color(0xFFFCEEEA), // Background color
+                      foregroundColor: isSellerSelected
+                          ? Colors.white
+                          : const Color(0xFFE35205), // Text color
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text(
@@ -114,11 +122,152 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
+          Container(
+            height: 8.0,
+            width: MediaQuery.of(context).size.width,
+            color: const Color(0xFFDFE2EC),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0),
+            child: Text('ข้อมูลพื้นฐาน',
+                style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: ListTile(
+                  leading: const Icon(Icons.phone, color: Color(0xFFA5A9B6)),
+                  title: const Text(
+                    'เบอร์โทรศัพท์',
+                    style: TextStyle(fontSize: 13.0, color: Color(0xFFA5A9B6)),
+                  ),
+                  onTap: () {},
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(right: 12.0),
+                child: Text(
+                  '081-***-5536',
+                  style: TextStyle(fontSize: 13.0),
+                ),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: ListTile(
+                  leading: const Icon(Icons.email_outlined,
+                      color: Color(0xFFA5A9B6)),
+                  title: const Text(
+                    'อีเมลหลัก',
+                    style: TextStyle(fontSize: 13.0, color: Color(0xFFA5A9B6)),
+                  ),
+                  onTap: () {},
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(right: 12.0),
+                child: Text(
+                  '640***@kmitl.ac.th',
+                  style: TextStyle(fontSize: 13.0),
+                ),
+              )
+            ],
+          ),
           TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/login');
+              // Navigator.pushNamed(context, '/login');
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    height: 150,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text(
+                          'คุณต้องการออกจากระบบใช่หรือไม่',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/login');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    const Color(0xFFE35205), // Text color
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 70, vertical: 20),
+                                textStyle: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      15), // ทำให้ปุ่มโค้งมน
+                                ),
+                              ),
+                              child: const Text('ยืนยัน'),
+                            ),
+                            const SizedBox(width: 20.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: const Color(0xFFE35205),
+                                backgroundColor:
+                                    const Color(0xFFFCEEEA), // Text color
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 70, vertical: 20),
+                                textStyle: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      15), // ทำให้ปุ่มโค้งมน
+                                ),
+                              ),
+                              child: const Text('ยกเลิก'),
+                            ),
+                            // ListTile(
+                            //   leading: const Icon(Icons.edit, color: Colors.grey),
+                            //   title: const Text('แก้ไข'),
+                            //   onTap: () {
+                            //     Navigator.pop(context); // ปิด BottomSheet
+                            //     Navigator.pushNamed(
+                            //       context,
+                            //       '/login',
+                            //       arguments: product,
+                            //     );
+                            //   },
+                            // ),
+                            // ListTile(
+                            //   leading: const Icon(Icons.delete, color: Colors.red),
+                            //   title: const Text('ลบ'),
+                            //   onTap: () {
+                            //     Navigator.pop(context); // ปิด BottomSheet
+                            //     // เรียกฟังก์ชันสำหรับลบสินค้า
+                            //     _confirmDelete(context, product);
+                            //   },
+                            // ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
             },
-            child: Center(
+            child: const Center(
               child: Text(
                 'ออกจากระบบ',
                 style: TextStyle(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/app/buyer/buyerfooter.dart';
+// import 'package:myproject/app/buyer/buyerfooter.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:myproject/service/Notiservice.dart';
 

@@ -9,7 +9,8 @@ class CartSPage extends StatefulWidget {
   State<CartSPage> createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixin {
+class _CartPageState extends State<CartSPage>
+    with SingleTickerProviderStateMixin {
   late Future<List<Product>> cartProducts;
   late TabController _tabController;
 
@@ -104,7 +105,8 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 7.0),
         decoration: BoxDecoration(
           color: Colors.white, // Background color
-          border: Border.all(color: Colors.grey.shade300, width: 2), // Gray border
+          border:
+              Border.all(color: Colors.grey.shade300, width: 2), // Gray border
           borderRadius: BorderRadius.circular(12), // Rounded corners
         ),
         child: Padding(
@@ -149,7 +151,8 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           child: Text(
                             product.category,
                             style: const TextStyle(
@@ -161,7 +164,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                         Text(
                           '${product.price} ฿',
                           style: const TextStyle(
-                            color: const Color(0XFFE35205),
+                            color: Color(0XFFE35205),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -177,5 +180,4 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
       ),
     );
   }
-
 }

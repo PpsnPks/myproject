@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
@@ -15,6 +17,8 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,14 +29,14 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
+              const Text(
                 'เข้าสู่ระบบ',
                 style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               // Email Input
               TextField(
                 decoration: InputDecoration(
@@ -42,67 +46,63 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Password Input
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'รหัสผ่าน',
-                  suffixIcon: Icon(Icons.visibility),
+                  suffixIcon: const Icon(Icons.visibility),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Forgot Password
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context,'/forgotpassword');
+                    Navigator.pushNamed(context, '/forgotpassword');
                   },
-                  child: Text(
+                  child: const Text(
                     'ลืมรหัสผ่าน?',
-                    style: TextStyle(
-                      color: const Color(0XFFE35205)
-                      ),
+                    style: TextStyle(color: Color(0XFFE35205)),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Login Button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50), 
+                  minimumSize: const Size(double.infinity, 50),
                   backgroundColor: const Color(0XFFE35205),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context,'/role');
+                  Navigator.pushNamed(context, '/role');
                 },
-                child: Text(
+                child: const Text(
                   'เข้าสู่ระบบ',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0XFFFFFFFF)),
+                  style: TextStyle(fontSize: 18, color: Color(0XFFFFFFFF)),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Register link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('ยังไม่มีบัญชีผู้ใช้งาน?'),
+                  const Text('ยังไม่มีบัญชีผู้ใช้งาน?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context,'/register');
+                      Navigator.pushNamed(context, '/register');
                     },
-                    child: Text(
+                    child: const Text(
                       'ลงทะเบียน',
-                      style: TextStyle(color: const Color(0XFFE35205)),
+                      style: TextStyle(color: Color(0XFFE35205)),
                     ),
                   ),
                 ],
