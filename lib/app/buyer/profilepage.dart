@@ -265,27 +265,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               child: const Text('ยกเลิก'),
                             ),
-                            // ListTile(
-                            //   leading: const Icon(Icons.edit, color: Colors.grey),
-                            //   title: const Text('แก้ไข'),
-                            //   onTap: () {
-                            //     Navigator.pop(context); // ปิด BottomSheet
-                            //     Navigator.pushNamed(
-                            //       context,
-                            //       '/login',
-                            //       arguments: product,
-                            //     );
-                            //   },
-                            // ),
-                            // ListTile(
-                            //   leading: const Icon(Icons.delete, color: Colors.red),
-                            //   title: const Text('ลบ'),
-                            //   onTap: () {
-                            //     Navigator.pop(context); // ปิด BottomSheet
-                            //     // เรียกฟังก์ชันสำหรับลบสินค้า
-                            //     _confirmDelete(context, product);
-                            //   },
-                            // ),
                           ],
                         ),
                       ],
