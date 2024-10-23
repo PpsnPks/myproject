@@ -9,7 +9,8 @@ class CartSPage extends StatefulWidget {
   State<CartSPage> createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixin {
+class _CartPageState extends State<CartSPage>
+    with SingleTickerProviderStateMixin {
   late Future<List<Product>> cartProducts;
   late TabController _tabController;
 
@@ -38,10 +39,8 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
           unselectedLabelColor: Colors.grey,
           indicatorColor: const Color(0XFFE35205),
           tabs: const [
-            Tab(text: 'รออนุมัติ'),
-            Tab(text: 'รอนัดรับ'),
-            Tab(text: 'ยืนยัน'),
-            Tab(text: 'ส่งสินค้า'),
+            Tab(text: 'รอดำเนินการ'),
+            Tab(text: 'ดำเนินการสำเร็จ'),
           ],
         ),
       ),
@@ -58,18 +57,15 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
             final products = snapshot.data!;
 
             // Filter products by steps
-            final pendingApproval = filterByStep(products, 'รออนุมัติ');
-            final pendingCollection = filterByStep(products, 'รอนัดรับ');
-            final confirmReceipt = filterByStep(products, 'ยืนยัน');
-            final received = filterByStep(products, 'ส่งสินค้า');
+            final pendingApproval = filterByStep(products, 'รอดำเนินการ');
+            final pendingCollection = filterByStep(products, 'ดำเนินการสำเร็จ');
 
             return TabBarView(
               controller: _tabController,
               children: [
-                buildStepContent(pendingApproval, 'ไม่มีสินค้ารออนุมัติ'),
-                buildStepContent(pendingCollection, 'ไม่มีสินค้ารอนัดรับ'),
-                buildStepContent(confirmReceipt, 'ไม่มีสินค้ายืนยันการรับ'),
-                buildStepContent(received, 'ไม่มีสินค้าที่ได้รับ'),
+                buildStepContent(pendingApproval, 'ไม่มีสินค้ารอดำเนินการ'),
+                buildStepContent(
+                    pendingCollection, 'ไม่มีสินค้าดำเนินการสำเร็จ'),
               ],
             );
           }
@@ -101,70 +97,76 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
         Navigator.pushNamed(context, '/confirm-seller', arguments: product);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 7.0),
+        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
         decoration: BoxDecoration(
           color: Colors.white, // Background color
-          border: Border.all(color: Colors.grey.shade300, width: 2), // Gray border
+          border:
+              Border.all(color: Colors.grey.shade300, width: 2), // Gray border
           borderRadius: BorderRadius.circular(12), // Rounded corners
         ),
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.asset(
                   product.imageUrl,
-                  width: 80,
-                  height: 80,
+                  width: 105,
+                  height: 105,
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
+              const SizedBox(width: 20),
+              Flexible(
+                fit: FlexFit.loose,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       product.title,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          height: 1.6),
+                      maxLines: 1,
+                    ),
+                    // const SizedBox(height: 4),
+                    Container(
+                      constraints: const BoxConstraints(minHeight: 57.0),
+                      child: Text(
+                        product.detail,
+                        style: const TextStyle(
+                            color: Colors.grey, fontSize: 13, height: 1.3),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      product.detail,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
+                    // const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          child: Text(
-                            product.category,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                            ),
+                          // decoration: BoxDecoration(
+                          //   color: Colors.grey[200],
+                          //   borderRadius: BorderRadius.circular(4),
+                          // ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          child: const Text(
+                            '', // product.category
+                            style: TextStyle(
+                                fontSize: 12, color: Colors.black, height: 1.2),
                           ),
                         ),
                         Text(
                           '${product.price} ฿',
                           style: const TextStyle(
-                            color: const Color(0XFFE35205),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              color: Color(0XFFE35205),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              height: 1.0),
                         ),
                       ],
                     ),
@@ -177,5 +179,4 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
       ),
     );
   }
-
 }

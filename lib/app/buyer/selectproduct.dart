@@ -120,27 +120,41 @@ class _SelectProductPageState extends State<SelectProductPage> {
             const SizedBox(height: 10),
 
             const Text(
-              'ขนาด',
+              'สภาพสินค้า',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),
-            Text(product.size),
+            Text(product.conditionProduct),
             const SizedBox(height: 10),
 
             const Text(
-              'สถานที่จัดส่ง',
+              'ระยะเวลาการใช้งาน',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+            Text(product.durationUse),
+            const SizedBox(height: 10),
+
+            const Text(
+              'ตำหนิสินค้า',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+            Text(product.defect),
+            const SizedBox(height: 10),
+            const Text(
+              'สถานที่นัดรับ',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),
             Text(product.deliveryLocation),
             const SizedBox(height: 10),
-
             const Text(
-              'ระยะเวลาจัดส่ง',
+              'ระยะเวลา',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),
-            Text(product.deliveryDate),
+            Text(product.timeForSell),
             const SizedBox(height: 10),
             const Text(
               'โพสต์โดย:',
@@ -170,32 +184,32 @@ class _SelectProductPageState extends State<SelectProductPage> {
                   children: [
                     Text('คลัง : ${product.stock}',
                         style: const TextStyle(fontSize: 18)),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (selectedQuantity > 1) {
-                                selectedQuantity--; // ลดจำนวนเมื่อมากกว่า 1
-                              }
-                            });
-                          },
-                          icon: const Icon(Icons.remove, color: Colors.orange),
-                        ),
-                        Text('$selectedQuantity',
-                            style: const TextStyle(fontSize: 18)),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (selectedQuantity < product.stock) {
-                                selectedQuantity++; // เพิ่มจำนวนเมื่อไม่เกิน stock
-                              }
-                            });
-                          },
-                          icon: const Icon(Icons.add, color: Colors.orange),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           if (selectedQuantity > 1) {
+                    //             selectedQuantity--; // ลดจำนวนเมื่อมากกว่า 1
+                    //           }
+                    //         });
+                    //       },
+                    //       icon: const Icon(Icons.remove, color: Colors.orange),
+                    //     ),
+                    //     Text('$selectedQuantity',
+                    //         style: const TextStyle(fontSize: 18)),
+                    //     IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           if (selectedQuantity < product.stock) {
+                    //             selectedQuantity++; // เพิ่มจำนวนเมื่อไม่เกิน stock
+                    //           }
+                    //         });
+                    //       },
+                    //       icon: const Icon(Icons.add, color: Colors.orange),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -211,7 +225,7 @@ class _SelectProductPageState extends State<SelectProductPage> {
                     ),
                   ),
                   child: const Text(
-                    'ซื้อสินค้า',
+                    'แชท',
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),

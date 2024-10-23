@@ -426,46 +426,51 @@ class SearchInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
-      child: TextField(
-        decoration: InputDecoration(
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(
-                  left: 14.0, right: 8.0), // Adjust the padding value as needed
-              child: SvgPicture.asset(
-                'assets/icons/search-line.svg',
-                width: 10.0, // Icon width
-                height: 10.0, // Icon height
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.only(
+            left: 20.0, right: 20.0, top: 30.0, bottom: 10),
+        child: TextField(
+          decoration: InputDecoration(
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(
+                    left: 14.0,
+                    right: 8.0), // Adjust the padding value as needed
+                child: SvgPicture.asset(
+                  'assets/icons/search-line.svg',
+                  width: 10.0, // Icon width
+                  height: 10.0, // Icon height
+                ),
+              ), // ไอคอนแว่นขยาย
+              hintText: 'ค้นหาสิ่งที่คุณต้องการ',
+              hintStyle: const TextStyle(
+                color: Color(0xFFA5A9B6), // Set the hintText color
+                fontSize: 16.0,
               ),
-            ), // ไอคอนแว่นขยาย
-            hintText: 'ค้นหาสิ่งที่คุณต้องการ',
-            hintStyle: const TextStyle(
-              color: Color(0xFFA5A9B6), // Set the hintText color
-              fontSize: 16.0,
-            ),
-            //enabledBorder: const OutlineInputBorder(
-            //  borderSide: BorderSide(width: 2, color: Color(0xFFDFE2EC)), //<-- SEE HERE
-            //),
-            filled: true, // เปิดใช้งานพื้นหลัง
-            fillColor: Colors.white, // กำหนดสีพื้นหลังเป็นสีขาว
-            enabledBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                  Radius.circular(10.0)), // Set the border radius
-              borderSide: BorderSide(
-                width: 2.0, // Set border width
-                color: Color(0xFFDFE2EC), // Set border color
+              //enabledBorder: const OutlineInputBorder(
+              //  borderSide: BorderSide(width: 2, color: Color(0xFFDFE2EC)), //<-- SEE HERE
+              //),
+              filled: true, // เปิดใช้งานพื้นหลัง
+              fillColor: Colors.white, // กำหนดสีพื้นหลังเป็นสีขาว
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(10.0)), // Set the border radius
+                borderSide: BorderSide(
+                  width: 2.0, // Set border width
+                  color: Color(0xFFDFE2EC), // Set border color
+                ),
               ),
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                  Radius.circular(10.0)), // Same radius for focused border
-              borderSide: BorderSide(
-                width: 2.0,
-                color: Color.fromARGB(
-                    255, 174, 180, 192), // Border color when focused
-              ),
-            )),
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(10.0)), // Same radius for focused border
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Color.fromARGB(
+                      255, 174, 180, 192), // Border color when focused
+                ),
+              )),
+        ),
       ),
     );
   }

@@ -7,9 +7,9 @@ class RolePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.orangeAccent, Colors.orange],
+            colors: [Color.fromARGB(255, 255, 247, 236), Colors.orange],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -19,50 +19,61 @@ class RolePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'คุณต้องการ',
+                'คุณสนใจที่จะเป็น',
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 47,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 40),
-              SizedBox(
-                width: 150,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/home');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.deepOrange,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                    textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 170,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/home');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.deepOrange,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        textStyle: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w600),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(15), // ทำให้ปุ่มโค้งมน
+                        ),
+                      ),
+                      child: const Text('ลูกค้า'),
                     ),
                   ),
-                  child: const Text('ซื้อ'),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 150,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/seller');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.deepOrange,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                    textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
+                  const SizedBox(width: 20),
+                  SizedBox(
+                    width: 170,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/seller');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.deepOrange,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        textStyle: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w600),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(15), // ทำให้ปุ่มโค้งมน
+                        ),
+                      ),
+                      child: const Text('คนขาย'),
                     ),
                   ),
-                  child: const Text('ขาย'),
-                ),
+                ],
               ),
               const SizedBox(height: 40),
               const Icon(
@@ -70,6 +81,7 @@ class RolePage extends StatelessWidget {
                 size: 100,
                 color: Colors.white,
               ),
+              const SizedBox(height: 60),
             ],
           ),
         ),

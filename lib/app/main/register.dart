@@ -8,7 +8,7 @@ class RegisterPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
@@ -21,14 +21,14 @@ class RegisterPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text(
+              const Text(
                 'ลงทะเบียน',
                 style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               // Name Input
               TextField(
                 decoration: InputDecoration(
@@ -38,7 +38,7 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Email Input
               TextField(
                 decoration: InputDecoration(
@@ -48,35 +48,35 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Password Input
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'รหัสผ่าน',
-                  suffixIcon: Icon(Icons.visibility),
+                  suffixIcon: const Icon(Icons.visibility),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Confirm Password Input
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'ยืนยันรหัสผ่าน',
-                  suffixIcon: Icon(Icons.visibility),
+                  suffixIcon: const Icon(Icons.visibility),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               // Register Button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                   backgroundColor: const Color(0XFFE35205),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -85,11 +85,9 @@ class RegisterPage extends StatelessWidget {
                 onPressed: () {
                   // Add registration functionality
                 },
-                child: Text(
+                child: const Text(
                   'ลงทะเบียน',
-                  style: TextStyle(fontSize: 18,
-                  color: Color(0XFFFFFFFF)
-                  ),
+                  style: TextStyle(fontSize: 18, color: Color(0XFFFFFFFF)),
                 ),
               ),
             ],

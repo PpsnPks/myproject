@@ -24,20 +24,18 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "KMITL APP",
-    home: LoginPage(),
+    home: const LoginPage(),
     routes: {
       '/home': (context) => const HomePage(),
       '/like': (context) => const LikePage(),
       '/cart-buyer': (context) => const CartBPage(),
       '/cart-seller': (context) => const CartSPage(),
-      
       '/selectproduct': (context) => const SelectProductPage(),
       '/confirm': (context) => const Confirm(),
       '/category': (context) => const CategoryPage('หมวดหมู่'),
       '/role': (context) => const RolePage(),
       '/seller': (context) => const SellerPage(),
       '/addproduct': (context) => const AddProductPage(),
-
       '/general': (context) => const CategoryPage('ของใช้ทั่วไป'),
       '/electronics': (context) => const CategoryPage('อิเล็กทรอนิกส์'),
       '/appliances': (context) => const CategoryPage('เครื่องใช้ไฟฟ้า'),
@@ -46,15 +44,13 @@ void main() {
       '/furniture': (context) => const CategoryPage('เฟอร์นิเจอร์'),
       '/fashion': (context) => const CategoryPage('แฟชั่น'),
       '/others': (context) => const CategoryPage('อื่นๆ'),
-
       '/noti': (context) => const NotiPage(),
       '/chat': (context) => const Chatpage(),
       '/profile': (context) => const ProfilePage(),
       '/confirm-seller': (context) => const ConfirmSeller(),
-      '/login': (context) => LoginPage(),
+      '/login': (context) => const LoginPage(),
       '/register': (context) => const RegisterPage(),
       '/forgotpassword': (context) => const ForgotPasswordPage(),
-      
     },
   ));
 }
@@ -67,4 +63,3 @@ class MyWidget extends StatelessWidget {
     return const Placeholder();
   }
 }
-

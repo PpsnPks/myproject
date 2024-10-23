@@ -8,7 +8,7 @@ class ForgotPasswordPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
@@ -21,14 +21,14 @@ class ForgotPasswordPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text(
+              const Text(
                 'ลืมรหัสผ่าน',
                 style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               // Email Input
               TextField(
                 decoration: InputDecoration(
@@ -38,11 +38,11 @@ class ForgotPasswordPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               // Submit Button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                   backgroundColor: const Color(0XFFE35205),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -51,7 +51,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 onPressed: () {
                   // Add forgot password functionality
                 },
-                child: Text(
+                child: const Text(
                   'ถัดไป',
                   style: TextStyle(
                     fontSize: 18,
