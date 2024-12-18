@@ -339,7 +339,7 @@ class _AddProductPageState extends State<AddProductPage> {
           ),
         ),
       ),
-      bottomNavigationBar: sellerFooter(context, 'addproduct'),
+      bottomNavigationBar: sellerFooter(context, 'seller'),
     );
   }
 }

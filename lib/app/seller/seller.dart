@@ -221,6 +221,13 @@ class _SellerPageState extends State<SellerPage> {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/addproduct'); 
+        },
+        backgroundColor: const Color(0xFFFA5A2A),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       bottomNavigationBar: sellerFooter(context, 'seller'),
     );
   }

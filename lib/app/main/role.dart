@@ -50,7 +50,7 @@ class RolePage extends StatelessWidget {
                 width: 150,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/seller');
+                    Navigator.of(context).pushNamed('/post');
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
