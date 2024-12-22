@@ -187,23 +187,169 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Text('ข้อมูลส่วนตัว',
                 style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
           ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 16.0),
-                child: Text('ชื่อ',
-                    style: TextStyle(fontSize: 13.0, color: Color(0xFFA5A9B6))),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 12.0),
-                child: Text(
-                  'ภูมิ',
-                  style: TextStyle(fontSize: 13.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text('ชื่อ',
+                      style:
+                          TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
                 ),
-              )
-            ],
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    'ภูมิ',
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                )
+              ],
+            ),
           ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text('นามสกุล',
+                      style:
+                          TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    'ไพรศรี',
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                )
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text('คณะ',
+                      style:
+                          TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    'วิศวกรรมศาสตร์',
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                )
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text('ภาควิชา',
+                      style:
+                          TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    'คอมพิวเตอร์',
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                )
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text('ชั้นปี',
+                      style:
+                          TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    '4',
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                )
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0, bottom: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text('รหัสนักศึกษา',
+                      style:
+                          TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    '64010681',
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            height: 8.0,
+            width: MediaQuery.of(context).size.width,
+            color: const Color(0xFFDFE2EC),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0),
+            child: Text('ข้อมูลส่วนตัว',
+                style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0, bottom: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text('ที่อยู่',
+                      style:
+                          TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    'Rnp',
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            height: 8.0,
+            width: MediaQuery.of(context).size.width,
+            color: const Color(0xFFDFE2EC),
+          ),
+          const SizedBox(height: 10.0),
           TextButton(
             onPressed: () {
               // Navigator.pushNamed(context, '/login');

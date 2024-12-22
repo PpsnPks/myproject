@@ -48,7 +48,7 @@ class RolePage extends StatelessWidget {
                               BorderRadius.circular(15), // ทำให้ปุ่มโค้งมน
                         ),
                       ),
-                      child: const Text('ลูกค้า'),
+                      child: const Text('คนซื้อ'),
                     ),
                   ),
                   const SizedBox(width: 20),

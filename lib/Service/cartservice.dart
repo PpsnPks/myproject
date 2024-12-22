@@ -6,8 +6,8 @@ class CartService {
     // Simulated product data with steps
     return [
       Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'พัดลม',
+        imageUrl: 'assets/images/old_fan.png',
+        title: 'พัดลม HATARI 16 นิ้ว',
         detail:
             'พัดลม Xiaomi Mi Smart Standing Fan 2 Lite เป็นพัดลมที่ผสมผสานดีไซน์อันเรียบหรูเข้ากับฟังก์ชันการใช้งานที่ครบครัน เหมาะสำหรับทั้งบ้านและสำนักงาน ด้วยคุณสมบัติที่โดดเด่น',
         types: 'เครื่องใช้ไฟฟ้า',
@@ -16,7 +16,7 @@ class CartService {
         step: 'รอดำเนินการ', // Pending Approval
       ),
       Product(
-        imageUrl: 'assets/images/fan_example.png',
+        imageUrl: 'assets/images/old_fan.png',
         title: 'หนังสือ',
         detail: 'หนังสือมือสอง สภาพดี',
         types: 'หนังสือ',
