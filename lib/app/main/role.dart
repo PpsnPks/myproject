@@ -51,26 +51,23 @@ class RolePage extends StatelessWidget {
                       child: const Text('ลูกค้า'),
                     ),
                   ),
-                  const SizedBox(width: 20),
-                  SizedBox(
-                    width: 170,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/seller');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 20),
-                        textStyle: const TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(15), // ทำให้ปุ่มโค้งมน
-                        ),
-                      ),
-                      child: const Text('คนขาย'),
+                  child: const Text('ซื้อ'),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/post');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.deepOrange,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
                     ),
                   ),
                 ],

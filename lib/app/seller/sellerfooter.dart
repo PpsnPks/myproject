@@ -12,6 +12,34 @@ BottomAppBar sellerFooter(BuildContext context, String selected) {
             children: [
               IconButton(
                 icon: Icon(
+                  Icons.home_outlined,
+                  color: selected == 'post'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  size: 24,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/post');
+                },
+              ),
+              Text(
+                'หน้าหลัก',
+                style: TextStyle(
+                  color: selected == 'post'
+                      ? const Color(0xFFFA5A2A)
+                      : const Color(0xFFA5A9B6),
+                  fontSize: 9,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
                   Icons.all_inbox_rounded ,
                   color: selected == 'seller'
                       ? const Color(0xFFFA5A2A)
@@ -35,34 +63,34 @@ BottomAppBar sellerFooter(BuildContext context, String selected) {
           ),
         ),
         // Favorite Button
-        Flexible(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.add_circle_outline_rounded,
-                  color: selected == 'addproduct'
-                      ? const Color(0xFFFA5A2A)
-                      : const Color(0xFFA5A9B6),
-                  size: 24,
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/addproduct');
-                },
-              ),
-              Text(
-                'เพิ่ม',
-                style: TextStyle(
-                  color: selected == 'addproduct'
-                      ? const Color(0xFFFA5A2A)
-                      : const Color(0xFFA5A9B6),
-                  fontSize: 9,
-                ),
-              ),
-            ],
-          ),
-        ),
+        // Flexible(
+        //   child: Column(
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       IconButton(
+        //         icon: Icon(
+        //           Icons.add_circle_outline_rounded,
+        //           color: selected == 'addproduct'
+        //               ? const Color(0xFFFA5A2A)
+        //               : const Color(0xFFA5A9B6),
+        //           size: 24,
+        //         ),
+        //         onPressed: () {
+        //           Navigator.pushNamed(context, '/addproduct');
+        //         },
+        //       ),
+        //       Text(
+        //         'เพิ่ม',
+        //         style: TextStyle(
+        //           color: selected == 'addproduct'
+        //               ? const Color(0xFFFA5A2A)
+        //               : const Color(0xFFA5A9B6),
+        //           fontSize: 9,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         // Cart Button
         Flexible(
           child: Column(
