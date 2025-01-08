@@ -7,9 +7,9 @@ class RolePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 255, 247, 236), Colors.orange],
+            colors: [Colors.orangeAccent, Colors.orange],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -19,36 +19,27 @@ class RolePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'คุณสนใจที่จะเป็น',
+                'คุณต้องการ',
                 style: TextStyle(
-                  fontSize: 47,
+                  fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/home');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 20),
-                        textStyle: const TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(15), // ทำให้ปุ่มโค้งมน
-                        ),
-                      ),
-                      child: const Text('ลูกค้า'),
+              SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/home');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.deepOrange,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
                     ),
                   ),
                   child: const Text('ซื้อ'),
@@ -70,7 +61,8 @@ class RolePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30), // ทำให้ปุ่มโค้งมน
                     ),
                   ),
-                ],
+                  child: const Text('ขาย'),
+                ),
               ),
               const SizedBox(height: 40),
               const Icon(
@@ -78,7 +70,6 @@ class RolePage extends StatelessWidget {
                 size: 100,
                 color: Colors.white,
               ),
-              const SizedBox(height: 60),
             ],
           ),
         ),

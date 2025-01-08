@@ -1,23 +1,39 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: LoginPage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
+import 'package:myproject/Service/loginservice.dart'; 
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
+
+  final LoginService _loginService = LoginService();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void _handleLogin(BuildContext context) async {
+    final String email = emailController.text.trim();
+    final String password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณากรอกอีเมลและรหัสผ่าน')),
+      );
+      return;
+    }
+
+    final result = await _loginService.login(email, password);
+
+    if (result['success']) {
+      // เก็บ token หรือทำการ Redirect
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('เข้าสู่ระบบสำเร็จ')),
+      );
+      Navigator.pushNamed(context, '/role'); // แก้ไขตาม route ของคุณ
+    } else {
+      // แสดงข้อความผิดพลาด
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'])),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +53,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              // Email Input
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'อีเมล',
                   border: OutlineInputBorder(
@@ -47,8 +63,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              // Password Input
               TextField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'รหัสผ่าน',
@@ -58,22 +74,25 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+
+              SizedBox(height: 10),
               // Forgot Password
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/forgotpassword');
+                    Navigator.pushNamed(context,'/otp');
                   },
-                  child: const Text(
+                  child: Text(
                     'ลืมรหัสผ่าน?',
-                    style: TextStyle(color: Color(0XFFE35205)),
+                    style: TextStyle(
+                      color: const Color(0XFFE35205)
+                      ),
                   ),
                 ),
               ),
+
               const SizedBox(height: 20),
-              // Login Button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
@@ -82,27 +101,26 @@ class LoginPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/role');
-                },
+                onPressed: () => _handleLogin(context),
                 child: const Text(
                   'เข้าสู่ระบบ',
                   style: TextStyle(fontSize: 18, color: Color(0XFFFFFFFF)),
                 ),
               ),
-              const SizedBox(height: 20),
+
+              SizedBox(height: 20),
               // Register link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('ยังไม่มีบัญชีผู้ใช้งาน?'),
+                  Text('ยังไม่มีบัญชีผู้ใช้งาน?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      Navigator.pushNamed(context,'/register');
                     },
-                    child: const Text(
+                    child: Text(
                       'ลงทะเบียน',
-                      style: TextStyle(color: Color(0XFFE35205)),
+                      style: TextStyle(color: const Color(0XFFE35205)),
                     ),
                   ),
                 ],
