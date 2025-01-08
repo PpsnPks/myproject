@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/app/seller/sellerfooter.dart';
+import 'package:myproject/Service/postservice.dart'; // เพิ่มการนำเข้า
+import 'package:myproject/auth_service.dart'; 
+import 'package:myproject/app/seller/sellerfooter.dart'; // นำเข้าฟุตเตอร์
 
 class AddPostPage extends StatefulWidget {
   const AddPostPage({super.key});
@@ -9,7 +11,35 @@ class AddPostPage extends StatefulWidget {
 }
 
 class _AddPostPageState extends State<AddPostPage> {
-  
+  final TextEditingController _detailController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _tagController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  // String? _image;
+  final TextEditingController _imageController = TextEditingController();
+
+  // ฟังก์ชันที่จะเรียกใช้เมื่อกดปุ่มโพสต์
+  Future<void> _post() async {
+    final postService = PostService();
+    
+
+    // เรียกใช้ฟังก์ชัน addpost
+    final result = await postService.addpost(
+      _imageController.text, // ใช้ค่า image ที่ผู้ใช้เลือก
+      _detailController.text,
+      _categoryController.text,
+      _tagController.text,
+      _priceController.text,
+    );
+
+    if (result['success']) {
+      // ถ้าประสบความสำเร็จให้แสดงข้อความ
+      print("โพสต์สำเร็จ");
+    } else {
+      // ถ้าล้มเหลวแสดงข้อความผิดพลาด
+      print(result['message']);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +55,7 @@ class _AddPostPageState extends State<AddPostPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Toggle buttons for "ขาย", "แจก", "Pre Order"
-              
               const SizedBox(height: 16),
-              
               // Image upload section
               Container(
                 height: 200,
@@ -50,86 +77,86 @@ class _AddPostPageState extends State<AddPostPage> {
               
               // Product form fields
               const SizedBox(height: 16),
-              
-              const TextField(
+              TextField(
+                controller: _detailController,
                 maxLines: 3,
                 decoration: InputDecoration(
                   labelText: 'รายละเอียดสินค้า',
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อน
-                    borderRadius: BorderRadius.all(Radius.circular(12)), // ขอบมน
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อนเมื่อ focus
+                    borderSide: BorderSide(color: Color(0xFFE0E0E0)),
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12), // เพิ่ม padding ภายใน
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: _categoryController,
                 decoration: InputDecoration(
-                  labelText: 'หมวดหมู่', // สามารถเปลี่ยนข้อความได้ตามที่ต้องการ
+                  labelText: 'หมวดหมู่',
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบเป็นเทาอ่อน
-                    borderRadius: BorderRadius.circular(12), // โค้งมน 12 หน่วย
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบตอน focus
+                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12), // ช่องว่างภายใน
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: _tagController,
                 decoration: InputDecoration(
-                  labelText: 'แท็ก', // สามารถเปลี่ยนข้อความได้ตามที่ต้องการ
+                  labelText: 'แท็ก',
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบเป็นเทาอ่อน
-                    borderRadius: BorderRadius.circular(12), // โค้งมน 12 หน่วย
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบตอน focus
+                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12), // ช่องว่างภายใน
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: _priceController,
                 decoration: InputDecoration(
-                  labelText: 'ราคา', // สามารถเปลี่ยนข้อความได้ตามที่ต้องการ
+                  labelText: 'ราคา',
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบเป็นเทาอ่อน
-                    borderRadius: BorderRadius.circular(12), // โค้งมน 12 หน่วย
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบตอน focus
+                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12), // ช่องว่างภายใน
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 ),
               ),
 
-
-              // Quantity section
               const SizedBox(height: 16),
+              // Button to post
               Center(
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Action when the add button is pressed
-                    },
+                    onPressed: _post, // เรียกใช้ฟังก์ชัน _post เมื่อกดปุ่ม
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFA5A2A), // Background color
-                      padding: const EdgeInsets.symmetric(vertical: 18), // Adjust padding
+                      backgroundColor: const Color(0xFFFA5A2A),
+                      padding: const EdgeInsets.symmetric(vertical: 18),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // Rounded corners
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('โพสต์', style: TextStyle(color: Colors.white, fontSize: 16)), // Button text
+                    child: const Text('โพสต์', style: TextStyle(color: Colors.white, fontSize: 16)),
                   ),
                 ),
               ),
