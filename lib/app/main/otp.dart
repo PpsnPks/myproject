@@ -45,7 +45,7 @@ class _OtpPageState extends State<OtpPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('ยืนยัน OTP สำเร็จ')),
       );
-      Navigator.pushNamed(context, '/role'); // Navigate to next screen after success
+      Navigator.pushNamed(context, '/login'); // Navigate to next screen after success
     } else {
       // OTP Verification failed
       ScaffoldMessenger.of(context).showSnackBar(
