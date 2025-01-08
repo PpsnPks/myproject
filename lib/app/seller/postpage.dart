@@ -10,12 +10,12 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  late Future<List<Post>> likedProducts;
+  late Future<List<Post>> posts;
 
   @override
   void initState() {
     super.initState();
-    likedProducts = Postservice().getCategoryProducts();
+    posts = Postservice().getCategoryProducts(); // โหลดข้อมูลจำลอง
   }
 
   @override
@@ -25,9 +25,15 @@ class _PostPageState extends State<PostPage> {
         title: const Text("โพสต์"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       body: FutureBuilder<List<Post>>(
-        future: likedProducts,
+        future: posts,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -45,9 +51,13 @@ class _PostPageState extends State<PostPage> {
               return Card(
                 elevation: 3,
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Title Section
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
@@ -59,22 +69,33 @@ class _PostPageState extends State<PostPage> {
                         ),
                       ),
                     ),
+                    // Image Section
                     if (product.imageUrl.isNotEmpty)
-                      Image.network(
-                        product.imageUrl,
-                        width: double.infinity,
-                        height: 180,
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
+                        child: Image.asset(
+                          product.imageUrl,
+                          width: double.infinity,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                    // Details Section
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      // child: Text(
-                      //   product.description,
-                      //   style: const TextStyle(
-                      //     fontSize: 14,
-                      //     color: Colors.grey,
-                      //   ),
-                      // ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 4),
+                          Text(
+                            product.detail,
+                            style: const TextStyle(fontSize: 14, color: Colors.grey),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -85,7 +106,7 @@ class _PostPageState extends State<PostPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/addpost'); 
+          Navigator.pushNamed(context, '/addpost');
         },
         backgroundColor: const Color(0xFFFA5A2A),
         child: const Icon(Icons.add, color: Colors.white),
