@@ -76,38 +76,42 @@ class Postservice {
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
       Post(
+        profile:'',
+        name: 'Product 1',
+        id: '100.0',
         imageUrl: 'assets/images/fan_example.png',
         title: 'พัดลม',
         detail: 'พัดลม Xiaomi สภาพดี ใช้งานมาไม่นาน สภาพปกติไม่มีส่วนไหนชำรุด',
-        types: 'เครื่องใช้ไฟฟ้า',
-        price: '200',
-        category: 'เครื่องใช้ไฟฟ้า',
+        tags: 'เครื่องใช้ไฟฟ้า',
       ),
       Post(
+        profile:'',
+        name: 'Product 1',
+        id: '100.0',
         imageUrl: 'assets/images/tuyen.png',
         title: 'ตู้เย็น',
         detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
-        types: 'เครื่องใช้ไฟฟ้า',
-        price: '1500',
-        category: 'เครื่องใช้ไฟฟ้า',
+        tags: 'เครื่องใช้ไฟฟ้า',
       ),
     ];
   }
 }
 class Post {
+  final String profile;
+  final String name;
+  final String id;
   final String imageUrl;
   final String title;
   final String detail;
-  final String price;
-  final String category;
-  final String types;
+  final String tags;
 
   Post({
+    required this.profile,
+    required this.name,
+    required this.id,
     required this.imageUrl,
     required this.title,
     required this.detail,
-    required this.price,
-    required this.category,
-    required this.types,
+    required this.tags,
   });
 }
