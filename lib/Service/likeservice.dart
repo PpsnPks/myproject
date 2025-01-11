@@ -14,7 +14,7 @@ class LikeService {
       ),
       Product(
         imageUrl: 'assets/images/fan_example.png',
-        title: 'หนังสือ',
+        title: 'พัดลม',
         detail: 'เครื่องใช้ไฟฟ้า',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '150',
