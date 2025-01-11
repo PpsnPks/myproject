@@ -13,6 +13,18 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isBuyerSelected = true; // Default to Buyer tab
   bool isGridSelected = true; // Default to Grid view
 
+  // จำลองข้อมูลผู้ใช้
+  final String userName = 'ภูมิ ไพรศรี';
+  final String userEmail = '640***@kmitl.ac.th';
+  final String userPhone = '081-375-5536';
+
+  // รายการสินค้า (คนซื้อ)
+  final List<Map<String, String>> buyerItems = [
+    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า A'},
+    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า B'},
+    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า C'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,28 +48,28 @@ class _ProfilePageState extends State<ProfilePage> {
                   backgroundImage: AssetImage('assets/images/profile_pic.png'),
                 ),
                 const SizedBox(width: 16),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ภูมิ ไพรศรี',
-                      style: TextStyle(
+                      userName,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '640***@kmitl.ac.th',
-                      style: TextStyle(
+                      userEmail,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '081-375-5536',
-                      style: TextStyle(
+                      userPhone,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
@@ -69,45 +81,64 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           // Tab Buttons
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.only(
+                left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
             child: Row(
               children: [
                 // Buyer Tab
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isBuyerSelected = true;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isBuyerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA),
-                      foregroundColor: isBuyerSelected ? Colors.white : const Color(0xFFE35205),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      color: isBuyerSelected
+                          ? const Color(0xFFE35205)
+                          : const Color(0xFFFCEEEA),
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: const Text(
-                      'คนซื้อ',
-                      style: TextStyle(fontSize: 16),
+                    child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          isBuyerSelected = true;
+                        });
+                      },
+                      child: Text(
+                        'คนซื้อ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isBuyerSelected
+                              ? Colors.white
+                              : const Color(0xFFE35205),
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 // Seller Tab
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isBuyerSelected = false;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isBuyerSelected ? const Color(0xFFFCEEEA) : const Color(0xFFE35205),
-                      foregroundColor: isBuyerSelected ? const Color(0xFFE35205) : Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      color: isBuyerSelected
+                          ? const Color(0xFFFCEEEA)
+                          : const Color(0xFFE35205),
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: const Text(
-                      'คนขาย',
-                      style: TextStyle(fontSize: 16),
+                    child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          isBuyerSelected = false;
+                        });
+                      },
+                      child: Text(
+                        'คนขาย',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isBuyerSelected
+                              ? const Color(0xFFE35205)
+                              : Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -151,7 +182,9 @@ class _ProfilePageState extends State<ProfilePage> {
           Expanded(
             child: isBuyerSelected
                 ? (isGridSelected ? buildBuyerGridView() : buildBuyerHistoryView())
-                : (isGridSelected ? buildSellerGridView() : buildSellerHistoryView()),
+                : (isGridSelected
+                    ? buildSellerGridView()
+                    : buildSellerHistoryView()),
           ),
         ],
       ),
@@ -164,10 +197,18 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Buyer Grid View
   Widget buildBuyerGridView() {
+    if (buyerItems.isEmpty) {
+      return Center(
+        child: const Text(
+          'ยังไม่มีรายการสินค้า',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.builder(
-        itemCount: 3, // Replace with your dynamic data count
+        itemCount: buyerItems.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 8,
@@ -175,6 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
           childAspectRatio: 0.8,
         ),
         itemBuilder: (context, index) {
+          final item = buyerItems[index];
           return Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
@@ -185,14 +227,14 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Expanded(
                   child: Image.asset(
-                    'assets/images/sample_item.png', // Replace with your image path
+                    item['image']!,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Item ${index + 1}', // Replace with your dynamic data
+                    item['title']!,
                     style: const TextStyle(fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
@@ -208,9 +250,16 @@ class _ProfilePageState extends State<ProfilePage> {
   // Buyer History View
   Widget buildBuyerHistoryView() {
     return Center(
-      child: const Text(
-        'ยังไม่มีประวัติการซื้อ',
-        style: TextStyle(fontSize: 16, color: Colors.grey),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.shopping_cart_outlined, size: 60, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            'ยังไม่มีประวัติการซื้อ',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
       ),
     );
   }
@@ -228,9 +277,16 @@ class _ProfilePageState extends State<ProfilePage> {
   // Seller History View
   Widget buildSellerHistoryView() {
     return Center(
-      child: const Text(
-        'ยังไม่มีประวัติการขาย',
-        style: TextStyle(fontSize: 16, color: Colors.grey),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.sell_outlined, size: 60, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            'ยังไม่มีประวัติการขาย',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
       ),
     );
   }
