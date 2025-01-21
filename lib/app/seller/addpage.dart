@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:convert';
+import 'dart:html' as html;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -16,6 +21,21 @@ class _AddProductPageState extends State<AddProductPage> {
   String? selectedUsageTime;
   String? defect;
   int quantity = 1;
+
+  String? _base64Image; // Store base64 image data for web
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // Read image as bytes and encode it to base64
+      final Uint8List bytes = await pickedFile.readAsBytes();
+      setState(() {
+        _base64Image = base64Encode(bytes);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,19 +119,32 @@ class _AddProductPageState extends State<AddProductPage> {
               const SizedBox(height: 16),
 
               // Image upload section
-              Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.camera_alt, size: 50, color: Colors.grey),
-                    SizedBox(height: 8),
-                    Text('เพิ่มรูปภาพ', style: TextStyle(color: Colors.grey)),
-                  ],
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: _base64Image == null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.camera_alt, size: 50, color: Colors.grey),
+                            SizedBox(height: 8),
+                            Text('เพิ่มรูปภาพ',
+                                style: TextStyle(color: Colors.grey)),
+                          ],
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.memory(
+                            base64Decode(_base64Image!),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 8),

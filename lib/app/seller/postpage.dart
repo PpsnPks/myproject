@@ -15,7 +15,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    posts = Postservice().getCategoryProducts(); // โหลดข้อมูลจำลอง
+    posts = Postservice().getCategoryProducts(); // ดึงข้อมูลจาก API
   }
 
   @override
@@ -24,7 +24,7 @@ class _PostPageState extends State<PostPage> {
       appBar: AppBar(
         title: const Text("โพสต์"),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         titleTextStyle: const TextStyle(
           color: Colors.black,
@@ -57,44 +57,88 @@ class _PostPageState extends State<PostPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title Section
+                    // Section: User Info
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        product.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(product.profile),
+                          ),
+                          const SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.name,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                product.faculty,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    // Image Section
+                    // Section: Post Title
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      // child: Text(
+                      //   product.title,
+                      //   style: const TextStyle(
+                      //     fontSize: 16,
+                      //     fontWeight: FontWeight.bold,
+                      //     color: Colors.black87,
+                      //   ),
+                      // ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.title,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                product.tags,
+                                style: const TextStyle(
+                                  fontSize: 8,
+                                  color: const Color(0xFFFA5A2A),
+                                ),
+                              ),
+                            ],
+                          ),
+                    ),
+                    // Section: Image
                     if (product.imageUrl.isNotEmpty)
                       ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                        ),
-                        child: Image.asset(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
                           product.imageUrl,
                           width: double.infinity,
                           height: 180,
                           fit: BoxFit.cover,
                         ),
                       ),
-                    // Details Section
+                    // Section: Post Details
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 4),
-                          Text(
-                            product.detail,
-                            style: const TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
-                        ],
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        product.detail,
+                        style: const TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ),
                   ],

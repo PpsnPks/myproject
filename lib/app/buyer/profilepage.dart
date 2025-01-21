@@ -149,30 +149,45 @@ class _ProfilePageState extends State<ProfilePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Grid View Button
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      isGridSelected = true;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.grid_view,
-                    color: isGridSelected ? const Color(0xFFE35205) : Colors.grey,
+                // Column สำหรับไอคอน Grid View
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isGridSelected = true;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.grid_view,
+                          color: isGridSelected ? const Color(0xFFE35205) : Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                // History View Button
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      isGridSelected = false;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.history,
-                    color: isGridSelected ? Colors.grey : const Color(0xFFE35205),
+                // Column สำหรับไอคอน History View
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isGridSelected = false;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.history,
+                          color: isGridSelected ? Colors.grey : const Color(0xFFE35205),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
