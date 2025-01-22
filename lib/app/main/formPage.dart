@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'dart:typed_data';
+import 'dart:convert';
+
+import 'package:myproject/app/main/role.dart';
 
 class PersonalInfoForm extends StatefulWidget {
   @override
@@ -18,7 +21,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
   String? selectedDepartment;
   String? selectedYear;
 
-  File? _profileImage;
+  String? _base64Image;
 
   final List<String> faculties = ['คณะวิทยาศาสตร์', 'คณะวิศวกรรมศาสตร์'];
   final List<String> departments = ['คอมพิวเตอร์', 'ไฟฟ้า'];
@@ -31,8 +34,9 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
+      final Uint8List bytes = await image.readAsBytes();
       setState(() {
-        _profileImage = File(image.path);
+        _base64Image = base64Encode(bytes);
       });
     }
   }
@@ -43,9 +47,10 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
         currentStep++;
       });
     } else {
-      // Submit form
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('ส่งข้อมูลเรียบร้อย')),
+      // เมื่อถึง Step 3 ให้ไปที่หน้า Role
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => RolePage()),
       );
     }
   }
@@ -63,7 +68,8 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('กรอกข้อมูลส่วนตัว'),
-        backgroundColor: const Color(0XFFE35205),
+         centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: Stepper(
         currentStep: currentStep,
@@ -78,8 +84,9 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                   onPressed: details.onStepContinue,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0XFFE35205),
+                    foregroundColor: Colors.white,
                   ),
-                  child: const Text('ถัดไป'),
+                  child: Text(currentStep == 2 ? 'เริ่มต้นใช้งาน' : 'ถัดไป'),
                 ),
                 const SizedBox(width: 8),
                 if (currentStep > 0)
@@ -225,13 +232,13 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: _pickImage,
-                  child: _profileImage == null
+                  child: _base64Image == null
                       ? Container(
                           height: 150,
                           width: 150,
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8.0),
+                            shape: BoxShape.circle,
                           ),
                           child: const Icon(
                             Icons.add_a_photo,
@@ -239,10 +246,9 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                             size: 50,
                           ),
                         )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.file(
-                            _profileImage!,
+                      : ClipOval(
+                          child: Image.memory(
+                            base64Decode(_base64Image!),
                             height: 150,
                             width: 150,
                             fit: BoxFit.cover,
@@ -258,3 +264,4 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     );
   }
 }
+

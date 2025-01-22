@@ -34,6 +34,42 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         foregroundColor: Colors.black,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              // Show options for logout, personal info
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        leading: const Icon(Icons.person),
+                        title: const Text('ข้อมูลส่วนตัว'),
+                        onTap: () {
+                          // Handle personal info action
+                          Navigator.pop(context); // Close the bottom sheet
+                          // Navigate to personal information page if needed
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.exit_to_app),
+                        title: const Text('ออกจากระบบ'),
+                        onTap: () {
+                          // Handle logout action
+                          Navigator.pop(context); // Close the bottom sheet
+                          // Add your logout logic here
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
