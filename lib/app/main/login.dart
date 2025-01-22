@@ -21,8 +21,8 @@ class _LoginState extends State<LoginPage> {
 
   // ฟังก์ชันสำหรับล็อกอิน
   Future<void> login() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
     // ตรวจสอบข้อมูลก่อน
     if (email.isEmpty || password.isEmpty) {
@@ -53,7 +53,6 @@ class _LoginState extends State<LoginPage> {
 
       // ตรวจสอบสถานะการตอบกลับ
       if (response.statusCode == 200) {
-        // หากสำเร็จ ให้แปลง JSON ที่ได้กลับมาเป็นข้อมูล
         var data = jsonDecode(response.body);
         // ตัวอย่างการใช้งานข้อมูลจาก API (เช่น token)
         String token = data['access_token'];
@@ -61,8 +60,6 @@ class _LoginState extends State<LoginPage> {
         final test = await Securestorage().readSecureData('token');
         print('okk === $test');
         Navigator.pushNamed(context, '/role');
-        // ไปยังหน้าถัดไป หรือบันทึก token ไว้ใน local storage
-
         // แสดงข้อความสำเร็จ
         // ScaffoldMessenger.of(context).showSnackBar(
         //   const SnackBar(content: Text("Login successful")),
