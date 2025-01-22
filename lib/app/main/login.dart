@@ -55,7 +55,7 @@ class _LoginState extends State<LoginPage> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         // ตัวอย่างการใช้งานข้อมูลจาก API (เช่น token)
-        String token = data['access_token'];
+        String token = data['token'];
         Securestorage().writeSecureData('token', token);
         final test = await Securestorage().readSecureData('token');
         print('okk === $test');
