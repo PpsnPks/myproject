@@ -1,5 +1,41 @@
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+
 class Homeservice {
   Future<List<Product>> getHomeProducts() async {
+    // try {
+    //   final Uri apiUrl = Uri.parse('http://localhost:8000/products');
+
+    //   // ส่งข้อมูล login (username, password) ผ่าน HTTP POST
+    //   final response = await http.post(
+    //     apiUrl,
+    //     headers: {"Content-Type": "application/json"},
+    //     body: jsonEncode({
+    //       "status": null,
+    //       "draw": 1,
+    //       "columns": [],
+    //       "order": [
+    //         {"column": 0, "dir": "asc"}
+    //       ],
+    //       "start": 0,
+    //       "length": 20,
+    //       "search": {"value": "", "regex": false}
+    //     }),
+    //   );
+    //   print(response.body);
+
+    //   // ตรวจสอบสถานะการตอบกลับ
+    //   if (response.statusCode == 200) {
+    //     // หากสำเร็จ ให้แปลง JSON ที่ได้กลับมาเป็นข้อมูล
+    //     // var data = jsonDecode(response.body);
+    //     // ตัวอย่างการใช้งานข้อมูลจาก API (เช่น token)
+    //     // String token = data['access_token'];
+    //     // Navigator.pushNamed(context, '/role');
+    //   } else {}
+    // } catch (e) {
+
+    // }
+
     // จำลองข้อมูล
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
