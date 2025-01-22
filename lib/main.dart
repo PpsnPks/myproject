@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
+import 'package:myproject/app/main/formPage.dart';
 import 'package:myproject/app/main/login.dart';
 import 'package:myproject/app/main/message.dart';
 import 'package:myproject/app/main/register.dart';
@@ -59,6 +60,7 @@ void main() {
       '/register': (context) => RegisterPage(),
       '/forgotpassword': (context) => ForgotPasswordPage(),
       '/otp': (context) => OtpPage(),
+      '/infoform': (context) => PersonalInfoForm()
     },
   ));
 }
