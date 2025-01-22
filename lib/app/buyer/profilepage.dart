@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
+import 'package:myproject/app/seller/sellerfooter.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -9,8 +10,20 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool isBuyerSelected = false;
-  bool isSellerSelected = false;
+  bool isBuyerSelected = true; // Default to Buyer tab
+  bool isGridSelected = true; // Default to Grid view
+
+  // จำลองข้อมูลผู้ใช้
+  final String userName = 'ภูมิ ไพรศรี';
+  final String userEmail = '640***@kmitl.ac.th';
+  final String userPhone = '081-375-5536';
+
+  // รายการสินค้า (คนซื้อ)
+  final List<Map<String, String>> buyerItems = [
+    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า A'},
+    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า B'},
+    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า C'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -19,41 +32,80 @@ class _ProfilePageState extends State<ProfilePage> {
         title: const Text("ฉัน"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        foregroundColor: Colors.black,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              // Show options for logout, personal info
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        leading: const Icon(Icons.person),
+                        title: const Text('ข้อมูลส่วนตัว'),
+                        onTap: () {
+                          // Handle personal info action
+                          Navigator.pop(context); // Close the bottom sheet
+                          // Navigate to personal information page if needed
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.exit_to_app),
+                        title: const Text('ออกจากระบบ'),
+                        onTap: () {
+                          // Handle logout action
+                          Navigator.pop(context); // Close the bottom sheet
+                          // Add your logout logic here
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          // Profile Header
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
                   backgroundImage: AssetImage('assets/images/profile_pic.png'),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ภูมิ ไพรศรี',
-                      style: TextStyle(
+                      userName,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '640***@kmitl.ac.th',
-                      style: TextStyle(
+                      userEmail,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '081-375-5536',
-                      style: TextStyle(
+                      userPhone,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
@@ -63,229 +115,237 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-
-          // Add buttons for Buyer and Seller
+          // Tab Buttons
           Padding(
             padding: const EdgeInsets.only(
                 left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
             child: Row(
               children: [
-                // Buyer Button
+                // Buyer Tab
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isBuyerSelected = true;
-                        isSellerSelected = false;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isBuyerSelected
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      color: isBuyerSelected
                           ? const Color(0xFFE35205)
-                          : const Color(0xFFFCEEEA), // Background color
-                      foregroundColor: isBuyerSelected
-                          ? Colors.white
-                          : const Color(0xFFE35205), // Text color
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                          : const Color(0xFFFCEEEA),
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: const Text(
-                      'คนซื้อ',
-                      style: TextStyle(fontSize: 16),
+                    child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          isBuyerSelected = true;
+                        });
+                      },
+                      child: Text(
+                        'คนซื้อ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isBuyerSelected
+                              ? Colors.white
+                              : const Color(0xFFE35205),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8), // Add spacing between buttons
-                // Seller Button
+                const SizedBox(width: 8),
+                // Seller Tab
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isBuyerSelected = false;
-                        isSellerSelected = true;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isSellerSelected
-                          ? const Color(0xFFE35205)
-                          : const Color(0xFFFCEEEA), // Background color
-                      foregroundColor: isSellerSelected
-                          ? Colors.white
-                          : const Color(0xFFE35205), // Text color
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      color: isBuyerSelected
+                          ? const Color(0xFFFCEEEA)
+                          : const Color(0xFFE35205),
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: const Text(
-                      'คนขาย',
-                      style: TextStyle(fontSize: 16),
+                    child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          isBuyerSelected = false;
+                        });
+                      },
+                      child: Text(
+                        'คนขาย',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isBuyerSelected
+                              ? const Color(0xFFE35205)
+                              : Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          Container(
-            height: 8.0,
-            width: MediaQuery.of(context).size.width,
-            color: const Color(0xFFDFE2EC),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0),
-            child: Text('ข้อมูลพื้นฐาน',
-                style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: ListTile(
-                  leading: const Icon(Icons.phone, color: Color(0xFFA5A9B6)),
-                  title: const Text(
-                    'เบอร์โทรศัพท์',
-                    style: TextStyle(fontSize: 13.0, color: Color(0xFFA5A9B6)),
-                  ),
-                  onTap: () {},
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(right: 12.0),
-                child: Text(
-                  '081-***-5536',
-                  style: TextStyle(fontSize: 13.0),
-                ),
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: ListTile(
-                  leading: const Icon(Icons.email_outlined,
-                      color: Color(0xFFA5A9B6)),
-                  title: const Text(
-                    'อีเมลหลัก',
-                    style: TextStyle(fontSize: 13.0, color: Color(0xFFA5A9B6)),
-                  ),
-                  onTap: () {},
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(right: 12.0),
-                child: Text(
-                  '640***@kmitl.ac.th',
-                  style: TextStyle(fontSize: 13.0),
-                ),
-              )
-            ],
-          ),
-          Container(
-            height: 8.0,
-            width: MediaQuery.of(context).size.width,
-            color: const Color(0xFFDFE2EC),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0),
-            child: Text('ข้อมูลส่วนตัว',
-                style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
-          ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 16.0),
-                child: Text('ชื่อ',
-                    style: TextStyle(fontSize: 13.0, color: Color(0xFFA5A9B6))),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 12.0),
-                child: Text(
-                  'ภูมิ',
-                  style: TextStyle(fontSize: 13.0),
-                ),
-              )
-            ],
-          ),
-          TextButton(
-            onPressed: () {
-              // Navigator.pushNamed(context, '/login');
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    height: 150,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Text(
-                          'คุณต้องการออกจากระบบใช่หรือไม่',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w500),
+          // Grid and History Buttons
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              children: [
+                // Column สำหรับไอคอน Grid View
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isGridSelected = true;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.grid_view,
+                          color: isGridSelected
+                              ? const Color(0xFFE35205)
+                              : Colors.grey,
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/login');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor:
-                                    const Color(0xFFE35205), // Text color
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 70, vertical: 20),
-                                textStyle: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      15), // ทำให้ปุ่มโค้งมน
-                                ),
-                              ),
-                              child: const Text('ยืนยัน'),
-                            ),
-                            const SizedBox(width: 20.0),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: const Color(0xFFE35205),
-                                backgroundColor:
-                                    const Color(0xFFFCEEEA), // Text color
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 70, vertical: 20),
-                                textStyle: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      15), // ทำให้ปุ่มโค้งมน
-                                ),
-                              ),
-                              child: const Text('ยกเลิก'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-            child: const Center(
-              child: Text(
-                'ออกจากระบบ',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFFE35205),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                // Column สำหรับไอคอน History View
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isGridSelected = false;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.history,
+                          color: isGridSelected
+                              ? Colors.grey
+                              : const Color(0xFFE35205),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+          ),
+          // Content Area
+          Expanded(
+            child: isBuyerSelected
+                ? (isGridSelected
+                    ? buildBuyerGridView()
+                    : buildBuyerHistoryView())
+                : (isGridSelected
+                    ? buildSellerGridView()
+                    : buildSellerHistoryView()),
           ),
         ],
       ),
-      bottomNavigationBar: buyerFooter(context, 'profile'),
+      // Footer changes based on role
+      bottomNavigationBar: isBuyerSelected
+          ? buyerFooter(context, 'profile')
+          : sellerFooter(context, 'profile'),
+    );
+  }
+
+  // Buyer Grid View
+  Widget buildBuyerGridView() {
+    if (buyerItems.isEmpty) {
+      return Center(
+        child: const Text(
+          'ยังไม่มีรายการสินค้า',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: GridView.builder(
+        itemCount: buyerItems.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 0.8,
+        ),
+        itemBuilder: (context, index) {
+          final item = buyerItems[index];
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Image.asset(
+                    item['image']!,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    item['title']!,
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // Buyer History View
+  Widget buildBuyerHistoryView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.shopping_cart_outlined, size: 60, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            'ยังไม่มีประวัติการซื้อ',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Seller Grid View
+  Widget buildSellerGridView() {
+    return Center(
+      child: const Text(
+        'ยังไม่มีรายการที่คุณขาย',
+        style: TextStyle(fontSize: 16, color: Colors.grey),
+      ),
+    );
+  }
+
+  // Seller History View
+  Widget buildSellerHistoryView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.sell_outlined, size: 60, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            'ยังไม่มีประวัติการขาย',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 }

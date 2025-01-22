@@ -15,7 +15,7 @@ class _ChatpageState extends State<Chatpage> {
   @override
   void initState() {
     super.initState();
-    // เรียก LikeService เพื่อดึงข้อมูลสินค้าที่ถูกใจ
+    // เรียก Chatservice เพื่อดึงข้อมูลสินค้าที่ถูกใจ
     likedProducts = Chatservice().getLikedProducts();
   }
 
@@ -25,7 +25,7 @@ class _ChatpageState extends State<Chatpage> {
       appBar: AppBar(
         title: const Text("แชท"),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Colors.white,
       ),
       body: FutureBuilder<List<Product>>(
         future: likedProducts,
@@ -38,7 +38,6 @@ class _ChatpageState extends State<Chatpage> {
             return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
           } else {
             final products = snapshot.data!;
-
             return ListView.builder(
               itemCount: products.length,
               itemBuilder: (context, index) {
@@ -48,6 +47,9 @@ class _ChatpageState extends State<Chatpage> {
                   time: '17:30 น.', // ใส่เวลาที่ต้องการ
                   imageUrl: product.imageUrl,
                   detail: product.detail,
+                  onTap: () {
+                    Navigator.pushNamed(context, '/message');
+                  },
                 );
               },
             );
@@ -64,6 +66,7 @@ class NotificationCard extends StatelessWidget {
   final String time;
   final String imageUrl;
   final String detail;
+  final VoidCallback onTap;
 
   const NotificationCard({
     super.key,
@@ -71,51 +74,57 @@ class NotificationCard extends StatelessWidget {
     required this.time,
     required this.imageUrl,
     required this.detail,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                imageUrl,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: onTap, // ใช้ GestureDetector สำหรับการกด
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imageUrl,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.image_not_supported, size: 50);
+                  },
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    time,
-                    style: const TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    detail,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      time,
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      detail,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            // const Icon(Icons.notifications, color: Colors.red, size: 30),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -27,7 +27,7 @@ class _CartPageState extends State<CartBPage>
   }
 
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("รายการ"),
@@ -39,10 +39,8 @@ class _CartPageState extends State<CartBPage>
           unselectedLabelColor: Colors.grey,
           indicatorColor: const Color(0XFFE35205),
           tabs: const [
-            Tab(text: 'รออนุมัติ'),
-            Tab(text: 'รอนัดรับ'),
-            Tab(text: 'ยืนยัน'),
-            Tab(text: 'ได้รับสินค้า'),
+            Tab(text: ''),
+            Tab(text: ''),
           ],
         ),
       ),
@@ -59,24 +57,21 @@ class _CartPageState extends State<CartBPage>
             final products = snapshot.data!;
 
             // Filter products by steps
-            final pendingApproval = filterByStep(products, 'รออนุมัติ');
-            final pendingCollection = filterByStep(products, 'รอนัดรับ');
-            final confirmReceipt = filterByStep(products, 'ยืนยัน');
-            final received = filterByStep(products, 'ได้รับสินค้า');
+            final pendingApproval = filterByStep(products, 'รอดำเนินการ');
+            final pendingCollection = filterByStep(products, 'ดำเนินการสำเร็จ');
 
             return TabBarView(
               controller: _tabController,
               children: [
-                buildStepContent(pendingApproval, 'ไม่มีสินค้ารออนุมัติ'),
-                buildStepContent(pendingCollection, 'ไม่มีสินค้ารอนัดรับ'),
-                buildStepContent(confirmReceipt, 'ไม่มีสินค้ายืนยันการรับ'),
-                buildStepContent(received, 'ไม่มีสินค้าที่ได้รับ'),
+                buildStepContent(pendingApproval, 'ไม่มีสินค้ารอดำเนินการ'),
+                buildStepContent(
+                    pendingCollection, 'ไม่มีสินค้าดำเนินการสำเร็จ'),
               ],
             );
           }
         },
       ),
-      bottomNavigationBar: buyerFooter(context, 'cart-buyer'),
+      bottomNavigationBar: buyerFooter(context, 'cart-seller'),
     );
   }
 

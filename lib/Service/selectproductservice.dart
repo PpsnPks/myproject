@@ -7,7 +7,7 @@ class Product {
   final String durationUse;
   final String defect;
   final String timeForSell;
-  final String size;
+  // final String size;
   final String deliveryLocation;
   final String deliveryDate;
   final String seller;
@@ -23,7 +23,7 @@ class Product {
     required this.durationUse,
     required this.defect,
     required this.timeForSell,
-    required this.size,
+    // required this.size,
     required this.deliveryLocation,
     required this.deliveryDate,
     required this.seller,
@@ -37,24 +37,24 @@ class ProductService {
   static Product getProduct() {
     return Product(
       imageUrl: [
-        'assets/images/fan1.png',
+        'assets/images/old_fan.png',
         'assets/images/fan2.png',
         'assets/images/fan3.jpg',
       ],
-      name: 'พัดลม Xiaomi',
-      price: '600 ฿',
+      name: 'พัดลม HATARI 16 นิ้ว',
+      price: '359 ฿',
       description:
-          'พัดลม Xiaomi Mi Smart Standing Fan 2 Lite เป็นพัดลมที่ผสมผสานดีไซน์อันเรียบหรูเข้ากับฟังก์ชันการใช้งานที่ครบครัน เหมาะสำหรับทั้งบ้านและสำนักงาน ด้วยคุณสมบัติที่โดดเด่น',
+          'พัดลม HATARI ขนาด 16 นิ้ว พัดลมมือสองพร้อมใช้งาน สินค้าตามภาพครับ ทดสอบการใช้งานอย่างละเอียดแล้ว พัดแรงปกติครับ... ขนาด 16 นิ้ว สินค้ามือสองคุณภาพดี ยี่ห้อดี เช็คละเอียดทุกอุปกรณ์ หากสงสัยหรือ อยากขอรูปเพิ่มเติมทักแชทได้ครับ',
       category: 'เครื่องใช้ไฟฟ้า',
       conditionProduct: 'มือสอง',
       durationUse: '1-3 ปี',
-      defect: 'มีฝุ่นเกาะเยอะ',
-      timeForSell: '25 ธันวาคม 2567',
-      size: '1000 มม. x 343 มม.',
-      deliveryLocation: 'วิศวกรรมศาสตร์ ECC ',
-      deliveryDate: '25 ธ.ค. 2567 10:00',
+      defect: 'ไม่มี',
+      timeForSell: '10 ธันวาคม 2567',
+      // size: '1000 มม. x 343 มม.',
+      deliveryLocation: 'เกกีงาม 3',
+      deliveryDate: '11 ธ.ค. 2567 10:00',
       seller: '64010724 รัชพล รุจิเวช ',
-      stock: 3,
+      stock: 1,
     );
   }
 }

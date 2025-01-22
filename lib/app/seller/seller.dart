@@ -138,7 +138,7 @@ class _SellerPageState extends State<SellerPage> {
                                       Text(
                                         '${product.price} ฿', // ใช้ price จาก product พร้อมแสดงหน่วยเงิน
                                         style: const TextStyle(
-                                          color: Colors.orange,
+                                          color: Color(0xFFFA5A2A),
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -200,7 +200,7 @@ class _SellerPageState extends State<SellerPage> {
                                 width: 30,
                                 height: 30,
                                 decoration: const BoxDecoration(
-                                  color: Colors.orange,
+                                  color: Color(0xFFFA5A2A),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -220,6 +220,13 @@ class _SellerPageState extends State<SellerPage> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/addproduct'); 
+        },
+        backgroundColor: const Color(0xFFFA5A2A),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       bottomNavigationBar: sellerFooter(context, 'seller'),
     );

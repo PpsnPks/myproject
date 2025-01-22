@@ -337,52 +337,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// BottomAppBar buyerFooter(BuildContext context, String selected){
-//   return  BottomAppBar(
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceAround,
-//               children: <Widget>[
-//                 IconButton(
-//                   icon: Icon(Icons.home_rounded,  // ใช้ไอคอน home outline
-//                     color: selected == 'home'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),  // กำหนดสีเป็น #FA5A2A
-//                     size: 38,  // ขนาดไอคอน
-//                   ),
-//                   onPressed: () {
-//                     // Handle home button press
-//                     Navigator.pushNamed(context, '/home');
-//                   },
-//                 ),
-//                 IconButton(
-//                   icon: Icon(Icons.favorite_border,  // ใช้ไอคอน home outline
-//                     //color: Color(0xFFFA5A2A),  // กำหนดสีเป็น #FA5A2A
-//                     color: selected == 'like'? const Color(0xFFFA5A2A): const Color(0xFFA5A9B6),
-//                     size: 34,  // ขนาดไอคอน
-//                   ),
-//                   onPressed: () {
-//                     Navigator.pushNamed(context, '/like');
-//                   },
-//                 ),
-//                 IconButton(
-//                   icon: const Icon(Icons.chat_outlined,size: 30),
-//                   onPressed: () {
-//                     // Handle notifications button press
-//                   },
-//                 ),
-//                 IconButton(
-//                   icon: Icon(Icons.person_outline_rounded,
-//                   color: selected == 'profile'? const
-//                   Color(0xFFFA5A2A): const Color(0xFFA5A9B6),
-//                     size: 34,  // ขนาดไอคอน
-//                   ),
-//                   onPressed: () {
-//                     Navigator.pushNamed(context, '/profile');
-//                   },
-//                 ),
-//               ],
-//             ),
-//           );
-// }
-
 // ignore: non_constant_identifier_names
 Column CatergoryButton(
     BuildContext context, String icon, String label, String route) {
@@ -500,41 +454,4 @@ final List<Widget> imageSliders = imgList
               )),
         ))
     .toList();
-//ที่อยู่
-//Container(
-//  width: double.infinity,
-//  padding: const EdgeInsets.only(right: 24.0, left: 24.0, top: 16.0),
-//  child: Row(
-//    mainAxisAlignment: MainAxisAlignment.start,
-//    children: [
-//      SvgPicture.asset(
-//        'assets/icons/home_page/pin.svg',
-//        width: 24.0,  // Icon width
-//        height: 24.0,  // Icon height
-//        // ignore: deprecated_member_use
-//        color: const Color(0xFFFA5A2A),
-//      ),
-//      const SizedBox(width: 4.0,),
-//      const Text('ที่อยู่ :',
-//        style: TextStyle(
-//          fontSize: 14.0,
-//          fontFamily: 'Roboto',
-//          color: Color(0xFFA5A9B6),
-//        ),
-//      ),
-//      const SizedBox(width: 8.0),
-//      const Flexible(
-//        child: Text(
-//              '701 ซอย ฉลองกรุง 1 แขวงลาดกระบัง เขตลาดกระบัง',
-//              overflow: TextOverflow.ellipsis,
-//              style: TextStyle(
-//                fontSize: 14.0,
-//                fontFamily: 'Roboto',
-//                color: Color(0xFF000000),
-//                //fontWeight: FontWeight.bold,
-//              )
-//            ),
-//      ),
-//    ],
-//  ),
-//),
+

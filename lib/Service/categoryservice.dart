@@ -4,9 +4,10 @@ class Categoryservice {
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
       Product(
-        imageUrl: 'assets/images/fan_example.png',
-        title: 'พัดลม',
-        detail: 'พัดลม Xiaomi สภาพดี ใช้งานมาไม่นาน สภาพปกติไม่มีส่วนไหนชำรุด',
+        imageUrl: 'assets/images/old_fan.png',
+        title: 'พัดลม HATARI 16 นิ้ว',
+        detail:
+            'พัดลม HATARI ขนาด 16 นิ้ว พัดลมมือสองพร้อมใช้งาน สินค้าตามภาพครับ ทดสอบการใช้งานอย่างละเอียดแล้ว พัดแรงปกติครับ... ขนาด 16 นิ้ว สินค้ามือสองคุณภาพดี ยี่ห้อดี เช็คละเอียดทุกอุปกรณ์ หากสงสัยหรือ อยากขอรูปเพิ่มเติมทักแชทได้ครับ ใช้งานมาไม่นาน สภาพปกติไม่มีส่วนไหนชำรุด',
         types: 'เครื่องใช้ไฟฟ้า',
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
