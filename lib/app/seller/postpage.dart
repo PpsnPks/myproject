@@ -49,7 +49,7 @@ class _PostPageState extends State<PostPage> {
             itemBuilder: (context, index) {
               final product = products[index];
               return Card(
-                elevation: 3,
+                elevation: 0,
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
@@ -125,11 +125,11 @@ class _PostPageState extends State<PostPage> {
                     // Section: Image
                     if (product.imageUrl.isNotEmpty)
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(0),
                         child: Image.network(
                           product.imageUrl,
                           width: double.infinity,
-                          height: 180,
+                          height: 360,
                           fit: BoxFit.cover,
                         ),
                       ),
