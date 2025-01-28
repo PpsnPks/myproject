@@ -96,12 +96,16 @@ class _MessagepageState extends State<Messagepage> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            child: Image.file(
-                              File(message['image']), // แสดงรูป
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.cover,
-                            ),
+                            child: File(message['image']).existsSync() // ตรวจสอบว่าไฟล์มีอยู่จริง
+                                ? Image(
+                                    image: FileImage(File(message['image'])), // ใช้ FileImage แทน Image.file
+                                    width: 150, // กำหนดความกว้าง
+                                    height: 200, // กำหนดความสูง
+                                    fit: BoxFit.cover, // ปรับการแสดงผลรูปให้เต็มขนาดที่กำหนด
+                                  )
+                                : Container(
+                                    child: Icon(Icons.error, color: Colors.red), // แสดงไอคอนถ้าผิดพลาด
+                                  ),
                           ),
                       ],
                     ),
