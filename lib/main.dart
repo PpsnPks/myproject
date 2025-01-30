@@ -29,7 +29,7 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "KMITL APP",
-    home: LoginPage(),
+    home: const LoginPage(),
     routes: {
       '/home': (context) => const HomePage(),
       '/like': (context) => const LikePage(),
@@ -56,16 +56,14 @@ void main() {
       '/message': (context) => const Messagepage(),
       '/profile': (context) => const ProfilePage(),
       '/confirm-seller': (context) => const ConfirmSeller(),
-      '/login': (context) => LoginPage(),
-      '/register': (context) => RegisterPage(),
-      '/forgotpassword': (context) => ForgotPasswordPage(),
-      '/otp': (context) => OtpPage(),
+      '/login': (context) => const LoginPage(),
+      '/register': (context) => const RegisterPage(),
+      '/forgotpassword': (context) => const ForgotPasswordPage(),
+      '/otp': (context) => const OtpPage(),
       '/infoform': (context) => PersonalInfoForm()
     },
   ));
 }
-
-
 // void main() {
 //   runApp(MaterialApp(
 //     debugShowCheckedModeBanner: false,

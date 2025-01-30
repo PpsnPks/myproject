@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert';
-import 'dart:html' as html;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart'; // เพิ่มการนำเข้า

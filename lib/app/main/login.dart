@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/environment.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -39,7 +40,7 @@ class _LoginState extends State<LoginPage> {
 
     try {
       // สร้าง URL ของ API
-      final Uri apiUrl = Uri.parse('http://localhost:8000/api/auth/login');
+      final Uri apiUrl = Uri.parse('${Environment.baseUrl}/auth/login');
 
       // ส่งข้อมูล login (username, password) ผ่าน HTTP POST
       final response = await http.post(
@@ -56,7 +57,9 @@ class _LoginState extends State<LoginPage> {
         var data = jsonDecode(response.body);
         // ตัวอย่างการใช้งานข้อมูลจาก API (เช่น token)
         String token = data['token'];
+        String userId = data['user_id'].toString();
         Securestorage().writeSecureData('token', token);
+        Securestorage().writeSecureData('userId', userId);
         final test = await Securestorage().readSecureData('token');
         print('okk === $test');
         Navigator.pushNamed(context, '/role');
@@ -122,9 +125,7 @@ class _LoginState extends State<LoginPage> {
                     labelText: 'รหัสผ่าน',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
+                        _obscureText ? Icons.visibility : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
                       ),
                       onPressed: () => {
                         setState(() {
@@ -153,16 +154,13 @@ class _LoginState extends State<LoginPage> {
                                 textBaseline: TextBaseline.alphabetic,
                                 letterSpacing: 0.4,
                                 fontWeight: FontWeight.normal,
-                                color: Color(
-                                    0xFFb3261e), // เปลี่ยนสีข้อความเป็นแดง
+                                color: Color(0xFFb3261e), // เปลี่ยนสีข้อความเป็นแดง
                               ),
                             ),
                           ],
                         ),
                       )
-                    : const SizedBox(
-                        height:
-                            10), // หากไม่มีข้อความผิดพลาด แสดงขนาดเว้นช่องว่าง
+                    : const SizedBox(height: 10), // หากไม่มีข้อความผิดพลาด แสดงขนาดเว้นช่องว่าง
                 // Forgot Password
                 Align(
                   alignment: Alignment.centerRight,

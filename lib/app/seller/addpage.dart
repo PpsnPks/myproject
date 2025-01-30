@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
-import 'dart:html' as html;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:myproject/environment.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -21,18 +22,20 @@ class _AddProductPageState extends State<AddProductPage> {
   String? selectedCondition;
   String? selectedUsageTime;
   String? defect;
+  String? typeProduct;
   int quantity = 1;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _typeController =
-      TextEditingController(); // check form isSelling, isRenting, isPreOrder ได้
+  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _dateExpController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _conditionController = TextEditingController();
+  String? token;
+  File? imageFile;
+
   //ระยะเวลา กับ ตำหนิสินค้า หาย
   resetData() {
     selectedCondition = 'new';
@@ -40,84 +43,109 @@ class _AddProductPageState extends State<AddProductPage> {
     defect = '';
     quantity = 1;
     _nameController.clear();
-    _categoryController.clear();
     _priceController.clear();
     _descriptionController.clear();
-    _typeController.clear(); // check form isSelling, isRenting, isPreOrder ได้
+    _categoryController.clear();
     _dateExpController.clear();
     _locationController.clear();
     _conditionController.clear();
   }
 
   Future<void> addProduct() async {
+    final sellerId = await Securestorage().readSecureData('userId');
+    final imgPath = await _uploadImg();
     if (_nameController.text != '' &&
+        _priceController.text != '' &&
         _descriptionController.text != '' &&
         _categoryController.text != '' &&
-        _typeController.text != '' &&
         _dateExpController.text != '' &&
         _locationController.text != '' &&
         _conditionController.text != '') {
       // สร้างข้อมูลที่จะส่งไปยัง API
-      Map<String, dynamic> userData = {
+      Map<String, dynamic> productData = {
         "product_name": _nameController.text,
-        "product_images": ["test1", "test2"],
-        "product_qty": 1,
-        "product_price": 0,
-        "product_description": "string",
-        "product_category": "string",
-        "product_type": "string",
-        "seller_id": 1, // ใช้ user_id เลยช้ะ
+        "product_images": imgPath,
+        "product_qty": quantity,
+        "product_price": int.tryParse(_priceController.text),
+        "product_description": _descriptionController.text,
+        "product_category": _categoryController.text,
+        "product_type": typeProduct,
+        "seller_id": sellerId,
         "date_exp": "2024-12-12",
-        "location": "string",
-        "condition": "string"
+        "product_location": _locationController.text,
+        "product_condition": _conditionController.text,
+        "product_defect": defect,
+        "product_years": selectedUsageTime,
+        "tag": "not have ja"
       };
 
-      final Uri url = Uri.parse('http://localhost:8000/api/auth/register');
+      final Uri url = Uri.parse('${Environment.baseUrl}/products');
       try {
         final response = await http.post(
           url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(userData),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(productData),
         );
 
         // ตรวจสอบสถานะของ response
         if (response.statusCode == 200) {
-          // หากการลงทะเบียนสำเร็จ
-          print('ลงทะเบียนสำเร็จ');
-          // แสดงข้อความแจ้ง หรือนำผู้ใช้ไปหน้าอื่น
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ลงทะเบียนสำเร็จ')),
-          );
+          print('เพิ่มสินค้าสำเร็จ');
         } else {
-          // หากการลงทะเบียนล้มเหลว
-          print('การลงทะเบียนล้มเหลว: ${response.statusCode}');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('การลงทะเบียนล้มเหลว')),
-          );
-          // แสดงข้อความแจ้ง error
-          // setState(() {
-          //   _errorMessage = 'การลงทะเบียนล้มเหลว: ${response.body}';
-          // });
+          print('การเพิ่มสินค้าล้มเหลว: ${response.statusCode}');
         }
       } catch (error) {
-        // Handle network or other errors
         print('เกิดข้อผิดพลาด: $error');
-        // setState(() {
-        //   _errorMessage = 'เกิดข้อผิดพลาด: $error';
-        // });
       }
+    } else {
+      print('ช้อมูลไม่ครบครับ');
+    }
+  }
+
+  Future<String> _uploadImg() async {
+    final Uri url = Uri.parse('${Environment.baseUrl}/uploadimage');
+    final request = http.MultipartRequest('POST', url)
+      ..headers.addAll({
+        'Authorization': 'Bearer $token', // ใส่ token ของคุณ
+      })
+      ..fields['image_path'] = '/images'; // เพิ่ม field อื่นถ้าต้องการ
+
+    if (imageFile != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath('image', imageFile!.path),
+      );
+    }
+
+    try {
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        // Success
+        return jsonDecode(response.body)['message'] ?? 'Uploaded successfully';
+      } else {
+        // Error
+        return 'Error: ${response.statusCode}, ${response.reasonPhrase}';
+      }
+    } catch (e) {
+      return 'Upload failed: $e';
     }
   }
 
   String? _base64Image; // Store base64 image data for web
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
+    XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       // Read image as bytes and encode it to base64
-      final Uint8List bytes = await pickedFile.readAsBytes();
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+
+      final Uint8List bytes = await pickedFile!.readAsBytes();
       setState(() {
         _base64Image = base64Encode(bytes);
       });
@@ -151,16 +179,13 @@ class _AddProductPageState extends State<AddProductPage> {
                             isSelling = true;
                             isRenting = false;
                             isPreOrder = false;
+                            typeProduct = 'sell';
                             resetData();
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isSelling
-                              ? const Color(0xFFFA5A2A)
-                              : const Color(0xFFFCEEEA),
-                          foregroundColor: isSelling
-                              ? Colors.white
-                              : const Color(0xFFFA5A2A),
+                          backgroundColor: isSelling ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
+                          foregroundColor: isSelling ? Colors.white : const Color(0xFFFA5A2A),
                         ),
                         child: const Text('ขาย'),
                       ),
@@ -173,16 +198,13 @@ class _AddProductPageState extends State<AddProductPage> {
                             isSelling = false;
                             isRenting = true;
                             isPreOrder = false;
+                            typeProduct = 'free';
                             resetData();
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isRenting
-                              ? const Color(0xFFFA5A2A)
-                              : const Color(0xFFFCEEEA),
-                          foregroundColor: isRenting
-                              ? Colors.white
-                              : const Color(0xFFFA5A2A),
+                          backgroundColor: isRenting ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
+                          foregroundColor: isRenting ? Colors.white : const Color(0xFFFA5A2A),
                         ),
                         child: const Text('แจก'),
                       ),
@@ -195,16 +217,13 @@ class _AddProductPageState extends State<AddProductPage> {
                             isSelling = false;
                             isRenting = false;
                             isPreOrder = true;
+                            typeProduct = 'preorder';
                             resetData();
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isPreOrder
-                              ? const Color(0xFFFA5A2A)
-                              : const Color(0xFFFCEEEA),
-                          foregroundColor: isPreOrder
-                              ? Colors.white
-                              : const Color(0xFFFA5A2A),
+                          backgroundColor: isPreOrder ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
+                          foregroundColor: isPreOrder ? Colors.white : const Color(0xFFFA5A2A),
                         ),
                         child: const Text('Pre Order'),
                       ),
@@ -228,11 +247,9 @@ class _AddProductPageState extends State<AddProductPage> {
                         ? const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.camera_alt,
-                                  size: 50, color: Colors.grey),
+                              Icon(Icons.camera_alt, size: 50, color: Colors.grey),
                               SizedBox(height: 8),
-                              Text('เพิ่มรูปภาพ',
-                                  style: TextStyle(color: Colors.grey)),
+                              Text('เพิ่มรูปภาพ', style: TextStyle(color: Colors.grey)),
                             ],
                           )
                         : ClipRRect(
@@ -245,29 +262,23 @@ class _AddProductPageState extends State<AddProductPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                    '* รูปสินค้าควรมีขนาดใหญ่และชัดเจนเพื่อให้ลูกค้ามองเห็นรายละเอียดสินค้าได้',
+                const Text('* รูปสินค้าควรมีขนาดใหญ่และชัดเจนเพื่อให้ลูกค้ามองเห็นรายละเอียดสินค้าได้',
                     style: TextStyle(color: Colors.grey)),
 
                 // Product form fields
                 const SizedBox(height: 16),
                 TextField(
                   decoration: InputDecoration(
-                    labelText:
-                        'ชื่อสินค้า', // สามารถเปลี่ยนข้อความได้ตามที่ต้องการ
+                    labelText: 'ชื่อสินค้า', // สามารถเปลี่ยนข้อความได้ตามที่ต้องการ
                     enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color(0xFFE0E0E0)), // สีขอบเป็นเทาอ่อน
-                      borderRadius:
-                          BorderRadius.circular(12), // โค้งมน 12 หน่วย
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบเป็นเทาอ่อน
+                      borderRadius: BorderRadius.circular(12), // โค้งมน 12 หน่วย
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color(0xFFE0E0E0)), // สีขอบตอน focus
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบตอน focus
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 12), // ช่องว่างภายใน
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12), // ช่องว่างภายใน
                   ),
                   controller: _nameController,
                 ),
@@ -276,18 +287,14 @@ class _AddProductPageState extends State<AddProductPage> {
                   decoration: InputDecoration(
                     labelText: 'ประเภท', // สามารถเปลี่ยนข้อความได้ตามที่ต้องการ
                     enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color(0xFFE0E0E0)), // สีขอบเป็นเทาอ่อน
-                      borderRadius:
-                          BorderRadius.circular(12), // โค้งมน 12 หน่วย
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบเป็นเทาอ่อน
+                      borderRadius: BorderRadius.circular(12), // โค้งมน 12 หน่วย
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color(0xFFE0E0E0)), // สีขอบตอน focus
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // สีขอบตอน focus
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 12), // ช่องว่างภายใน
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12), // ช่องว่างภายใน
                   ),
                   controller: _categoryController,
                 ),
@@ -302,20 +309,14 @@ class _AddProductPageState extends State<AddProductPage> {
                           decoration: InputDecoration(
                             labelText: 'ราคา',
                             enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color:
-                                      Color(0xFFE0E0E0)), // Light grey border
-                              borderRadius:
-                                  BorderRadius.circular(12), // Rounded border
+                              borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // Light grey border
+                              borderRadius: BorderRadius.circular(12), // Rounded border
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color(
-                                      0xFFE0E0E0)), // Light grey border when focused
+                              borderSide: const BorderSide(color: Color(0xFFE0E0E0)), // Light grey border when focused
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 12),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                           ),
                           controller: _priceController,
                         ),
@@ -328,18 +329,14 @@ class _AddProductPageState extends State<AddProductPage> {
                   decoration: const InputDecoration(
                     labelText: 'รายละเอียดสินค้า',
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อน
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(12)), // ขอบมน
+                      borderSide: BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อน
+                      borderRadius: BorderRadius.all(Radius.circular(12)), // ขอบมน
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อนเมื่อ focus
+                      borderSide: BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อนเมื่อ focus
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    contentPadding: EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 12), // เพิ่ม padding ภายใน
+                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12), // เพิ่ม padding ภายใน
                   ),
                   controller: _descriptionController,
                 ),
@@ -348,21 +345,16 @@ class _AddProductPageState extends State<AddProductPage> {
                 TextField(
                   decoration: const InputDecoration(
                     labelText: 'ระยะเวลา',
-                    suffixIcon:
-                        Icon(Icons.calendar_today), // ไอคอนปฏิทินด้านขวา
+                    suffixIcon: Icon(Icons.calendar_today), // ไอคอนปฏิทินด้านขวา
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อน
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(12)), // ขอบมน
+                      borderSide: BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อน
+                      borderRadius: BorderRadius.all(Radius.circular(12)), // ขอบมน
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อนเมื่อ focus
+                      borderSide: BorderSide(color: Color(0xFFE0E0E0)), // ขอบสีเทาอ่อนเมื่อ focus
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    contentPadding: EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 12), // เพิ่ม padding ภายใน
+                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12), // เพิ่ม padding ภายใน
                   ),
                   controller: _dateExpController,
                 ),
@@ -381,19 +373,16 @@ class _AddProductPageState extends State<AddProductPage> {
                               if (quantity > 1) quantity--;
                             });
                           },
-                          icon: const Icon(Icons.remove_circle_outline,
-                              color: Colors.grey),
+                          icon: const Icon(Icons.remove_circle_outline, color: Colors.grey),
                         ),
-                        Text(quantity.toString(),
-                            style: const TextStyle(fontSize: 18)),
+                        Text(quantity.toString(), style: const TextStyle(fontSize: 18)),
                         IconButton(
                           onPressed: () {
                             setState(() {
                               quantity++;
                             });
                           },
-                          icon: const Icon(Icons.add_circle_outline,
-                              color: Colors.grey),
+                          icon: const Icon(Icons.add_circle_outline, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -401,8 +390,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
                 // Status dropdown
                 const SizedBox(height: 16),
-                const Text('สถานที่นัดรับสินค้า',
-                    style: TextStyle(fontSize: 16)),
+                const Text('สถานที่นัดรับสินค้า', style: TextStyle(fontSize: 16)),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   items: const [
@@ -416,8 +404,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   ],
                   onChanged: (value) {
                     setState(() {
-                      _locationController.text =
-                          value ?? ''; // อัพเดตค่า controller
+                      _locationController.text = value ?? ''; // อัพเดตค่า controller
                     });
                   },
                   decoration: const InputDecoration(
@@ -427,8 +414,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 const SizedBox(height: 16),
                 // Show สภาพสินค้า only when selling or giving away
                 if (isSelling || isRenting) const SizedBox(height: 16),
-                if (isSelling || isRenting)
-                  const Text('สภาพสินค้า', style: TextStyle(fontSize: 16)),
+                if (isSelling || isRenting) const Text('สภาพสินค้า', style: TextStyle(fontSize: 16)),
                 if (isSelling || isRenting) const SizedBox(height: 8),
                 if (isSelling || isRenting)
                   DropdownButtonFormField<String>(
@@ -440,8 +426,7 @@ class _AddProductPageState extends State<AddProductPage> {
                     onChanged: (value) {
                       setState(() {
                         selectedCondition = value;
-                        _conditionController.text =
-                            value ?? ''; // อัพเดตค่า controller
+                        _conditionController.text = value ?? ''; // อัพเดตค่า controller
                       });
                     },
                     decoration: const InputDecoration(
@@ -451,9 +436,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
                 // Show ระยะเวลาการใช้งาน and ตำหนิสินค้า only when มือสอง is selected
                 if (selectedCondition == 'old') const SizedBox(height: 16),
-                if (selectedCondition == 'old')
-                  const Text('ระยะเวลาการใช้งาน',
-                      style: TextStyle(fontSize: 16)),
+                if (selectedCondition == 'old') const Text('ระยะเวลาการใช้งาน', style: TextStyle(fontSize: 16)),
                 if (selectedCondition == 'old') const SizedBox(height: 8),
                 if (selectedCondition == 'old')
                   DropdownButtonFormField<String>(
@@ -491,8 +474,7 @@ class _AddProductPageState extends State<AddProductPage> {
                         borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 12),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                     ),
                   ),
                 const SizedBox(height: 16),
@@ -502,21 +484,16 @@ class _AddProductPageState extends State<AddProductPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         // Action when the add button is pressed
+                        addProduct();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFFFA5A2A), // Background color
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 18), // Adjust padding
+                        backgroundColor: const Color(0xFFFA5A2A), // Background color
+                        padding: const EdgeInsets.symmetric(vertical: 18), // Adjust padding
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(8), // Rounded corners
+                          borderRadius: BorderRadius.circular(8), // Rounded corners
                         ),
                       ),
-                      child: const Text('เพิ่มรายการ',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16)), // Button text
+                      child: const Text('เพิ่มรายการ', style: TextStyle(color: Colors.white, fontSize: 16)), // Button text
                     ),
                   ),
                 ),

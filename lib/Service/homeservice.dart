@@ -1,10 +1,12 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 
+import 'package:myproject/environment.dart';
+
 class Homeservice {
   Future<List<Product>> getHomeProducts() async {
     // try {
-    //   final Uri apiUrl = Uri.parse('http://localhost:8000/products');
+    // final Uri apiUrl = Uri.parse('${Environment.baseUrl}/products');
 
     //   // ส่งข้อมูล login (username, password) ผ่าน HTTP POST
     //   final response = await http.post(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:myproject/environment.dart';
 // import 'package:myproject/Service/registerservice.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -15,8 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _obscureText = true;
   bool _obscureText2 = true;
 
@@ -25,10 +25,8 @@ class _RegisterPageState extends State<RegisterPage> {
       return 'กรุณากรอกอีเมล';
     }
     // ใช้ RegEx เพื่อตรวจสอบรูปแบบอีเมล
-    final emailRegExp =
-        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    final kmitlRegExp =
-        RegExp(r'^[a-zA-Z0-9._%+-]+@kmitl\.ac\.th$'); // รูปแบบอีเมล
+    final emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final kmitlRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@kmitl\.ac\.th$'); // รูปแบบอีเมล
     if (!emailRegExp.hasMatch(value)) {
       return 'รูปแบบอีเมลไม่ถูกต้อง';
     } else if (!kmitlRegExp.hasMatch(value)) {
@@ -39,11 +37,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'กรุณากรอกอีเมล';
+      return 'กรุณากรอกรหัสผ่าน';
     }
     // ใช้ RegEx เพื่อตรวจสอบรูปแบบอีเมล
-    final passRegExp = RegExp(
-        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+    final passRegExp = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
     if (value.length < 8) {
       return 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัว';
     }
@@ -78,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'password_confirmation': _confirmPasswordController.text,
       };
 
-      final Uri url = Uri.parse('http://localhost:8000/api/auth/register');
+      final Uri url = Uri.parse('${Environment.baseUrl}/auth/register');
       try {
         final response = await http.post(
           url,
@@ -174,9 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     labelText: 'รหัสผ่าน',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
+                        _obscureText ? Icons.visibility : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
                       ),
                       onPressed: () => {
                         setState(() {
@@ -199,14 +194,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     labelText: 'ยืนยันรหัสผ่าน',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureText2
-                            ? Icons.visibility
-                            : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
+                        _obscureText2 ? Icons.visibility : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
                       ),
                       onPressed: () => {
                         setState(() {
-                          _obscureText2 =
-                              !_obscureText2; // สลับค่า _obscureText
+                          _obscureText2 = !_obscureText2; // สลับค่า _obscureText
                         })
                       }, // คลิกไอคอนเพื่อสลับสถานะ
                     ),
