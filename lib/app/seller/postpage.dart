@@ -103,24 +103,24 @@ class _PostPageState extends State<PostPage> {
                       // ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                product.title,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                product.tags,
-                                style: const TextStyle(
-                                  fontSize: 8,
-                                  color: const Color(0xFFFA5A2A),
-                                ),
-                              ),
-                            ],
+                        children: [
+                          Text(
+                            product.title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          const SizedBox(height: 4),
+                          Text(
+                            product.tags,
+                            style: const TextStyle(
+                              fontSize: 8,
+                              color: Color(0xFFFA5A2A),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     // Section: Image
                     if (product.imageUrl.isNotEmpty)

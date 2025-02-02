@@ -6,7 +6,7 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -117,8 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           // Tab Buttons
           Padding(
-            padding: const EdgeInsets.only(
-                left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
             child: Row(
               children: [
                 // Buyer Tab
@@ -126,9 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     decoration: BoxDecoration(
-                      color: isBuyerSelected
-                          ? const Color(0xFFE35205)
-                          : const Color(0xFFFCEEEA),
+                      color: isBuyerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextButton(
@@ -141,9 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         'คนซื้อ',
                         style: TextStyle(
                           fontSize: 16,
-                          color: isBuyerSelected
-                              ? Colors.white
-                              : const Color(0xFFE35205),
+                          color: isBuyerSelected ? Colors.white : const Color(0xFFE35205),
                         ),
                       ),
                     ),
@@ -155,9 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     decoration: BoxDecoration(
-                      color: isBuyerSelected
-                          ? const Color(0xFFFCEEEA)
-                          : const Color(0xFFE35205),
+                      color: isBuyerSelected ? const Color(0xFFFCEEEA) : const Color(0xFFE35205),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextButton(
@@ -170,9 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         'คนขาย',
                         style: TextStyle(
                           fontSize: 16,
-                          color: isBuyerSelected
-                              ? const Color(0xFFE35205)
-                              : Colors.white,
+                          color: isBuyerSelected ? const Color(0xFFE35205) : Colors.white,
                         ),
                       ),
                     ),
@@ -183,8 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           // Grid and History Buttons
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               children: [
                 // Column สำหรับไอคอน Grid View
@@ -201,9 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         icon: Icon(
                           Icons.grid_view,
-                          color: isGridSelected
-                              ? const Color(0xFFE35205)
-                              : Colors.grey,
+                          color: isGridSelected ? const Color(0xFFE35205) : Colors.grey,
                         ),
                       ),
                     ],
@@ -223,9 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         icon: Icon(
                           Icons.history,
-                          color: isGridSelected
-                              ? Colors.grey
-                              : const Color(0xFFE35205),
+                          color: isGridSelected ? Colors.grey : const Color(0xFFE35205),
                         ),
                       ),
                     ],
@@ -237,27 +223,21 @@ class _ProfilePageState extends State<ProfilePage> {
           // Content Area
           Expanded(
             child: isBuyerSelected
-                ? (isGridSelected
-                    ? buildBuyerGridView()
-                    : buildBuyerHistoryView())
-                : (isGridSelected
-                    ? buildSellerGridView()
-                    : buildSellerHistoryView()),
+                ? (isGridSelected ? buildBuyerGridView() : buildBuyerHistoryView())
+                : (isGridSelected ? buildSellerGridView() : buildSellerHistoryView()),
           ),
         ],
       ),
       // Footer changes based on role
-      bottomNavigationBar: isBuyerSelected
-          ? buyerFooter(context, 'profile')
-          : sellerFooter(context, 'profile'),
+      bottomNavigationBar: isBuyerSelected ? buyerFooter(context, 'profile') : sellerFooter(context, 'profile'),
     );
   }
 
   // Buyer Grid View
   Widget buildBuyerGridView() {
     if (buyerItems.isEmpty) {
-      return Center(
-        child: const Text(
+      return const Center(
+        child: Text(
           'ยังไม่มีรายการสินค้า',
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
@@ -307,10 +287,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Buyer History View
   Widget buildBuyerHistoryView() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.shopping_cart_outlined, size: 60, color: Colors.grey),
           SizedBox(height: 16),
           Text(
@@ -324,8 +304,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Seller Grid View
   Widget buildSellerGridView() {
-    return Center(
-      child: const Text(
+    return const Center(
+      child: Text(
         'ยังไม่มีรายการที่คุณขาย',
         style: TextStyle(fontSize: 16, color: Colors.grey),
       ),
@@ -334,10 +314,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Seller History View
   Widget buildSellerHistoryView() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.sell_outlined, size: 60, color: Colors.grey),
           SizedBox(height: 16),
           Text(

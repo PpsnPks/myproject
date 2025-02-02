@@ -1,8 +1,6 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 
-import 'package:myproject/environment.dart';
-
 class Homeservice {
   Future<List<Product>> getHomeProducts() async {
     // try {

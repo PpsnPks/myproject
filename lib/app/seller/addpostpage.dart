@@ -1,9 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart'; // เพิ่มการนำเข้า
-import 'package:myproject/auth_service.dart'; 
+// import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart'; // นำเข้าฟุตเตอร์
 import 'package:image_picker/image_picker.dart';
 
@@ -25,7 +25,6 @@ class _AddPostPageState extends State<AddPostPage> {
   // ฟังก์ชันที่จะเรียกใช้เมื่อกดปุ่มโพสต์
   Future<void> _post() async {
     final postService = PostService();
-    
 
     // เรียกใช้ฟังก์ชัน addpost
     final result = await postService.addpost(
@@ -86,13 +85,12 @@ class _AddPostPageState extends State<AddPostPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: _base64Image == null
-                      ? Column(
+                      ? const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.camera_alt, size: 50, color: Colors.grey),
                             SizedBox(height: 8),
-                            Text('เพิ่มรูปภาพ',
-                                style: TextStyle(color: Colors.grey)),
+                            Text('เพิ่มรูปภาพ', style: TextStyle(color: Colors.grey)),
                           ],
                         )
                       : ClipRRect(
@@ -106,13 +104,13 @@ class _AddPostPageState extends State<AddPostPage> {
               ),
               const SizedBox(height: 8),
               const Text('* รูปสินค้าควรมีขนาดใหญ่และชัดเจนเพื่อให้ลูกค้ามองเห็นรายละเอียดสินค้าได้', style: TextStyle(color: Colors.grey)),
-              
+
               // Product form fields
               const SizedBox(height: 16),
               TextField(
                 controller: _detailController,
                 maxLines: 3,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'รายละเอียดสินค้า',
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFFE0E0E0)),

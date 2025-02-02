@@ -60,7 +60,7 @@ void main() {
       '/register': (context) => const RegisterPage(),
       '/forgotpassword': (context) => const ForgotPasswordPage(),
       '/otp': (context) => const OtpPage(),
-      '/infoform': (context) => PersonalInfoForm()
+      '/infoform': (context) => const PersonalInfoForm()
     },
   ));
 }
@@ -70,7 +70,7 @@ void main() {
 //     title: "KMITL APP",
 //     home: LoginPage(),
 //     onGenerateRoute: (settings) {
-//       // ตรวจสอบเงื่อนไขของ Guards ที่จะต้องมีการตรวจสอบการล็อกอิน
+//         // ตรวจสอบเงื่อนไขของ Guards ที่จะต้องมีการตรวจสอบการล็อกอิน
 //       if (settings.name == '/home' || settings.name == '/profile' || settings.name == '/seller') {
 //         // ตัวอย่างการตรวจสอบว่าผู้ใช้ล็อกอินหรือไม่
 //         bool isLoggedIn = false; // เปลี่ยนให้เป็นการตรวจสอบจริง

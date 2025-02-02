@@ -47,7 +47,7 @@ class _MessagepageState extends State<Messagepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
+        title: const Text('Chat'),
       ),
       body: Column(
         children: [
@@ -69,23 +69,23 @@ class _MessagepageState extends State<Messagepage> {
                         // เวลา
                         Text(
                           message['time'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         // ข้อความหรือรูป
                         if (message['text'] != null)
                           Container(
                             decoration: BoxDecoration(
-                              color: Color(0xFFE35205), // พื้นหลังสีส้ม
+                              color: const Color(0xFFE35205), // พื้นหลังสีส้ม
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                             child: Text(
                               message['text'],
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                               ),
@@ -116,7 +116,7 @@ class _MessagepageState extends State<Messagepage> {
             child: Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.photo),
+                  icon: const Icon(Icons.photo),
                   onPressed: _sendImage, // ฟังก์ชันส่งรูป
                 ),
                 Expanded(
@@ -130,9 +130,9 @@ class _MessagepageState extends State<Messagepage> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: _sendMessage,
                 ),
               ],

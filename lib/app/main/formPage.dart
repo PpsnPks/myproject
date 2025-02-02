@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:myproject/app/main/role.dart';
 
 class PersonalInfoForm extends StatefulWidget {
+  const PersonalInfoForm({super.key});
+
   @override
   _PersonalInfoFormState createState() => _PersonalInfoFormState();
 }
@@ -50,7 +52,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
       // เมื่อถึง Step 3 ให้ไปที่หน้า Role
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => RolePage()),
+        MaterialPageRoute(builder: (context) => const RolePage()),
       );
     }
   }
@@ -68,7 +70,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('กรอกข้อมูลส่วนตัว'),
-         centerTitle: true,
+        centerTitle: true,
         backgroundColor: Colors.white,
       ),
       body: Stepper(
@@ -160,10 +162,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   value: selectedFaculty,
-                  items: faculties
-                      .map((faculty) =>
-                          DropdownMenuItem(value: faculty, child: Text(faculty)))
-                      .toList(),
+                  items: faculties.map((faculty) => DropdownMenuItem(value: faculty, child: Text(faculty))).toList(),
                   onChanged: (value) {
                     setState(() {
                       selectedFaculty = value;
@@ -177,10 +176,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   value: selectedDepartment,
-                  items: departments
-                      .map((department) => DropdownMenuItem(
-                          value: department, child: Text(department)))
-                      .toList(),
+                  items: departments.map((department) => DropdownMenuItem(value: department, child: Text(department))).toList(),
                   onChanged: (value) {
                     setState(() {
                       selectedDepartment = value;
@@ -194,10 +190,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   value: selectedYear,
-                  items: years
-                      .map((year) =>
-                          DropdownMenuItem(value: year, child: Text(year)))
-                      .toList(),
+                  items: years.map((year) => DropdownMenuItem(value: year, child: Text(year))).toList(),
                   onChanged: (value) {
                     setState(() {
                       selectedYear = value;
@@ -264,4 +257,3 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     );
   }
 }
-

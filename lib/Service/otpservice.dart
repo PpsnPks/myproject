@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:myproject/environment.dart'; 
+import 'package:myproject/environment.dart';
 
 class OtpService {
   // URL ของ API
   final String otpUrl = "${Environment.baseUrl}/auth/verifyemail";
-  
+
   // ฟังก์ชันสำหรับ verifyemail
-  Future<Map<String, dynamic>> verifyemail(String user_id, String email, String verification_code) async {
+  Future<Map<String, dynamic>> verifyemail(String userId, String email, String verificationCode) async {
     try {
       // Header
       Map<String, String> headers = {
@@ -16,11 +16,7 @@ class OtpService {
       };
 
       // Body
-      Map<String, String> body = {
-        "user_id": user_id,
-        "email": email,
-        "verification_code": verification_code
-      };
+      Map<String, String> body = {"user_id": userId, "email": email, "verification_code": verificationCode};
 
       // POST Request
       final response = await http.post(
@@ -40,8 +36,7 @@ class OtpService {
         // กรณีเกิดข้อผิดพลาดจาก API
         return {
           "success": false,
-          "message": jsonDecode(response.body)['message'] ??
-              "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
+          "message": jsonDecode(response.body)['message'] ?? "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
         };
       }
     } catch (e) {

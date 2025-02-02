@@ -145,7 +145,7 @@ class _AddProductPageState extends State<AddProductPage> {
         imageFile = File(pickedFile.path);
       });
 
-      final Uint8List bytes = await pickedFile!.readAsBytes();
+      final Uint8List bytes = await pickedFile.readAsBytes();
       setState(() {
         _base64Image = base64Encode(bytes);
       });

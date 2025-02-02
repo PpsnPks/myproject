@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/auth_service.dart';
-import 'package:myproject/app/main/secureStorage.dart';
 
 class RolePage extends StatelessWidget {
   const RolePage({super.key});
@@ -45,10 +43,8 @@ class RolePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
-                        textStyle: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                        textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -66,10 +62,8 @@ class RolePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
-                        textStyle: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                        textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),

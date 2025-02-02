@@ -16,12 +16,29 @@ class _LoginState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false; // ใช้เพื่อตรวจสอบว่าอยู่ในระหว่างการทำงานหรือไม่
+  // bool _isLoading = false; // ใช้เพื่อตรวจสอบว่าอยู่ในระหว่างการทำงานหรือไม่
   bool _obscureText = true;
   String _errorMessage = "";
 
   // ฟังก์ชันสำหรับล็อกอิน
   Future<void> login() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: SizedBox(
+            height: 90.0, // กำหนดความสูง
+            width: 90.0, // กำหนดความกว้าง
+            child: CircularProgressIndicator(
+              color: Colors.orange,
+              strokeWidth: 12.0, // ปรับความหนาของวงกลม
+              strokeCap: StrokeCap.round,
+            ),
+          ),
+        );
+      },
+    );
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
@@ -34,9 +51,9 @@ class _LoginState extends State<LoginPage> {
       return;
     }
 
-    setState(() {
-      _isLoading = true; // เปลี่ยนสถานะเป็นกำลังโหลด
-    });
+    // setState(() {
+    //   _isLoading = true; // เปลี่ยนสถานะเป็นกำลังโหลด
+    // });
 
     try {
       // สร้าง URL ของ API
@@ -62,6 +79,9 @@ class _LoginState extends State<LoginPage> {
         Securestorage().writeSecureData('userId', userId);
         final test = await Securestorage().readSecureData('token');
         print('okk === $test');
+        if (mounted) {
+          Navigator.pop(context);
+        }
         Navigator.pushNamed(context, '/role');
         // แสดงข้อความสำเร็จ
         // ScaffoldMessenger.of(context).showSnackBar(
@@ -70,19 +90,23 @@ class _LoginState extends State<LoginPage> {
       } else {
         _errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง";
         // หาก API ตอบกลับไม่สำเร็จ
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("Login failed")),
-        // );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login failed")),
+        );
       }
     } catch (e) {
       // จัดการกับข้อผิดพลาดที่อาจเกิดขึ้น
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e")),
       );
+      print("777777 $e");
     } finally {
-      setState(() {
-        _isLoading = false; // เปลี่ยนสถานะกลับมาเป็นไม่กำลังโหลด
-      });
+      if (mounted) {
+        Navigator.pop(context);
+      }
+      // setState(() {
+      //   _isLoading = false; // เปลี่ยนสถานะกลับมาเป็นไม่กำลังโหลด
+      // });
     }
   }
 
