@@ -1,32 +1,33 @@
 import 'dart:convert'; // เพิ่มการนำเข้า dart:convert
-import 'package:myproject/auth_service.dart'; 
+import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/auth_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:myproject/environment.dart'; 
+import 'package:myproject/environment.dart';
 
 class AddService {
   // URL ของ API
   final String postUrl = "${Environment.baseUrl}/products";
-  
+
   // ฟังก์ชันสำหรับ post
   Future<Map<String, dynamic>> addproduct(
-    String product_name, 
-    String product_images, 
-    String product_qty, 
-    String product_price, 
-    String product_description, 
-    String product_category, 
-    String product_type,
-    String date_exp,
-    String product_location, 
-    String product_condition, 
-    String product_defect, 
-    String product_years,
-    String tag
-    ) async {
+      String product_name,
+      String product_images,
+      String product_qty,
+      String product_price,
+      String product_description,
+      String product_category,
+      String product_type,
+      String date_exp,
+      String product_location,
+      String product_condition,
+      String product_defect,
+      String product_years,
+      String tag) async {
     try {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
+      String userId = await Securestorage().readSecureData('userId') ?? '99999';
 
       if (accessToken == null) {
         return {
@@ -46,11 +47,12 @@ class AddService {
       Map<String, dynamic> body = {
         "product_name": product_name.isEmpty ? "N/A" : product_name,
         "product_images": product_images,
-        "product_qty": product_qty,
-        "product_price": product_price,
+        "product_qty": int.parse(product_qty),
+        "product_price": int.parse(product_price),
         "product_description": product_description,
         "product_category": product_category,
         "product_type": product_type,
+        "seller_id": int.parse(userId),
         "date_exp": date_exp,
         "product_location": product_location,
         "product_condition": product_condition,

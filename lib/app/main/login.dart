@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:myproject/app/main/secureStorage.dart';
-import 'package:myproject/environment.dart';
+import 'package:myproject/Service/loginservice.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,14 +10,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  final LoginService _loginService = LoginService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   // bool _isLoading = false; // ใช้เพื่อตรวจสอบว่าอยู่ในระหว่างการทำงานหรือไม่
   bool _obscureText = true;
   String _errorMessage = "";
 
-  // ฟังก์ชันสำหรับล็อกอิน
-  Future<void> login() async {
+  void _handleLogin(BuildContext context) async {
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -39,74 +38,37 @@ class _LoginState extends State<LoginPage> {
         );
       },
     );
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
-
-    // ตรวจสอบข้อมูลก่อน
     if (email.isEmpty || password.isEmpty) {
-      // แสดงข้อความเตือนถ้าข้อมูลยังไม่ครบ
+      if (mounted) {
+        Navigator.pop(context);
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter username and password")),
+        const SnackBar(content: Text('กรุณากรอกอีเมลและรหัสผ่าน')),
       );
       return;
     }
 
-    // setState(() {
-    //   _isLoading = true; // เปลี่ยนสถานะเป็นกำลังโหลด
-    // });
+    final result = await _loginService.login(email, password);
 
-    try {
-      // สร้าง URL ของ API
-      final Uri apiUrl = Uri.parse('${Environment.baseUrl}/auth/login');
-
-      // ส่งข้อมูล login (username, password) ผ่าน HTTP POST
-      final response = await http.post(
-        apiUrl,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-
-      // ตรวจสอบสถานะการตอบกลับ
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        // ตัวอย่างการใช้งานข้อมูลจาก API (เช่น token)
-        String token = data['token'];
-        String userId = data['user_id'].toString();
-        Securestorage().writeSecureData('token', token);
-        Securestorage().writeSecureData('userId', userId);
-        final test = await Securestorage().readSecureData('token');
-        print('okk === $test');
-        if (mounted) {
-          Navigator.pop(context);
-        }
-        Navigator.pushNamed(context, '/role');
-        // แสดงข้อความสำเร็จ
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("Login successful")),
-        // );
-      } else {
-        _errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง";
-        // หาก API ตอบกลับไม่สำเร็จ
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login failed")),
-        );
-      }
-    } catch (e) {
-      // จัดการกับข้อผิดพลาดที่อาจเกิดขึ้น
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-      print("777777 $e");
-    } finally {
+    if (result['success']) {
+      // เก็บ token หรือทำการ Redirect
       if (mounted) {
         Navigator.pop(context);
       }
-      // setState(() {
-      //   _isLoading = false; // เปลี่ยนสถานะกลับมาเป็นไม่กำลังโหลด
-      // });
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('เข้าสู่ระบบสำเร็จ')),
+      // );
+      FocusScope.of(context).unfocus();
+      Navigator.pushReplacementNamed(context, '/role');
+      // Navigator.pushNamed(context, '/role'); // แก้ไขตาม route ของคุณ
+    } else {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+      // แสดงข้อความผิดพลาด
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'])),
+      );
     }
   }
 
@@ -209,7 +171,7 @@ class _LoginState extends State<LoginPage> {
                     ),
                   ),
                   onPressed: () {
-                    login();
+                    _handleLogin(context);
                     // Navigator.pushNamed(context, '/role');
                   },
                   child: const Text(

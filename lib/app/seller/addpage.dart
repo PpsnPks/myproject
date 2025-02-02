@@ -3,6 +3,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/addservice.dart'; // เพิ่มการนำเข้า
+// import 'package:myproject/Service/uploadimgservice.dart';
 // import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -61,9 +62,10 @@ class _AddProductPageState extends State<AddProductPage> {
     _tagController.clear();
   }
 
+  List<XFile> pickedFiles = [];
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile> pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
+    pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
 
     if (_imageBytesList.length + pickedFiles.length > 5) {
       // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
@@ -84,9 +86,14 @@ class _AddProductPageState extends State<AddProductPage> {
 
   Future<void> _add() async {
     final addService = AddService();
+    // Map<String, dynamic> uploadResponse = await UploadImgService().uploadImg(pickedFiles);
+    // if(uploadResponse['success']){
+
+    // }
+    // List images_path = [];
     final result = await addService.addproduct(
       _productNameController.text,
-      _productImagesController.text,
+      _productImagesController.text, //images_path,
       _productQtyController.text,
       _productPriceController.text,
       _productDescriptionController.text,
