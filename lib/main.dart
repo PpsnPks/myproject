@@ -29,7 +29,7 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "KMITL APP",
-    home: LoginPage(),
+    home: const LoginPage(),
     routes: {
       '/home': (context) => const HomePage(),
       '/like': (context) => const LikePage(),
@@ -56,23 +56,21 @@ void main() {
       '/message': (context) => const Messagepage(),
       '/profile': (context) => const ProfilePage(),
       '/confirm-seller': (context) => const ConfirmSeller(),
-      '/login': (context) => LoginPage(),
-      '/register': (context) => RegisterPage(),
-      '/forgotpassword': (context) => ForgotPasswordPage(),
-      '/otp': (context) => OtpPage(),
-      '/infoform': (context) => PersonalInfoForm()
+      '/login': (context) => const LoginPage(),
+      '/register': (context) => const RegisterPage(),
+      '/forgotpassword': (context) => const ForgotPasswordPage(),
+      '/otp': (context) => const OtpPage(),
+      '/infoform': (context) => const PersonalInfoForm()
     },
   ));
 }
-
-
 // void main() {
 //   runApp(MaterialApp(
 //     debugShowCheckedModeBanner: false,
 //     title: "KMITL APP",
 //     home: LoginPage(),
 //     onGenerateRoute: (settings) {
-//       // ตรวจสอบเงื่อนไขของ Guards ที่จะต้องมีการตรวจสอบการล็อกอิน
+//         // ตรวจสอบเงื่อนไขของ Guards ที่จะต้องมีการตรวจสอบการล็อกอิน
 //       if (settings.name == '/home' || settings.name == '/profile' || settings.name == '/seller') {
 //         // ตัวอย่างการตรวจสอบว่าผู้ใช้ล็อกอินหรือไม่
 //         bool isLoggedIn = false; // เปลี่ยนให้เป็นการตรวจสอบจริง

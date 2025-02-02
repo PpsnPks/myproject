@@ -120,45 +120,86 @@ class _ConfirmState extends State<Confirm> {
             return Column(
               children: [
                 // ส่วนแสดงสินค้าที่สั่ง
-                Card(
-                  margin: const EdgeInsets.all(16.0),
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 7.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white, // Background color
+                    border: Border.all(
+                        color: Colors.grey.shade300, width: 2), // Gray border
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Row(
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
                             product.imageUrl,
-                            width: 80,
-                            height: 80,
+                            width: 105,
+                            height: 105,
                             fit: BoxFit.cover,
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
+                        const SizedBox(width: 20),
+                        Flexible(
+                          fit: FlexFit.loose,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 product.title,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    height: 1.6),
+                                maxLines: 1,
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                product.detail,
-                                style: const TextStyle(
-                                    color: Colors.grey, fontSize: 14),
+                              // const SizedBox(height: 4),
+                              Container(
+                                constraints:
+                                    const BoxConstraints(minHeight: 57.0),
+                                child: Text(
+                                  product.detail,
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 13,
+                                      height: 1.3),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
+                                ),
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                product.price,
-                                style: const TextStyle(
-                                    color: Colors.orange, fontSize: 18),
+                              // const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    // decoration: BoxDecoration(
+                                    //   color: Colors.grey[200],
+                                    //   borderRadius: BorderRadius.circular(4),
+                                    // ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    child: const Text(
+                                      '', // product.category
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                          height: 1.2),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${product.price} ฿',
+                                    style: const TextStyle(
+                                        color: Color(0XFFE35205),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.0),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -167,7 +208,6 @@ class _ConfirmState extends State<Confirm> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
 
                 // // สถานะการสั่งสินค้า

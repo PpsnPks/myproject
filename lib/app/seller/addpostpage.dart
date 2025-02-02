@@ -1,8 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
+// import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart'; // เพิ่มการนำเข้า
-import 'package:myproject/auth_service.dart'; 
+// import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart'; // นำเข้าฟุตเตอร์
 import 'package:image_picker/image_picker.dart';
 
@@ -10,7 +11,7 @@ class AddPostPage extends StatefulWidget {
   const AddPostPage({super.key});
 
   @override
-  _AddPostPageState createState() => _AddPostPageState();
+  State<AddPostPage> createState() => _AddPostPageState();
 }
 
 class _AddPostPageState extends State<AddPostPage> {
@@ -19,45 +20,44 @@ class _AddPostPageState extends State<AddPostPage> {
   final TextEditingController _tagController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
-  final TextEditingController _userpost_idController = TextEditingController();
-  
+  final TextEditingController _userpostIdController = TextEditingController();
 
-  List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
+  final List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
   final PageController _pageController = PageController(); // ตัวควบคุม PageView
 
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile>? pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
+    final List<XFile> pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
 
-    if (pickedFiles != null) {
-      if (_imageBytesList.length + pickedFiles.length > 5) {
-        // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
-        );
-      } else {
-        // อ่านภาพเป็น bytes และเพิ่มลงในรายการ
-        final List<Uint8List> newImageBytes = await Future.wait(
-          pickedFiles.map((file) => file.readAsBytes()),
-        );
+    if (_imageBytesList.length + pickedFiles.length > 5) {
+      // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
+      );
+    } else {
+      // อ่านภาพเป็น bytes และเพิ่มลงในรายการ
+      final List<Uint8List> newImageBytes = await Future.wait(
+        pickedFiles.map((file) => file.readAsBytes()),
+      );
 
-        setState(() {
-          _imageBytesList.addAll(newImageBytes); // เพิ่มภาพที่เลือกใหม่
-        });
-      }
+      setState(() {
+        _imageBytesList.addAll(newImageBytes); // เพิ่มภาพที่เลือกใหม่
+      });
     }
   }
 
   Future<void> _post() async {
     final postService = PostService();
+
+    // เรียกใช้ฟังก์ชัน addpost
     final result = await postService.addpost(
       _imageController.text,
       _detailController.text,
       _categoryController.text,
       _tagController.text,
       _priceController.text,
-      _userpost_idController.text,
+      _userpostIdController.text,
     );
 
     if (result['success']) {
@@ -98,9 +98,9 @@ class _AddPostPageState extends State<AddPostPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: _imageBytesList.isEmpty
-                      ? Column(
+                      ? const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.camera_alt, size: 50, color: Colors.grey),
                             SizedBox(height: 8),
                             Text('เพิ่มรูปภาพ', style: TextStyle(color: Colors.grey)),
@@ -135,13 +135,11 @@ class _AddPostPageState extends State<AddPostPage> {
                                 children: List.generate(
                                   _imageBytesList.length,
                                   (index) => Container(
-                                    margin: EdgeInsets.only(right: 8),
+                                    margin: const EdgeInsets.only(right: 8),
                                     width: 12,
                                     height: 12,
                                     decoration: BoxDecoration(
-                                      color: index == currentIndex
-                                          ? Color(0xFFFA5A2A)
-                                          : Colors.grey,
+                                      color: index == currentIndex ? const Color(0xFFFA5A2A) : Colors.grey,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -171,7 +169,7 @@ class _AddPostPageState extends State<AddPostPage> {
               TextField(
                 controller: _detailController,
                 maxLines: 3,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'รายละเอียดสินค้า',
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFFE0E0E0)),

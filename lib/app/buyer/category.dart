@@ -32,6 +32,114 @@ class _CategoryPageState extends State<CategoryPage> {
         title: Text(widget.category),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        actions: [
+          IconButton(
+            padding: const EdgeInsets.all(16.0),
+            icon: const Icon(
+              Icons.sort_rounded,
+              color: Color(0xFFA5A9B6),
+              size: 30,
+            ),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    padding: const EdgeInsets.all(20),
+                    height: 460,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Center(
+                            child: Text(
+                          'ตัวกรอง',
+                          style: TextStyle(fontSize: 24),
+                        )),
+                        Expanded(
+                          child: ListView(
+                            children: [
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                // leading: const Icon(Icons.edit, color: Colors.grey),
+                                title: const Text(
+                                  'เรียงตามราคา (สูงไปต่ำ)',
+                                  style: TextStyle(fontSize: 16, color: Colors.black),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context); // ปิด BottomSheet
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามราคา (ต่ำไปสูง)'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามวันที่ลงสินค้า'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามสภาพสินค้า (มือหนึ่ง)'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามสภาพสินค้า (มือสอง)'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามประเภทสินค้า (ขาย)'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามประเภทสินค้า (แจก)'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามประเภทสินค้า (พรีออเดอร์)'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          // const SizedBox(
+          //   width: 12,
+          // )
+        ],
       ),
       body: FutureBuilder<List<Product>>(
         future: likedProducts,
@@ -46,11 +154,8 @@ class _CategoryPageState extends State<CategoryPage> {
             final products = snapshot.data!;
 
             return GridView.builder(
-              padding: const EdgeInsets.only(
-                  left: 12,
-                  right: 12,
-                  top:
-                      16), //padding: const EdgeInsets.all(16), // เพิ่ม padding ให้ดูสมส่วน
+              padding:
+                  const EdgeInsets.only(left: 12, right: 12, top: 16), //padding: const EdgeInsets.all(16), // เพิ่ม padding ให้ดูสมส่วน
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, // 2 คอลัมน์
                 // เริ่มต้นด้วย childAspectRatio = 0.7
@@ -63,37 +168,31 @@ class _CategoryPageState extends State<CategoryPage> {
                 final product = products[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context,
-                        '/selectproduct'); // เปลี่ยนหน้าไปที่ '/confirm' เมื่อกดคาร์ด
+                    Navigator.pushNamed(context, '/selectproduct'); // เปลี่ยนหน้าไปที่ '/confirm' เมื่อกดคาร์ด
                   },
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       // ตรวจสอบความยาวของ title
                       // ignore: unused_local_variable
-                      double aspectRatio = (product.title.length > 20)
-                          ? 0.6
-                          : 0.8; // ปรับค่า childAspectRatio ตามความยาว
+                      double aspectRatio = (product.title.length > 20) ? 0.6 : 0.8; // ปรับค่า childAspectRatio ตามความยาว
 
                       return Card(
                         color: const Color(0xFFFFFFFF),
                         shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              color: Color(0xFFDFE2EC), width: 2.0),
+                          side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 0,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
+                            crossAxisAlignment: CrossAxisAlignment.start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.asset(
                                   product.imageUrl, // ใช้ imageUrl จาก product
-                                  height: constraints.maxWidth -
-                                      28, // ปรับขนาดรูปภาพ
+                                  height: constraints.maxWidth - 28, // ปรับขนาดรูปภาพ
                                   width: constraints.maxWidth - 28,
                                   fit: BoxFit.contain,
                                   alignment: Alignment.topCenter,
@@ -107,8 +206,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
-                                  overflow: TextOverflow
-                                      .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
+                                  overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
                                   maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
                                 ),
                               ),
@@ -119,12 +217,8 @@ class _CategoryPageState extends State<CategoryPage> {
                                   child: Expanded(
                                     child: Text(
                                       product.detail, // ใช้ title จาก product
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 12,
-                                          color: Color(0xFFA5A9B6)),
-                                      overflow: TextOverflow
-                                          .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
+                                      style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 12, color: Color(0xFFA5A9B6)),
+                                      overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
                                       maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
                                     ),
                                   ),
@@ -132,8 +226,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               ),
                               // const SizedBox(height: 36),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // จัดตำแหน่งให้ห่างกัน
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ห่างกัน
                                 children: [
                                   Container(
                                       // decoration: BoxDecoration(

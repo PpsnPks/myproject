@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:myproject/environment.dart'; 
-import 'package:myproject/auth_service.dart'; 
+import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/environment.dart';
+import 'package:myproject/auth_service.dart';
 
 class LoginService {
   // URL ของ API
-  final String loginUrl = "${Environment.baseUrl}/auth/login";
+  final String url = "${Environment.baseUrl}/auth/login";
 
   // ฟังก์ชันสำหรับ login
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -24,7 +25,7 @@ class LoginService {
 
       // POST Request
       final response = await http.post(
-        Uri.parse(loginUrl),
+        Uri.parse(url),
         headers: headers,
         body: jsonEncode(body),
       );
@@ -41,6 +42,13 @@ class LoginService {
         // บันทึก access_token โดยใช้ AuthService
         AuthService authService = AuthService();
         await authService.saveAccessToken(accessToken);
+        // เก็บ data
+        String token = data['token'];
+        String userId = data['user_id'].toString();
+        Securestorage().writeSecureData('token', token);
+        Securestorage().writeSecureData('userId', userId);
+        // final test = await Securestorage().readSecureData('token');
+        // print('okk === $test');
         return {
           "success": true,
           "data": jsonDecode(response.body),
@@ -49,8 +57,7 @@ class LoginService {
         // กรณีเกิดข้อผิดพลาดจาก API
         return {
           "success": false,
-          "message": jsonDecode(response.body)['message'] ??
-              "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
+          "message": jsonDecode(response.body)['message'] ?? "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
         };
       }
     } catch (e) {

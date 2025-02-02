@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/auth_service.dart'; 
 
 class RolePage extends StatelessWidget {
   const RolePage({super.key});
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.orangeAccent, Colors.orange],
+            colors: [Color.fromARGB(255, 255, 247, 236), Colors.orange],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -24,7 +20,7 @@ class RolePage extends StatelessWidget {
               const Text(
                 'คุณสนใจที่จะเป็น',
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 47,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -47,10 +43,10 @@ class RolePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                       child: const Text('คนซื้อ'),
@@ -66,10 +62,10 @@ class RolePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                       child: const Text('คนขาย'),
