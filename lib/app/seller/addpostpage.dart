@@ -19,6 +19,8 @@ class _AddPostPageState extends State<AddPostPage> {
   final TextEditingController _tagController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
+  final TextEditingController _userpost_idController = TextEditingController();
+  
 
   List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
@@ -55,6 +57,7 @@ class _AddPostPageState extends State<AddPostPage> {
       _categoryController.text,
       _tagController.text,
       _priceController.text,
+      _userpost_idController.text,
     );
 
     if (result['success']) {

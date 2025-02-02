@@ -41,7 +41,7 @@ void main() {
       '/category': (context) => const CategoryPage('หมวดหมู่'),
       '/role': (context) => const RolePage(),
       '/seller': (context) => const SellerPage(),
-      '/addproduct': (context) => const AddProductPage(),
+      '/addproduct': (context) => AddProductPage(),
       '/addpost': (context) => const AddPostPage(),
       '/general': (context) => const CategoryPage('ของใช้ทั่วไป'),
       '/electronics': (context) => const CategoryPage('อิเล็กทรอนิกส์'),

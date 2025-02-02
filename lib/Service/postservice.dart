@@ -8,7 +8,7 @@ class PostService {
   final String postUrl = "${Environment.baseUrl}/posts";
   
   // ฟังก์ชันสำหรับ post
-  Future<Map<String, dynamic>> addpost(String image, String detail, String category, String tag, String price) async {
+  Future<Map<String, dynamic>> addpost(String image, String detail, String category, String tag, String price, String userpost_id) async {
     try {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
@@ -35,6 +35,7 @@ class PostService {
         "category": category,
         "tag": tag,
         "price": price,
+        "userpost_id": userpost_id,
       };
 
       // แปลง Map เป็น JSON string ก่อนส่ง

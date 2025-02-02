@@ -93,14 +93,6 @@ class _PostPageState extends State<PostPage> {
                     // Section: Post Title
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      // child: Text(
-                      //   product.title,
-                      //   style: const TextStyle(
-                      //     fontSize: 16,
-                      //     fontWeight: FontWeight.bold,
-                      //     color: Colors.black87,
-                      //   ),
-                      // ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
