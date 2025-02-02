@@ -1,5 +1,5 @@
 // import 'dart:io';
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart'; // เพิ่มการนำเข้า
@@ -11,7 +11,7 @@ class AddPostPage extends StatefulWidget {
   const AddPostPage({super.key});
 
   @override
-  _AddPostPageState createState() => _AddPostPageState();
+  State<AddPostPage> createState() => _AddPostPageState();
 }
 
 class _AddPostPageState extends State<AddPostPage> {
@@ -19,44 +19,58 @@ class _AddPostPageState extends State<AddPostPage> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _tagController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  // String? _image;
   final TextEditingController _imageController = TextEditingController();
+  final TextEditingController _userpostIdController = TextEditingController();
 
-  // ฟังก์ชันที่จะเรียกใช้เมื่อกดปุ่มโพสต์
+  final List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
+  int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
+  final PageController _pageController = PageController(); // ตัวควบคุม PageView
+
+  Future<void> _pickImages() async {
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
+
+    if (_imageBytesList.length + pickedFiles.length > 5) {
+      // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
+      );
+    } else {
+      // อ่านภาพเป็น bytes และเพิ่มลงในรายการ
+      final List<Uint8List> newImageBytes = await Future.wait(
+        pickedFiles.map((file) => file.readAsBytes()),
+      );
+
+      setState(() {
+        _imageBytesList.addAll(newImageBytes); // เพิ่มภาพที่เลือกใหม่
+      });
+    }
+  }
+
   Future<void> _post() async {
     final postService = PostService();
 
     // เรียกใช้ฟังก์ชัน addpost
     final result = await postService.addpost(
-      _imageController.text, // ใช้ค่า image ที่ผู้ใช้เลือก
+      _imageController.text,
       _detailController.text,
       _categoryController.text,
       _tagController.text,
       _priceController.text,
+      _userpostIdController.text,
     );
 
     if (result['success']) {
-      // ถ้าประสบความสำเร็จให้แสดงข้อความ
       print("โพสต์สำเร็จ");
     } else {
-      // ถ้าล้มเหลวแสดงข้อความผิดพลาด
       print(result['message']);
     }
   }
 
-  String? _base64Image; // Store base64 image data for web
-
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      // Read image as bytes and encode it to base64
-      final Uint8List bytes = await pickedFile.readAsBytes();
-      setState(() {
-        _base64Image = base64Encode(bytes);
-      });
-    }
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -74,9 +88,8 @@ class _AddPostPageState extends State<AddPostPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              // Image upload section
               GestureDetector(
-                onTap: _pickImage,
+                onTap: _pickImages,
                 child: Container(
                   height: 200,
                   width: double.infinity,
@@ -84,7 +97,7 @@ class _AddPostPageState extends State<AddPostPage> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: _base64Image == null
+                  child: _imageBytesList.isEmpty
                       ? const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -93,19 +106,65 @@ class _AddPostPageState extends State<AddPostPage> {
                             Text('เพิ่มรูปภาพ', style: TextStyle(color: Colors.grey)),
                           ],
                         )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.memory(
-                            base64Decode(_base64Image!),
-                            fit: BoxFit.cover,
-                          ),
+                      : Stack(
+                          children: [
+                            PageView.builder(
+                              controller: _pageController,
+                              itemCount: _imageBytesList.length,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  currentIndex = index;
+                                });
+                              },
+                              itemBuilder: (context, index) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.memory(
+                                    _imageBytesList[index],
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                            ),
+                            Positioned(
+                              bottom: 8,
+                              left: 0,
+                              right: 0,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  _imageBytesList.length,
+                                  (index) => Container(
+                                    margin: const EdgeInsets.only(right: 8),
+                                    width: 12,
+                                    height: 12,
+                                    decoration: BoxDecoration(
+                                      color: index == currentIndex ? const Color(0xFFFA5A2A) : Colors.grey,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 8,
+                              right: 16,
+                              child: Text(
+                                '${currentIndex + 1}/${_imageBytesList.length}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  backgroundColor: Colors.black.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                 ),
               ),
               const SizedBox(height: 8),
               const Text('* รูปสินค้าควรมีขนาดใหญ่และชัดเจนเพื่อให้ลูกค้ามองเห็นรายละเอียดสินค้าได้', style: TextStyle(color: Colors.grey)),
-
-              // Product form fields
               const SizedBox(height: 16),
               TextField(
                 controller: _detailController,
@@ -171,14 +230,13 @@ class _AddPostPageState extends State<AddPostPage> {
                   contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 ),
               ),
-
+              // Add other form fields as needed...
               const SizedBox(height: 16),
-              // Button to post
               Center(
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _post, // เรียกใช้ฟังก์ชัน _post เมื่อกดปุ่ม
+                    onPressed: _post,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFA5A2A),
                       padding: const EdgeInsets.symmetric(vertical: 18),

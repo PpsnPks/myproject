@@ -36,7 +36,7 @@ class LoginService {
       if (response.statusCode == 200) {
         // แปลง JSON เป็น Map
         var data = jsonDecode(response.body);
-        String accessToken = data['access_token'];
+        String accessToken = data['token'];
 
         // บันทึก access_token โดยใช้ AuthService
         AuthService authService = AuthService();
