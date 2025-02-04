@@ -10,12 +10,27 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  late Future<List<Post>> posts;
+  Future<List<Post>> posts = Future.value([]);
+
+  _loadmore(int page, int length) async {
+    Map<String, dynamic> response = await PostService().getPost(1, 10);
+    print('11111111111 $response');
+    if (response['status'] == true) {
+      final newPosts = response['data'];
+      setState(() {
+        posts = newPosts;
+        // page++;  // เพิ่มเลขหน้าเพื่อโหลดข้อมูลหน้าถัดไป
+      });
+      print('22222222222');
+    }
+    print('lllllllllll  $response');
+    return;
+  }
 
   @override
   void initState() {
     super.initState();
-    posts = Postservice().getCategoryProducts(); // ดึงข้อมูลจาก API
+    _loadmore(1, 10); // ดึงข้อมูลจาก API
     //   _loadData();
 
     //   // ตั้งค่า ScrollController เพื่อจับการเลื่อน

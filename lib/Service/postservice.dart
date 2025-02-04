@@ -68,7 +68,6 @@ class PostService {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
-      String userId = await Securestorage().readSecureData('userId');
 
       // Header
       Map<String, String> headers = {
@@ -78,36 +77,35 @@ class PostService {
       };
 
       // Body (แปลงข้อมูลให้เป็น JSON string)
-      Map<String, dynamic> body = {
+      Map<String, dynamic> queryParams = {
         "status": null,
         "draw": 1,
         "columns": [],
         "order": [
           {"column": 0, "dir": "asc"}
         ],
-        "start": (page - 1) * length,
-        "length": length,
+        "start": 1,
+        "length": 10,
         "search": {"value": "", "regex": false}
       };
 
       // แปลง Map เป็น JSON string ก่อนส่ง
-      String jsonBody = json.encode(body);
-
-      // POST Request
-      final response = await http.post(
-        Uri.parse(postUrl),
-        headers: headers,
-        body: jsonBody, // ส่งข้อมูลในรูปแบบ JSON
-      );
+      // String jsonBody = json.encode(body);
+      final Uri url = Uri.parse(postUrl).replace(queryParameters: queryParams);
+      // Get Request
+      final response = await http.get(url, headers: headers);
 
       // ตรวจสอบสถานะของ Response
       if (response.statusCode == 200) {
-        List<Post> data = jsonDecode(response.body).data.map((data) => {});
+        print('888888 ${response.statusCode}');
+        // List<Post> data = (jsonDecode(response.body)['data'] as List).map((postJson) => Post.fromJson(postJson)).toList();
+        print('888888 ${jsonDecode(response.body)['data']['data']}');
         return {
           "success": true,
-          "data": response.body,
+          "data": Postservice().getCategoryProducts() //data,
         };
       } else {
+        print('888888 ${response.statusCode}');
         return {
           "success": false,
           "message": 'error ${response.statusCode} ${response.body}',
@@ -181,4 +179,17 @@ class Post {
     required this.detail,
     required this.tags,
   });
+
+  factory Post.fromJson(Map<String, dynamic> data) {
+    return Post(
+      profile: data['user']['pic'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
+      name: data['user']['name'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
+      faculty: data['user']['faculty'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
+      id: data['id'].toString(),
+      imageUrl: data['image'],
+      title: data['category'], // หรือเปลี่ยนให้ตรงกับ field ที่คุณต้องการ
+      detail: data['detail'],
+      tags: data['tag'],
+    );
+  }
 }

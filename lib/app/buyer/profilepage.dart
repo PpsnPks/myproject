@@ -51,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         onTap: () {
                           // Handle personal info action
                           Navigator.pop(context); // Close the bottom sheet
+                          Navigator.pushNamed(context, '/infoprofile');
                           // Navigate to personal information page if needed
                         },
                       ),
