@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:myproject/environment.dart';
-// import 'package:myproject/Service/registerservice.dart';
+
+import 'otp.dart'; // Import หน้า OTP
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -24,22 +25,20 @@ class _RegisterPageState extends State<RegisterPage> {
     if (value == null || value.isEmpty) {
       return 'กรุณากรอกอีเมล';
     }
-    // ใช้ RegEx เพื่อตรวจสอบรูปแบบอีเมล
     final emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    final kmitlRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@kmitl\.ac\.th$'); // รูปแบบอีเมล
+    final kmitlRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@kmitl\.ac\.th$');
     if (!emailRegExp.hasMatch(value)) {
       return 'รูปแบบอีเมลไม่ถูกต้อง';
     } else if (!kmitlRegExp.hasMatch(value)) {
       return 'กรุณาลงทะเบียนด้วยอีเมลของสถาบัน';
     }
-    return null; // ถ้าผ่าน validation
+    return null;
   }
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'กรุณากรอกรหัสผ่าน';
     }
-    // ใช้ RegEx เพื่อตรวจสอบรูปแบบอีเมล
     final passRegExp = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
     if (value.length < 8) {
       return 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัว';
@@ -47,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (!passRegExp.hasMatch(value)) {
       return 'รหัสผ่านต้องประกอบด้วย A-Z, a-z, 0-9 และอักขระพิเศษอย่างน้อย 1 ตัว';
     }
-    return null; // ถ้าผ่าน validation
+    return null;
   }
 
   String? validateConfirmPassword(String? value) {
@@ -59,15 +58,14 @@ class _RegisterPageState extends State<RegisterPage> {
       return 'รหัสผ่านไม่ตรงกัน';
     }
 
-    return null; // ถ้าผ่าน validation
+    return null;
   }
 
   Future<void> registerUser() async {
-    if (_emailController.text != '' &&
-        _emailController.text != '' &&
-        _passwordController.text != '' &&
-        _confirmPasswordController.text != '') {
-      // สร้างข้อมูลที่จะส่งไปยัง API
+    if (_emailController.text.isNotEmpty &&
+        _nameController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _confirmPasswordController.text.isNotEmpty) {
       Map<String, dynamic> userData = {
         'name': _nameController.text,
         'email': _emailController.text,
@@ -83,31 +81,21 @@ class _RegisterPageState extends State<RegisterPage> {
           body: jsonEncode(userData),
         );
 
-        // ตรวจสอบสถานะของ response
         if (response.statusCode == 200) {
-          // หากการลงทะเบียนสำเร็จ
-          print('ลงทะเบียนสำเร็จ');
-          // แสดงข้อความแจ้ง หรือนำผู้ใช้ไปหน้าอื่น
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('ลงทะเบียนสำเร็จ')),
           );
+          Navigator.pushReplacementNamed(
+            context, 
+            '/otp'
+          );
         } else {
-          // หากการลงทะเบียนล้มเหลว
-          print('การลงทะเบียนล้มเหลว: ${response.statusCode}');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('การลงทะเบียนล้มเหลว')),
           );
-          // แสดงข้อความแจ้ง error
-          // setState(() {
-          //   _errorMessage = 'การลงทะเบียนล้มเหลว: ${response.body}';
-          // });
         }
       } catch (error) {
-        // Handle network or other errors
         print('เกิดข้อผิดพลาด: $error');
-        // setState(() {
-        //   _errorMessage = 'เกิดข้อผิดพลาด: $error';
-        // });
       }
     }
   }
@@ -128,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Form(
-            key: _formKey, // ผูกฟอร์มกับ _formKey
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -140,7 +128,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                // Name Input
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
@@ -151,7 +138,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Email Input
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -160,10 +146,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  validator: validateEmail, // ใช้ฟังก์ชัน validate
+                  validator: validateEmail,
                 ),
                 const SizedBox(height: 20),
-                // Password Input
                 TextFormField(
                   obscureText: _obscureText,
                   controller: _passwordController,
@@ -171,13 +156,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     labelText: 'รหัสผ่าน',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
                       ),
-                      onPressed: () => {
+                      onPressed: () {
                         setState(() {
-                          _obscureText = !_obscureText; // สลับค่า _obscureText
-                        })
-                      }, // คลิกไอคอนเพื่อสลับสถานะ
+                          _obscureText = !_obscureText;
+                        });
+                      },
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -186,7 +171,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   validator: validatePassword,
                 ),
                 const SizedBox(height: 20),
-                // Confirm Password Input
                 TextFormField(
                   obscureText: _obscureText2,
                   controller: _confirmPasswordController,
@@ -194,13 +178,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     labelText: 'ยืนยันรหัสผ่าน',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureText2 ? Icons.visibility : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
+                        _obscureText2 ? Icons.visibility : Icons.visibility_off,
                       ),
-                      onPressed: () => {
+                      onPressed: () {
                         setState(() {
-                          _obscureText2 = !_obscureText2; // สลับค่า _obscureText
-                        })
-                      }, // คลิกไอคอนเพื่อสลับสถานะ
+                          _obscureText2 = !_obscureText2;
+                        });
+                      },
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -209,7 +193,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   validator: validateConfirmPassword,
                 ),
                 const SizedBox(height: 30),
-                // Register Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
@@ -219,17 +202,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   onPressed: () {
-                    print(_nameController.text);
-                    print(_emailController.text);
-                    print(_passwordController.text);
-                    print(_confirmPasswordController.text);
-                    // ตรวจสอบว่า form ทั้งหมดผ่าน validation หรือไม่
                     if (_formKey.currentState?.validate() ?? false) {
-                      // ถ้าผ่าน validation
-                      print('อีเมลถูกต้อง: ${_emailController.text}');
                       registerUser();
-                    } else {
-                      print('ข้อมูลไม่ถูกต้อง');
                     }
                   },
                   child: const Text(

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'dart:convert';
-
 import 'package:myproject/app/main/role.dart';
+import 'package:myproject/Service/formservice.dart';
 
 class PersonalInfoForm extends StatefulWidget {
   const PersonalInfoForm({super.key});
@@ -43,17 +43,64 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     }
   }
 
+  void _navigateToRolePage() async {
+    final selectedRole = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RolePage()),
+    );
+
+    if (selectedRole != null) {
+      _submitForm(selectedRole);
+    }
+  }
+
+  Future<void> _submitForm(String role) async {
+    if (_validateForm()) {
+      FormService formService = FormService();
+      final result = await formService.form(
+        '${firstNameController.text} ${lastNameController.text}',
+        emailController.text,
+        phoneController.text,
+        'N/A', // Address field
+        selectedFaculty ?? '',
+        selectedDepartment ?? '',
+        selectedYear ?? '',
+        role,
+      );
+
+      if (result['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('บันทึกข้อมูลสำเร็จ: ${result["data"]}')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('เกิดข้อผิดพลาด: ${result["message"]}')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบถ้วน')),
+      );
+    }
+  }
+
+  bool _validateForm() {
+    return phoneController.text.isNotEmpty &&
+        emailController.text.isNotEmpty &&
+        firstNameController.text.isNotEmpty &&
+        lastNameController.text.isNotEmpty &&
+        selectedFaculty != null &&
+        selectedDepartment != null &&
+        selectedYear != null;
+  }
+
   void _nextStep() {
     if (currentStep < 2) {
       setState(() {
         currentStep++;
       });
     } else {
-      // เมื่อถึง Step 3 ให้ไปที่หน้า Role
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const RolePage()),
-      );
+      _navigateToRolePage(); // Navigate to role selection at the final step
     }
   }
 
@@ -83,7 +130,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
             child: Row(
               children: [
                 ElevatedButton(
-                  onPressed: details.onStepContinue,
+                  onPressed: currentStep == 2 ? _navigateToRolePage : details.onStepContinue,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0XFFE35205),
                     foregroundColor: Colors.white,
@@ -199,17 +246,6 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                   decoration: const InputDecoration(
                     labelText: 'ชั้นปี',
                     border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: studentIdController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'รหัสนักศึกษา*',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
                   ),
                 ),
               ],
