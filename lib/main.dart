@@ -64,66 +64,6 @@ void main() {
     },
   ));
 }
-// void main() {
-//   runApp(MaterialApp(
-//     debugShowCheckedModeBanner: false,
-//     title: "KMITL APP",
-//     home: LoginPage(),
-//     onGenerateRoute: (settings) {
-//         // ตรวจสอบเงื่อนไขของ Guards ที่จะต้องมีการตรวจสอบการล็อกอิน
-//       if (settings.name == '/home' || settings.name == '/profile' || settings.name == '/seller') {
-//         // ตัวอย่างการตรวจสอบว่าผู้ใช้ล็อกอินหรือไม่
-//         bool isLoggedIn = false; // เปลี่ยนให้เป็นการตรวจสอบจริง
-//         if (isLoggedIn) {
-//           return MaterialPageRoute(builder: (context) => const HomePage());
-//         } else {
-//           // ถ้าไม่ได้ล็อกอินให้ไปที่หน้า Login
-//           return MaterialPageRoute(builder: (context) => LoginPage());
-//         }
-//       }
-
-//       // ถ้าไม่ต้องการการรักษาความปลอดภัย (NoGuards)
-//       if (settings.name == '/login' ||
-//           settings.name == '/register' ||
-//           settings.name == '/forgotpassword' ||
-//           settings.name == '/otp') {
-//         return MaterialPageRoute(builder: (context) {
-//           if (settings.name == '/login') return LoginPage();
-//           if (settings.name == '/register') return RegisterPage();
-//           if (settings.name == '/forgotpassword') return ForgotPasswordPage();
-//           return OtpPage();
-//         });
-//       }
-
-//       return null; // กรณีที่ไม่มีการกำหนดเส้นทาง
-//     },
-//     routes: {
-//       '/like': (context) => const LikePage(),
-//       '/cart-buyer': (context) => const CartBPage(),
-//       '/cart-seller': (context) => const CartSPage(),
-//       '/post': (context) => const PostPage(),
-//       '/selectproduct': (context) => const SelectProductPage(),
-//       '/confirm': (context) => const Confirm(),
-//       '/category': (context) => const CategoryPage('หมวดหมู่'),
-//       '/role': (context) => const RolePage(),
-//       '/addproduct': (context) => const AddProductPage(),
-//       '/addpost': (context) => const AddPostPage(),
-//       '/general': (context) => const CategoryPage('ของใช้ทั่วไป'),
-//       '/electronics': (context) => const CategoryPage('อิเล็กทรอนิกส์'),
-//       '/appliances': (context) => const CategoryPage('เครื่องใช้ไฟฟ้า'),
-//       '/books': (context) => const CategoryPage('หนังสือ'),
-//       '/education': (context) => const CategoryPage('การศึกษา'),
-//       '/furniture': (context) => const CategoryPage('เฟอร์นิเจอร์'),
-//       '/fashion': (context) => const CategoryPage('แฟชั่น'),
-//       '/others': (context) => const CategoryPage('อื่นๆ'),
-//       '/noti': (context) => const NotiPage(),
-//       '/chat': (context) => const Chatpage(),
-//       '/message': (context) => const Messagepage(),
-//       '/confirm-seller': (context) => const ConfirmSeller(),
-//     },
-//   ));
-// }
-
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});
 
