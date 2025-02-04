@@ -10,18 +10,18 @@ class AddService {
 
   // ฟังก์ชันสำหรับ post
   Future<Map<String, dynamic>> addproduct(
-      String product_name,
-      String product_images,
-      String product_qty,
-      String product_price,
-      String product_description,
-      String product_category,
-      String product_type,
-      String date_exp,
-      String product_location,
-      String product_condition,
-      String product_defect,
-      String product_years,
+      String productName,
+      List productImages,
+      String productQty,
+      String productPrice,
+      String productDescription,
+      String productCategory,
+      String productType,
+      String dateExp,
+      String productLocation,
+      String productCondition,
+      String productDefect,
+      String productYears,
       String tag) async {
     try {
       // ดึง accessToken จาก AuthService
@@ -45,19 +45,19 @@ class AddService {
 
       // Body (แปลงข้อมูลให้เป็น JSON string)
       Map<String, dynamic> body = {
-        "product_name": product_name.isEmpty ? "N/A" : product_name,
-        "product_images": product_images,
-        "product_qty": int.parse(product_qty),
-        "product_price": int.parse(product_price),
-        "product_description": product_description,
-        "product_category": product_category,
-        "product_type": product_type,
+        "product_name": productName.isEmpty ? "N/A" : productName,
+        "product_images": productImages,
+        "product_qty": int.parse(productQty),
+        "product_price": int.parse(productPrice),
+        "product_description": productDescription,
+        "product_category": productCategory,
+        "product_type": productType,
         "seller_id": int.parse(userId),
-        "date_exp": date_exp,
-        "product_location": product_location,
-        "product_condition": product_condition,
-        "product_defect": product_defect,
-        "product_years": product_years,
+        "date_exp": dateExp,
+        "product_location": productLocation,
+        "product_condition": productCondition,
+        "product_defect": productDefect,
+        "product_years": productYears,
         "tag": tag,
       };
 
@@ -72,7 +72,7 @@ class AddService {
       );
 
       // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return {
           "success": true,
           "data": response.body,
@@ -80,13 +80,13 @@ class AddService {
       } else {
         return {
           "success": false,
-          "message": response.body ?? "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
+          "message": 'error ${response.statusCode} ${response.body}',
         };
       }
     } catch (e) {
       return {
         "success": false,
-        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ",
+        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ222",
       };
     }
   }

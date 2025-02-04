@@ -16,7 +16,40 @@ class _PostPageState extends State<PostPage> {
   void initState() {
     super.initState();
     posts = Postservice().getCategoryProducts(); // ดึงข้อมูลจาก API
+    //   _loadData();
+
+    //   // ตั้งค่า ScrollController เพื่อจับการเลื่อน
+    //   _scrollController.addListener(() {
+    //     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    //       // เลื่อนถึงจุดสุดท้ายแล้ว ให้โหลดข้อมูลเพิ่ม
+    //       if (!isLoading) {
+    //         setState(() {
+    //           isLoading = true;
+    //         });
+    //         _loadData();
+    //       }
+    //     }
+    //   });
   }
+  // Future<void> _loadData(int nowPage, int lenght) async {
+  //   // สมมติว่า `fetchPosts` คือฟังก์ชันที่ดึงข้อมูลจาก API หรือฐานข้อมูล
+  //   Map<String, dynamic> response = await PostService().getPost(nowPage, lenght);
+
+  //   if(response['success']){
+  //     List<Post> newPosts = response['data'].
+  //   }
+  //   // List<Post> newPosts
+
+  //   setState(() {
+  //     posts.addAll(newPosts);
+  //     page++;  // เพิ่มเลขหน้าเพื่อโหลดข้อมูลหน้าถัดไป
+  //     isLoading = false;
+  //   });
+  // }
+
+  // final ScrollController _scrollController = ScrollController();
+  // bool isLoading = false;
+  // int currentPage = 1;
 
   @override
   Widget build(BuildContext context) {

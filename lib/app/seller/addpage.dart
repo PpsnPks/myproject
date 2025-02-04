@@ -3,7 +3,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/addservice.dart'; // เพิ่มการนำเข้า
-// import 'package:myproject/Service/uploadimgservice.dart';
+import 'package:myproject/Service/uploadimgservice.dart';
 // import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -86,14 +86,18 @@ class _AddProductPageState extends State<AddProductPage> {
 
   Future<void> _add() async {
     final addService = AddService();
-    // Map<String, dynamic> uploadResponse = await UploadImgService().uploadImg(pickedFiles);
-    // if(uploadResponse['success']){
-
-    // }
-    // List images_path = [];
+    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImg(pickedFiles);
+    List images_path = [];
+    if (uploadResponse['success']) {
+      images_path = uploadResponse['images'];
+      print('all_url_images = ${uploadResponse['images']}');
+    } else {
+      print('upload error = ${uploadResponse['message']}');
+      return;
+    }
     final result = await addService.addproduct(
       _productNameController.text,
-      _productImagesController.text, //images_path,
+      images_path, //_productImagesController.text,
       _productQtyController.text,
       _productPriceController.text,
       _productDescriptionController.text,

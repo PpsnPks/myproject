@@ -20,6 +20,7 @@ class _LoginState extends State<LoginPage> {
   void _handleLogin(BuildContext context) async {
     final String email = _emailController.text.trim();
     final String password = _passwordController.text.trim();
+    FocusScope.of(context).unfocus();
 
     showDialog(
       context: context,
@@ -58,7 +59,6 @@ class _LoginState extends State<LoginPage> {
       // ScaffoldMessenger.of(context).showSnackBar(
       //   const SnackBar(content: Text('เข้าสู่ระบบสำเร็จ')),
       // );
-      FocusScope.of(context).unfocus();
       Navigator.pushReplacementNamed(context, '/role');
       // Navigator.pushNamed(context, '/role'); // แก้ไขตาม route ของคุณ
     } else {

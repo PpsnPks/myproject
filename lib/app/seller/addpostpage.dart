@@ -3,6 +3,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart'; // เพิ่มการนำเข้า
+import 'package:myproject/Service/uploadimgservice.dart';
 // import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart'; // นำเข้าฟุตเตอร์
 import 'package:image_picker/image_picker.dart';
@@ -19,16 +20,15 @@ class _AddPostPageState extends State<AddPostPage> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _tagController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _imageController = TextEditingController();
-  final TextEditingController _userpostIdController = TextEditingController();
 
   final List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
   final PageController _pageController = PageController(); // ตัวควบคุม PageView
 
+  List<XFile> pickedFiles = [];
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile> pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
+    pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
 
     if (_imageBytesList.length + pickedFiles.length > 5) {
       // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
@@ -48,17 +48,24 @@ class _AddPostPageState extends State<AddPostPage> {
   }
 
   Future<void> _post() async {
+    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImg(pickedFiles);
+    String images_path;
+    if (uploadResponse['success']) {
+      images_path = uploadResponse['images'][0];
+      print('all_url_images = ${uploadResponse['images']}');
+    } else {
+      print('upload error = ${uploadResponse['message']}');
+      return;
+    }
     final postService = PostService();
 
     // เรียกใช้ฟังก์ชัน addpost
-    final result = await postService.addpost(
-      _imageController.text,
-      _detailController.text,
-      _categoryController.text,
-      _tagController.text,
-      _priceController.text,
-      _userpostIdController.text,
-    );
+    final result = await postService.addPost(
+        images_path, // _imageController.text,
+        _detailController.text,
+        _categoryController.text,
+        _tagController.text,
+        _priceController.text);
 
     if (result['success']) {
       print("โพสต์สำเร็จ");
