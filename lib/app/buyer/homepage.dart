@@ -124,14 +124,14 @@ class _HomePageState extends State<HomePage> {
                                   fontWeight: FontWeight.bold, // หนา
                                 ),
                               ),
-                              // Text(
-                              //   'ทั้งหมด',
-                              //   style: TextStyle(
-                              //     fontSize: 12, // ขนาดฟอนต์
-                              //     fontWeight: FontWeight.bold, // หนา
-                              //     color: Color(0xFFFA5A2A),
-                              //   ),
-                              // ),
+                              Text(
+                                'ทั้งหมด',
+                                style: TextStyle(
+                                  fontSize: 12, // ขนาดฟอนต์
+                                  fontWeight: FontWeight.bold, // หนา
+                                  color: Color(0xFFFA5A2A),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -316,6 +316,128 @@ class _HomePageState extends State<HomePage> {
                               );
                             }
                           },
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(
+                              left: 16.0,
+                              right: 16.0), // กำหนด padding ซ้ายและขวา
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                            children: [
+                              Text(
+                                'โพสต์',
+                                style: TextStyle(
+                                  fontSize: 17, // ขนาดฟอนต์
+                                  fontWeight: FontWeight.bold, // หนา
+                                ),
+                              ),
+                              Text(
+                                'ทั้งหมด',
+                                style: TextStyle(
+                                  fontSize: 12, // ขนาดฟอนต์
+                                  fontWeight: FontWeight.bold, // หนา
+                                  color: Color(0xFFFA5A2A),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              final product = products[index];
+                              return Card(
+                                elevation: 0,
+                                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Section: User Info
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage: NetworkImage(product.profile),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                product.name,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                product.faculty,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // Section: Post Title
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.title,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            product.tags,
+                                            style: const TextStyle(
+                                              fontSize: 8,
+                                              color: Color(0xFFFA5A2A),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // Section: Image
+                                    if (product.imageUrl.isNotEmpty)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(0),
+                                        child: Image.network(
+                                          product.imageUrl,
+                                          width: double.infinity,
+                                          height: 360,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    // Section: Post Details
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Text(
+                                        product.detail,
+                                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
