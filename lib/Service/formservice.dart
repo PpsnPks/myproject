@@ -10,6 +10,7 @@ class UserService {
   // ฟังก์ชันสำหรับ register
   Future<Map<String, dynamic>> form(
     String name,
+    String pic,
     String email,
     String mobile,
     String address,
@@ -19,8 +20,10 @@ class UserService {
     String role,
   ) async {
     try {
+      String? token = await AuthService().getAccessToken();
       // Header
       Map<String, String> headers = {
+        'Authorization': 'Bearer $token',
         "Accept": "application/json",
         "Content-Type": "application/json",
       };
@@ -28,6 +31,7 @@ class UserService {
       // Body
       Map<String, dynamic> body = {
         "name": name,
+        "pic": pic,
         "email": email,
         "mobile": mobile,
         "address": address,
@@ -36,6 +40,8 @@ class UserService {
         "classyear": classyear,
         "role": role,
       };
+
+      print(body);
 
       // POST Request
       final response = await http.post(

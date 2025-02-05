@@ -48,7 +48,7 @@ class _AddPostPageState extends State<AddPostPage> {
   }
 
   Future<void> _post() async {
-    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImg(pickedFiles);
+    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImgs(pickedFiles);
     String images_path;
     if (uploadResponse['success']) {
       images_path = uploadResponse['images'][0];
