@@ -55,14 +55,14 @@ class _AddProductPageState extends State<AddProductPage> {
     _productPriceController.clear();
     _productDescriptionController.clear();
      _productCategoryController.clear();
-    _productTypeController.clear();
     _dateExpController.clear();
     _productLocationController.clear();
     _productConditionController.clear();
     _productDefectController.clear();
     _productYearsController.clear();
     _tagController.clear();
-  }
+    quantity = 1;
+  } 
 
   List<XFile> pickedFiles = [];
   Future<void> _pickImages() async {
@@ -116,7 +116,11 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   @override
-Widget build(BuildContext context) {
+  void initState() {
+  super.initState();
+  _productTypeController.text = 'ขาย'; // หรือค่าเริ่มต้นที่เหมาะสม
+}
+  Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
       title: const Text("เพิ่ม"),
@@ -136,7 +140,7 @@ Widget build(BuildContext context) {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _productTypeController.text = 'ขาย';
+                        _productTypeController.text = 'sell';
                         isSelling = true;
                         isRenting = false;
                         isPreOrder = false;
@@ -155,7 +159,7 @@ Widget build(BuildContext context) {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _productTypeController.text = 'แจก';
+                        _productTypeController.text = 'free';
                         isSelling = false;
                         isRenting = true;
                         isPreOrder = false;
@@ -174,7 +178,7 @@ Widget build(BuildContext context) {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _productTypeController.text = 'Pre Order';
+                        _productTypeController.text = 'preorder';
                         isSelling = false;
                         isRenting = false;
                         isPreOrder = true;
@@ -429,8 +433,8 @@ Widget build(BuildContext context) {
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   items: const [
-                    DropdownMenuItem(value: 'มือหนึ่ง', child: Text('มือหนึ่ง')),
-                    DropdownMenuItem(value: 'มือสอง', child: Text('มือสอง')),
+                    DropdownMenuItem(value: '1', child: Text('มือหนึ่ง')),
+                    DropdownMenuItem(value: '2', child: Text('มือสอง')),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -439,7 +443,7 @@ Widget build(BuildContext context) {
                       _productConditionController.text = value!;
 
                       // When "มือหนึ่ง" is selected, clear defect and years data
-                      if (value == 'มือหนึ่ง') {
+                      if (value == '1') {
                         _productDefectController.clear();
                         _productYearsController.clear();
                       } else {
@@ -568,7 +572,10 @@ Widget build(BuildContext context) {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _add,
+                    onPressed: () async {
+                      await _add(); // Wait for the action to complete
+                      Navigator.pushNamed(context, '/seller'); // Navigate to /seller after completion
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFA5A2A),
                       padding: const EdgeInsets.symmetric(vertical: 18),

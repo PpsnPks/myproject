@@ -317,6 +317,9 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                         ),
+                        const SizedBox(
+                            height:
+                                24),
                         const Padding(
                           padding: EdgeInsets.only(
                               left: 16.0,
@@ -343,102 +346,9 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: products.length,
-                            itemBuilder: (context, index) {
-                              final product = products[index];
-                              return Card(
-                                elevation: 0,
-                                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Section: User Info
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 20,
-                                            backgroundImage: NetworkImage(product.profile),
-                                          ),
-                                          const SizedBox(width: 16),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                product.name,
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                product.faculty,
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // Section: Post Title
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            product.title,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            product.tags,
-                                            style: const TextStyle(
-                                              fontSize: 8,
-                                              color: Color(0xFFFA5A2A),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // Section: Image
-                                    if (product.imageUrl.isNotEmpty)
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(0),
-                                        child: Image.network(
-                                          product.imageUrl,
-                                          width: double.infinity,
-                                          height: 360,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    // Section: Post Details
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                        product.detail,
-                                        style: const TextStyle(fontSize: 14, color: Colors.grey),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        const SizedBox(
+                            height:
+                                10),
                       ],
                     ),
                   ),
@@ -577,3 +487,34 @@ final List<Widget> imageSliders = imgList
         ))
     .toList();
 
+class Post {
+  final String profile;
+  final String name;
+  final String faculty;
+  final String title;
+  final String tags;
+  final String imageUrl;
+  final String detail;
+
+  Post({
+    required this.profile,
+    required this.name,
+    required this.faculty,
+    required this.title,
+    required this.tags,
+    required this.imageUrl,
+    required this.detail,
+  });
+}
+
+final posts = [
+  Post(
+    profile: 'https://example.com/profile1.jpg',
+    name: 'John Doe',
+    faculty: 'Computer Engineering',
+    title: 'Flutter Post Example',
+    tags: '#Tech #Flutter',
+    imageUrl: 'https://example.com/image1.jpg',
+    detail: 'This is an example detail for the product or post.',
+  ),
+];
