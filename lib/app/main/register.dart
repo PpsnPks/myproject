@@ -62,43 +62,53 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> registerUser() async {
-    if (_emailController.text.isNotEmpty &&
-        _nameController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty &&
-        _confirmPasswordController.text.isNotEmpty) {
-      Map<String, dynamic> userData = {
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'password': _passwordController.text,
-        'password_confirmation': _confirmPasswordController.text,
-      };
+  if (_emailController.text.isNotEmpty &&
+      _nameController.text.isNotEmpty &&
+      _passwordController.text.isNotEmpty &&
+      _confirmPasswordController.text.isNotEmpty) {
+    Map<String, dynamic> userData = {
+      'name': _nameController.text,
+      'email': _emailController.text,
+      'password': _passwordController.text,
+      'password_confirmation': _confirmPasswordController.text,
+    };
 
-      final Uri url = Uri.parse('${Environment.baseUrl}/auth/register');
-      try {
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(userData),
+    final Uri url = Uri.parse('${Environment.baseUrl}/auth/register');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(userData),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final int userId = responseData['user_id'];  
+        print(userId);// ดึงค่า user_id จากการตอบสนอง
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('ลงทะเบียนสำเร็จ')),
         );
-
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ลงทะเบียนสำเร็จ')),
-          );
-          Navigator.pushReplacementNamed(
-            context, 
-            '/otp'
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('การลงทะเบียนล้มเหลว')),
-          );
-        }
-      } catch (error) {
-        print('เกิดข้อผิดพลาด: $error');
+        print('Navigating to OTP page');
+        Navigator.pushReplacementNamed(
+          context, 
+          '/otp',
+          arguments: {
+            'email': _emailController.text,
+            'user_id': userId,  // ส่งค่า user_id ไปยังหน้า OTP
+          },
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('การลงทะเบียนล้มเหลว')),
+        );
       }
+    } catch (error) {
+      print('เกิดข้อผิดพลาด: $error');
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

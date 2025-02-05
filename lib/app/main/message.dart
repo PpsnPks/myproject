@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // สำหรับจัดรูปแบบเวลา
-import 'package:image_picker/image_picker.dart'; // สำหรับเลือกรูป
-import 'dart:io'; // สำหรับใช้ File class
+import 'package:intl/intl.dart'; 
+import 'package:image_picker/image_picker.dart'; 
+import 'dart:io';
+import 'package:myproject/Service/messageservice.dart'; 
 
 class Messagepage extends StatefulWidget {
   const Messagepage({super.key});
@@ -12,34 +13,36 @@ class Messagepage extends StatefulWidget {
 
 class _MessagepageState extends State<Messagepage> {
   final TextEditingController _controller = TextEditingController();
-  final List<Map<String, dynamic>> _messages = []; // เก็บข้อความพร้อมเวลา
-  final ImagePicker _picker = ImagePicker(); // ตัวเลือกภาพ
+  final List<Map<String, dynamic>> _messages = [];
+  final ImagePicker _picker = ImagePicker();
+  final MessageService _messageService = MessageService();
 
-  // ฟังก์ชันส่งข้อความ
-  void _sendMessage() {
+  // เพิ่มข้อมูลจำลอง buyer และ seller
+  final String buyerId = "buyer_001";
+  final String sellerId = "seller_001";
+
+  void _sendMessage() async {
     if (_controller.text.isNotEmpty) {
-      setState(() {
-        _messages.add({
-          'text': _controller.text,
-          'time': DateFormat('HH:mm').format(DateTime.now()), // บันทึกเวลา
-          'image': null, // ไม่มีรูป
-        });
-      });
-      _controller.clear();
-    }
-  }
+      final messageText = _controller.text;
+      final messageTime = DateFormat('HH:mm').format(DateTime.now());
 
-  // ฟังก์ชันส่งรูป
-  Future<void> _sendImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery); // เลือกรูปจากแกลเลอรี
-    if (image != null) {
+      // อัปเดต UI ก่อนส่งข้อมูล
       setState(() {
         _messages.add({
-          'text': null, // ไม่มีข้อความ
-          'time': DateFormat('HH:mm').format(DateTime.now()), // บันทึกเวลา
-          'image': image.path, // เก็บพาธรูป
+          'text': messageText,
+          'time': messageTime,
+          'image': null,
         });
       });
+
+      _controller.clear();
+
+      // ส่งข้อมูลไปยัง API
+      await _messageService.sendMessage(
+        buyerId: buyerId,
+        sellerId: sellerId,
+        message: messageText,
+      );
     }
   }
 
@@ -51,7 +54,6 @@ class _MessagepageState extends State<Messagepage> {
       ),
       body: Column(
         children: [
-          // พื้นที่แสดงข้อความ
           Expanded(
             child: ListView.builder(
               reverse: true,
@@ -61,12 +63,11 @@ class _MessagepageState extends State<Messagepage> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Align(
-                    alignment: Alignment.centerRight, // ข้อความอยู่ด้านขวา
+                    alignment: Alignment.centerRight,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        // เวลา
                         Text(
                           message['time'],
                           style: const TextStyle(
@@ -75,14 +76,14 @@ class _MessagepageState extends State<Messagepage> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        // ข้อความหรือรูป
                         if (message['text'] != null)
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE35205), // พื้นหลังสีส้ม
+                              color: const Color(0xFFE35205),
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
                             child: Text(
                               message['text'],
                               style: const TextStyle(
@@ -91,22 +92,6 @@ class _MessagepageState extends State<Messagepage> {
                               ),
                             ),
                           )
-                        else if (message['image'] != null)
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: File(message['image']).existsSync() // ตรวจสอบว่าไฟล์มีอยู่จริง
-                                ? Image(
-                                    image: FileImage(File(message['image'])), // ใช้ FileImage แทน Image.file
-                                    width: 150, // กำหนดความกว้าง
-                                    height: 200, // กำหนดความสูง
-                                    fit: BoxFit.cover, // ปรับการแสดงผลรูปให้เต็มขนาดที่กำหนด
-                                  )
-                                : Container(
-                                    child: Icon(Icons.error, color: Colors.red), // แสดงไอคอนถ้าผิดพลาด
-                                  ),
-                          ),
                       ],
                     ),
                   ),
@@ -114,14 +99,13 @@ class _MessagepageState extends State<Messagepage> {
               },
             ),
           ),
-          // แถบส่งข้อความและรูป
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 IconButton(
                   icon: const Icon(Icons.photo),
-                  onPressed: _sendImage, // ฟังก์ชันส่งรูป
+                  onPressed: () {}, 
                 ),
                 Expanded(
                   child: TextField(

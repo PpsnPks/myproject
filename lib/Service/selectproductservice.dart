@@ -1,3 +1,37 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:myproject/environment.dart';
+
+class ProductService {
+  static Future<Product> getProduct() async {
+    final String baseUrl = "${Environment.baseUrl}/product/";// ใส่ URL ของ API ที่ต้องการดึงข้อมูล
+    final response = await http.get(Uri.parse(baseUrl));
+
+    if (response.statusCode == 200) {
+      // แปลงข้อมูล JSON ที่ได้รับจาก API เป็น Product
+      final data = json.decode(response.body);
+      return Product(
+        name: data['name'],
+        price: data['price'],
+        description: data['description'],
+        category: data['category'],
+        conditionProduct: data['conditionProduct'],
+        durationUse: data['durationUse'],
+        defect: data['defect'],
+        timeForSell: data['timeForSell'],
+        deliveryLocation: data['deliveryLocation'],
+        deliveryDate: data['deliveryDate'],
+        seller: data['seller'],
+        stock: data['stock'],
+        imageUrl: List<String>.from(data['imageUrl']),
+      );
+    } else {
+      throw Exception('Failed to load product');
+    }
+  }
+}
+
 class Product {
   final String name;
   final String price;
@@ -7,7 +41,6 @@ class Product {
   final String durationUse;
   final String defect;
   final String timeForSell;
-  // final String size;
   final String deliveryLocation;
   final String deliveryDate;
   final String seller;
@@ -23,38 +56,10 @@ class Product {
     required this.durationUse,
     required this.defect,
     required this.timeForSell,
-    // required this.size,
     required this.deliveryLocation,
     required this.deliveryDate,
     required this.seller,
     required this.stock,
     required this.imageUrl,
   });
-}
-
-// สร้างข้อมูลสินค้า
-class ProductService {
-  static Product getProduct() {
-    return Product(
-      imageUrl: [
-        'assets/images/old_fan.png',
-        'assets/images/fan2.png',
-        'assets/images/fan3.jpg',
-      ],
-      name: 'พัดลม HATARI 16 นิ้ว',
-      price: '359 ฿',
-      description:
-          'พัดลม HATARI ขนาด 16 นิ้ว พัดลมมือสองพร้อมใช้งาน สินค้าตามภาพครับ ทดสอบการใช้งานอย่างละเอียดแล้ว พัดแรงปกติครับ... ขนาด 16 นิ้ว สินค้ามือสองคุณภาพดี ยี่ห้อดี เช็คละเอียดทุกอุปกรณ์ หากสงสัยหรือ อยากขอรูปเพิ่มเติมทักแชทได้ครับ',
-      category: 'เครื่องใช้ไฟฟ้า',
-      conditionProduct: 'มือสอง',
-      durationUse: '1-3 ปี',
-      defect: 'ไม่มี',
-      timeForSell: '10 ธันวาคม 2567',
-      // size: '1000 มม. x 343 มม.',
-      deliveryLocation: 'เกกีงาม 3',
-      deliveryDate: '11 ธ.ค. 2567 10:00',
-      seller: '64010724 รัชพล รุจิเวช ',
-      stock: 1,
-    );
-  }
 }

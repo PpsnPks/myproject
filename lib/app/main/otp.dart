@@ -57,15 +57,19 @@ class _OtpPageState extends State<OtpPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
-  // รับข้อมูลจากหน้า Register (ผ่าน arguments)
-  final args = ModalRoute.of(context)!.settings.arguments as Map;
-  email = args['email'];  // ใช้ตัวแปร email ที่ประกาศไว้แล้ว
-  userId = args['user_id'].toString();  // ใช้ตัวแปร userId ที่ประกาศไว้แล้ว
 
+    // การจัดการกับ arguments อย่างปลอดภัย
+    final args = ModalRoute.of(context)?.settings.arguments as Map?; // ใช้ null-aware
+    if (args != null) {
+      email = args['email'];  // ใช้ตัวแปร email ที่ประกาศไว้แล้ว
+      userId = args['user_id'].toString();  // ใช้ตัวแปร userId ที่ประกาศไว้แล้ว
       // แสดงค่าใน console (log)
-    print('Received email: $email');
-    print('Received user_id: $userId');
+      print('Received email: $email');
+      print('Received user_id: $userId');
+    } else {
+      // จัดการกับกรณีที่ arguments เป็น null (สามารถเพิ่มการแสดงผลหรือตัวจัดการตามต้องการ)
+      print('Error: No arguments passed to the route!');
+    }
   }
 
   @override

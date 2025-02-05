@@ -28,6 +28,9 @@ class AddService {
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
       String userId = await Securestorage().readSecureData('userId') ?? '99999';
+      String? productConditionValue = productType == 'preorder' ? '1' : productCondition;
+      print(productName);
+      print(productConditionValue);
 
       if (accessToken == null) {
         return {
@@ -55,7 +58,7 @@ class AddService {
         "seller_id": int.parse(userId),
         "date_exp": dateExp,
         "product_location": productLocation,
-        "product_condition": productCondition,
+        "product_condition": productConditionValue,
         "product_defect": productDefect,
         "product_years": productYears,
         "tag": tag,
@@ -63,7 +66,7 @@ class AddService {
 
       // แปลง Map เป็น JSON string ก่อนส่ง
       String jsonBody = json.encode(body);
-
+      print(jsonBody);
       // POST Request
       final response = await http.post(
         Uri.parse(postUrl),
@@ -86,7 +89,7 @@ class AddService {
     } catch (e) {
       return {
         "success": false,
-        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ222",
+        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ 555 $e",
       };
     }
   }
