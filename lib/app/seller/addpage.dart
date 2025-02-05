@@ -118,7 +118,7 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   void initState() {
   super.initState();
-  _productTypeController.text = 'ขาย'; // หรือค่าเริ่มต้นที่เหมาะสม
+  _productTypeController.text = 'sell'; // หรือค่าเริ่มต้นที่เหมาะสม
 }
   Widget build(BuildContext context) {
   return Scaffold(
