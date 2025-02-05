@@ -3,7 +3,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/addservice.dart'; // เพิ่มการนำเข้า
-// import 'package:myproject/Service/uploadimgservice.dart';
+import 'package:myproject/Service/uploadimgservice.dart';
 // import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -54,7 +54,7 @@ class _AddProductPageState extends State<AddProductPage> {
     _productQtyController.clear();
     _productPriceController.clear();
     _productDescriptionController.clear();
-     _productCategoryController.clear();
+    _productCategoryController.clear();
     _dateExpController.clear();
     _productLocationController.clear();
     _productConditionController.clear();
@@ -62,7 +62,7 @@ class _AddProductPageState extends State<AddProductPage> {
     _productYearsController.clear();
     _tagController.clear();
     quantity = 1;
-  } 
+  }
 
   List<XFile> pickedFiles = [];
   Future<void> _pickImages() async {
@@ -88,13 +88,22 @@ class _AddProductPageState extends State<AddProductPage> {
 
   Future<void> _add() async {
     final addService = AddService();
+    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImg(pickedFiles);
+    List images_path = [];
+    if (uploadResponse['success']) {
+      images_path = uploadResponse['images'];
+      print('all_url_images = ${uploadResponse['images']}');
+    } else {
+      print('upload error = ${uploadResponse['message']}');
+      return;
+    }
 
     // กำหนดราคาเป็น 0 หากเลือก "แจก" (isRenting == true)
     final productPrice = isRenting ? '0' : _productPriceController.text;
 
     final result = await addService.addproduct(
       _productNameController.text,
-      _productImagesController.text, // images_path,
+      images_path, //_productImagesController.text,
       _productQtyController.text,
       productPrice,
       _productDescriptionController.text,
@@ -117,83 +126,84 @@ class _AddProductPageState extends State<AddProductPage> {
 
   @override
   void initState() {
-  super.initState();
-  _productTypeController.text = 'sell'; // หรือค่าเริ่มต้นที่เหมาะสม
-}
+    super.initState();
+    _productTypeController.text = 'sell'; // หรือค่าเริ่มต้นที่เหมาะสม
+  }
+
   Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text("เพิ่ม"),
-      centerTitle: true,
-      backgroundColor: Colors.white,
-    ),
-    body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _productTypeController.text = 'sell';
-                        isSelling = true;
-                        isRenting = false;
-                        isPreOrder = false;
-                        resetData();
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isSelling ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
-                      foregroundColor: isSelling ? Colors.white : const Color(0xFFFA5A2A),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("เพิ่ม"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _productTypeController.text = 'sell';
+                          isSelling = true;
+                          isRenting = false;
+                          isPreOrder = false;
+                          resetData();
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isSelling ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
+                        foregroundColor: isSelling ? Colors.white : const Color(0xFFFA5A2A),
+                      ),
+                      child: const Text('ขาย'),
                     ),
-                    child: const Text('ขาย'),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _productTypeController.text = 'free';
-                        isSelling = false;
-                        isRenting = true;
-                        isPreOrder = false;
-                        resetData();
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isRenting ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
-                      foregroundColor: isRenting ? Colors.white : const Color(0xFFFA5A2A),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _productTypeController.text = 'free';
+                          isSelling = false;
+                          isRenting = true;
+                          isPreOrder = false;
+                          resetData();
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isRenting ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
+                        foregroundColor: isRenting ? Colors.white : const Color(0xFFFA5A2A),
+                      ),
+                      child: const Text('แจก'),
                     ),
-                    child: const Text('แจก'),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _productTypeController.text = 'preorder';
-                        isSelling = false;
-                        isRenting = false;
-                        isPreOrder = true;
-                        resetData();
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isPreOrder ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
-                      foregroundColor: isPreOrder ? Colors.white : const Color(0xFFFA5A2A),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _productTypeController.text = 'preorder';
+                          isSelling = false;
+                          isRenting = false;
+                          isPreOrder = true;
+                          resetData();
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isPreOrder ? const Color(0xFFFA5A2A) : const Color(0xFFFCEEEA),
+                        foregroundColor: isPreOrder ? Colors.white : const Color(0xFFFA5A2A),
+                      ),
+                      child: const Text('Pre Order'),
                     ),
-                    child: const Text('Pre Order'),
-                  ),
-                ),
-              ],
-            ),
+                  )
+                ],
+              ),
               const SizedBox(height: 16),
 
               // Image upload section
@@ -381,7 +391,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 ),
                 onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());  // Hide the keyboard when tapping the TextField
+                  FocusScope.of(context).requestFocus(FocusNode()); // Hide the keyboard when tapping the TextField
                   DateTime? selectedDate = await showDatePicker(
                     context: context,
                     initialDate: DateTime.now(),
@@ -533,7 +543,7 @@ class _AddProductPageState extends State<AddProductPage> {
                     ),
                   ),
                 ],
-              ],       // สถานที่นัดรับสินค้า
+              ], // สถานที่นัดรับสินค้า
               const SizedBox(height: 8),
               const Text('สถานที่นัดรับสินค้า', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 8),

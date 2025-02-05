@@ -31,70 +31,34 @@ class _HomePageState extends State<HomePage> {
           children: [
             SingleChildScrollView(
               child: Column(
-                mainAxisAlignment:
-                    MainAxisAlignment.start, // จัดตำแหน่งให้อยู่บน-ล่าง
+                mainAxisAlignment: MainAxisAlignment.start, // จัดตำแหน่งให้อยู่บน-ล่าง
                 children: [
                   //const SearchInputField(), // เรียกใช้คลาส SearchInputField
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 4.0, right: 4.0, top: 100.0),
+                    padding: const EdgeInsets.only(left: 4.0, right: 4.0, top: 100.0),
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16.0, right: 16.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/general-bag.svg',
-                                  'ของใช้ทั่วไป',
-                                  '/general'),
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/electronic-computer.svg',
-                                  'อิเล็กทรอนิกส์',
-                                  '/electronics'),
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/electrical-fan-light.svg',
-                                  'เครื่องใช้ไฟฟ้า',
-                                  '/appliances'),
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/book-light.svg',
-                                  'หนังสือ',
-                                  '/books'),
+                              CatergoryButton(context, 'assets/icons/home_page/general-bag.svg', 'ของใช้ทั่วไป', '/general'),
+                              CatergoryButton(context, 'assets/icons/home_page/electronic-computer.svg', 'อิเล็กทรอนิกส์', '/electronics'),
+                              CatergoryButton(context, 'assets/icons/home_page/electrical-fan-light.svg', 'เครื่องใช้ไฟฟ้า', '/appliances'),
+                              CatergoryButton(context, 'assets/icons/home_page/book-light.svg', 'หนังสือ', '/books'),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16.0, right: 16.0, bottom: 16.0),
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/education-ruler-pen.svg',
-                                  'การศึกษา',
-                                  '/education'),
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/furniture-bed.svg',
-                                  'เฟอร์นิเจอร์',
-                                  '/furniture'),
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/fashion-shirt.svg',
-                                  'แฟชั่น',
-                                  '/fashion'),
-                              CatergoryButton(
-                                  context,
-                                  'assets/icons/home_page/other-3dots.svg',
-                                  'อื่นๆ',
-                                  '/role'),
+                              CatergoryButton(context, 'assets/icons/home_page/education-ruler-pen.svg', 'การศึกษา', '/education'),
+                              CatergoryButton(context, 'assets/icons/home_page/furniture-bed.svg', 'เฟอร์นิเจอร์', '/furniture'),
+                              CatergoryButton(context, 'assets/icons/home_page/fashion-shirt.svg', 'แฟชั่น', '/fashion'),
+                              CatergoryButton(context, 'assets/icons/home_page/other-3dots.svg', 'อื่นๆ', '/role'),
                             ],
                           ),
                         ),
@@ -106,16 +70,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                           items: imageSliders,
                         ),
-                        const SizedBox(
-                            height:
-                                24), // เพิ่มช่องว่างระหว่าง CarouselSlider กับ Row
+                        const SizedBox(height: 24), // เพิ่มช่องว่างระหว่าง CarouselSlider กับ Row
                         const Padding(
-                          padding: EdgeInsets.only(
-                              left: 16.0,
-                              right: 16.0), // กำหนด padding ซ้ายและขวา
+                          padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
                             children: [
                               Text(
                                 'สินค้าเเนะนำ',
@@ -135,34 +94,24 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                            height:
-                                10), // เพิ่มช่องว่างระหว่าง Row กับ FutureBuilder
+                        const SizedBox(height: 10), // เพิ่มช่องว่างระหว่าง Row กับ FutureBuilder
 
                         // FutureBuilder เพื่อโหลดข้อมูลสินค้า
                         FutureBuilder<List<Product>>(
                           future: homeProducts,
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
-                              return const Center(
-                                  child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
-                            } else if (!snapshot.hasData ||
-                                snapshot.data!.isEmpty) {
-                              return const Center(
-                                  child: Text('ไม่มีสินค้าที่ถูกใจ'));
+                              return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
                             } else {
                               final products = snapshot.data!;
 
                               return GridView.builder(
-                                padding: const EdgeInsets.only(
-                                    left: 12,
-                                    right: 12), // เพิ่ม padding ให้ดูสมส่วน
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                padding: const EdgeInsets.only(left: 12, right: 12), // เพิ่ม padding ให้ดูสมส่วน
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2, // 2 คอลัมน์
                                   childAspectRatio: 0.67,
                                   crossAxisSpacing: 16,
@@ -170,127 +119,83 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 itemCount: products.length,
                                 shrinkWrap: true, // ย่อ GridView ตามเนื้อหา
-                                physics:
-                                    const NeverScrollableScrollPhysics(), // ปิดการเลื่อน
+                                physics: const NeverScrollableScrollPhysics(), // ปิดการเลื่อน
                                 itemBuilder: (context, index) {
                                   final product = products[index];
                                   return GestureDetector(
                                     onTap: () {
-                                      Navigator.pushNamed(context,
-                                          '/selectproduct'); // เปลี่ยนหน้าไปที่ '/selectproduct' เมื่อกดคาร์ด
+                                      Navigator.pushNamed(context, '/selectproduct'); // เปลี่ยนหน้าไปที่ '/selectproduct' เมื่อกดคาร์ด
                                     },
                                     child: LayoutBuilder(
                                       builder: (context, constraints) {
                                         // ignore: unused_local_variable
-                                        double aspectRatio = (product
-                                                    .title.length >
-                                                20)
-                                            ? 0.6
-                                            : 0.8; // ปรับค่า childAspectRatio ตามความยาว
+                                        double aspectRatio = (product.title.length > 20) ? 0.6 : 0.8; // ปรับค่า childAspectRatio ตามความยาว
 
                                         return Card(
                                           color: const Color(0xFFFFFFFF),
                                           shape: RoundedRectangleBorder(
-                                            side: const BorderSide(
-                                                color: Color(0xFFDFE2EC),
-                                                width: 2.0),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                            side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+                                            borderRadius: BorderRadius.circular(12),
                                           ),
                                           elevation: 0,
                                           child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                10, 10, 10, 10),
+                                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
+                                              crossAxisAlignment: CrossAxisAlignment.start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
                                               children: [
                                                 ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
+                                                  borderRadius: BorderRadius.circular(8),
                                                   child: Image.asset(
-                                                    product
-                                                        .imageUrl, // ใช้ imageUrl จาก product
-                                                    height: constraints
-                                                            .maxWidth -
-                                                        28, // ปรับขนาดรูปภาพ
-                                                    width:
-                                                        constraints.maxWidth -
-                                                            28,
+                                                    product.imageUrl, // ใช้ imageUrl จาก product
+                                                    height: constraints.maxWidth - 28, // ปรับขนาดรูปภาพ
+                                                    width: constraints.maxWidth - 28,
                                                     fit: BoxFit.contain,
-                                                    alignment:
-                                                        Alignment.topCenter,
+                                                    alignment: Alignment.topCenter,
                                                   ),
                                                 ),
                                                 const SizedBox(height: 10),
                                                 Flexible(
                                                   child: Text(
-                                                    product
-                                                        .title, // ใช้ title จาก product
+                                                    product.title, // ใช้ title จาก product
                                                     style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                      fontWeight: FontWeight.bold,
                                                       fontSize: 16,
                                                     ),
-                                                    overflow: TextOverflow
-                                                        .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
-                                                    maxLines:
-                                                        2, // จำกัดจำนวนบรรทัดที่จะแสดง
+                                                    overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
+                                                    maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
                                                   ),
                                                 ),
                                                 SizedBox(
                                                   height: 42,
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 4.0),
+                                                    padding: const EdgeInsets.only(top: 4.0),
                                                     child: Expanded(
                                                       child: Text(
-                                                        product
-                                                            .detail, // ใช้ title จาก product
+                                                        product.detail, // ใช้ title จาก product
                                                         style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontSize: 12,
-                                                            color: Color(
-                                                                0xFFA5A9B6)),
-                                                        overflow: TextOverflow
-                                                            .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
-                                                        maxLines:
-                                                            2, // จำกัดจำนวนบรรทัดที่จะแสดง
+                                                            fontWeight: FontWeight.normal, fontSize: 12, color: Color(0xFFA5A9B6)),
+                                                        overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
+                                                        maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                                 //const SizedBox(height: 36),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween, // จัดตำแหน่งให้ห่างกัน
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ห่างกัน
                                                   children: [
                                                     Container(
                                                       decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors
-                                                                .grey), // กำหนดสีขอบ
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                12), // กำหนดมุมโค้งมนของกรอบ
+                                                        border: Border.all(color: Colors.grey), // กำหนดสีขอบ
+                                                        borderRadius: BorderRadius.circular(12), // กำหนดมุมโค้งมนของกรอบ
                                                       ),
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          vertical: 4,
-                                                          horizontal: 8),
+                                                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                                       child: Text(
-                                                        product
-                                                            .category, // หมวดหมู่ของสินค้า
+                                                        product.category, // หมวดหมู่ของสินค้า
                                                         style: TextStyle(
-                                                          color: Colors
-                                                              .blueGrey[400],
+                                                          color: Colors.blueGrey[400],
                                                           fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                     ),
@@ -299,8 +204,7 @@ class _HomePageState extends State<HomePage> {
                                                       style: const TextStyle(
                                                         color: Colors.orange,
                                                         fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
                                                   ],
@@ -317,16 +221,11 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                         ),
-                        const SizedBox(
-                            height:
-                                24),
+                        const SizedBox(height: 24),
                         const Padding(
-                          padding: EdgeInsets.only(
-                              left: 16.0,
-                              right: 16.0), // กำหนด padding ซ้ายและขวา
+                          padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
                             children: [
                               Text(
                                 'โพสต์',
@@ -346,9 +245,7 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                            height:
-                                10),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -370,8 +267,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 // ignore: non_constant_identifier_names
-Column CatergoryButton(
-    BuildContext context, String icon, String label, String route) {
+Column CatergoryButton(BuildContext context, String icon, String label, String route) {
   return Column(children: [
     OutlinedButton(
       onPressed: () {
@@ -379,13 +275,10 @@ Column CatergoryButton(
       },
       style: OutlinedButton.styleFrom(
         shape: const RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.all(Radius.circular(10.0)), // ทำให้มุมเป็นเหลี่ยม
+          borderRadius: BorderRadius.all(Radius.circular(10.0)), // ทำให้มุมเป็นเหลี่ยม
         ),
         padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
-        side: const BorderSide(
-            color: Color(0xFFDFE2EC),
-            width: 2.0), // Add border color and thickness
+        side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0), // Add border color and thickness
         minimumSize: const Size(64, 64),
       ),
       child: Column(
@@ -415,14 +308,11 @@ class SearchInputField extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.only(
-            left: 20.0, right: 20.0, top: 30.0, bottom: 10),
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0, bottom: 10),
         child: TextField(
           decoration: InputDecoration(
               prefixIcon: Padding(
-                padding: const EdgeInsets.only(
-                    left: 14.0,
-                    right: 8.0), // Adjust the padding value as needed
+                padding: const EdgeInsets.only(left: 14.0, right: 8.0), // Adjust the padding value as needed
                 child: SvgPicture.asset(
                   'assets/icons/search-line.svg',
                   width: 10.0, // Icon width
@@ -440,20 +330,17 @@ class SearchInputField extends StatelessWidget {
               filled: true, // เปิดใช้งานพื้นหลัง
               fillColor: Colors.white, // กำหนดสีพื้นหลังเป็นสีขาว
               enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(10.0)), // Set the border radius
+                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set the border radius
                 borderSide: BorderSide(
                   width: 2.0, // Set border width
                   color: Color(0xFFDFE2EC), // Set border color
                 ),
               ),
               focusedBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(10.0)), // Same radius for focused border
+                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Same radius for focused border
                 borderSide: BorderSide(
                   width: 2.0,
-                  color: Color.fromARGB(
-                      255, 174, 180, 192), // Border color when focused
+                  color: Color.fromARGB(255, 174, 180, 192), // Border color when focused
                 ),
               )),
         ),

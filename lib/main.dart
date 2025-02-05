@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
 import 'package:myproject/app/main/formPage.dart';
+import 'package:myproject/app/main/infoprofile.dart';
 import 'package:myproject/app/main/login.dart';
 import 'package:myproject/app/main/message.dart';
 import 'package:myproject/app/main/register.dart';
@@ -41,7 +42,7 @@ void main() {
       '/category': (context) => const CategoryPage('หมวดหมู่'),
       '/role': (context) => const RolePage(),
       '/seller': (context) => const SellerPage(),
-      '/addproduct': (context) => AddProductPage(),
+      '/addproduct': (context) => const AddProductPage(),
       '/addpost': (context) => const AddPostPage(),
       '/general': (context) => const CategoryPage('ของใช้ทั่วไป'),
       '/electronics': (context) => const CategoryPage('อิเล็กทรอนิกส์'),
@@ -60,7 +61,8 @@ void main() {
       '/register': (context) => const RegisterPage(),
       '/forgotpassword': (context) => const ForgotPasswordPage(),
       '/otp': (context) => const OtpPage(),
-      '/infoform': (context) => const PersonalInfoForm()
+      '/infoform': (context) => const PersonalInfoForm(),
+      '/infoprofile': (context) => const InfoProfile(),
     },
   ));
 }
