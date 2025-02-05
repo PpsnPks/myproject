@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:myproject/Service/formservice.dart';
+import 'package:myproject/app/main/secureStorage.dart';
 
 class InfoProfile extends StatefulWidget {
   const InfoProfile({super.key});
@@ -8,6 +12,60 @@ class InfoProfile extends StatefulWidget {
 }
 
 class _InfoProfileState extends State<InfoProfile> {
+  String hideEmail = '-';
+  String hidePhone = '-';
+  String studentID = '-';
+  String name = '-';
+  String faculty = '-';
+  String department = '-';
+  String classyear = '-';
+  String address = '-';
+  Future<void> getDataUser() async {
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (context) {
+    //     return const Center(
+    //       child: SizedBox(
+    //         height: 90.0, // กำหนดความสูง
+    //         width: 90.0, // กำหนดความกว้าง
+    //         child: CircularProgressIndicator(
+    //           color: Color(0XFFE35205),
+    //           strokeWidth: 12.0, // ปรับความหนาของวงกลม
+    //           strokeCap: StrokeCap.round,
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
+    final id = await Securestorage().readSecureData('userId');
+    final response = await UserService().getUserById(int.parse(id));
+    if (response['success']) {
+      final userData = response['data'];
+      setState(() {
+        var phoneNumber = userData['mobile'];
+        var email = userData['email'];
+        hidePhone = '${phoneNumber.substring(0, 3)}-***-${phoneNumber.substring(6)}';
+        hideEmail = '${email.substring(0, 3)}***${email.substring(6)}';
+        studentID = '${email.substring(0, 8)}';
+        name = userData['name'];
+        faculty = userData['faculty'];
+        department = userData['department'];
+        classyear = userData['classyear'];
+        address = userData['address'];
+      });
+    }
+    // if (mounted) {
+    //     Navigator.pop(context);
+    //   }
+  }
+
+  @override
+  void initState() {
+    super.initState(); // กำหนดค่าเริ่มต้นให้ userData เป็น Future ที่ว่าง
+    getDataUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,37 +77,37 @@ class _InfoProfileState extends State<InfoProfile> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage('assets/images/profile_pic.png'),
+                  backgroundImage: AssetImage('assets/images/a.jpg'),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ภูมิ ไพรศรี',
-                      style: TextStyle(
+                      name,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '640***@kmitl.ac.th',
-                      style: TextStyle(
+                      hideEmail,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '081-375-5536',
-                      style: TextStyle(
+                      hidePhone,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
@@ -140,11 +198,11 @@ class _InfoProfileState extends State<InfoProfile> {
                   onTap: () {},
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(right: 12.0),
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
                 child: Text(
-                  '081-***-5536',
-                  style: TextStyle(fontSize: 13.0),
+                  hidePhone,
+                  style: const TextStyle(fontSize: 13.0),
                 ),
               )
             ],
@@ -162,11 +220,11 @@ class _InfoProfileState extends State<InfoProfile> {
                   onTap: () {},
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(right: 12.0),
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
                 child: Text(
-                  '640***@kmitl.ac.th',
-                  style: TextStyle(fontSize: 13.0),
+                  hideEmail,
+                  style: const TextStyle(fontSize: 13.0),
                 ),
               )
             ],
@@ -218,77 +276,77 @@ class _InfoProfileState extends State<InfoProfile> {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text('คณะ', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 12.0),
+                  padding: const EdgeInsets.only(right: 12.0),
                   child: Text(
-                    'วิศวกรรมศาสตร์',
-                    style: TextStyle(fontSize: 14.0),
+                    faculty,
+                    style: const TextStyle(fontSize: 14.0),
                   ),
                 )
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text('ภาควิชา', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 12.0),
+                  padding: const EdgeInsets.only(right: 12.0),
                   child: Text(
-                    'คอมพิวเตอร์',
-                    style: TextStyle(fontSize: 14.0),
+                    department,
+                    style: const TextStyle(fontSize: 14.0),
                   ),
                 )
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text('ชั้นปี', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 12.0),
+                  padding: const EdgeInsets.only(right: 12.0),
                   child: Text(
-                    '4',
-                    style: TextStyle(fontSize: 14.0),
+                    classyear,
+                    style: const TextStyle(fontSize: 14.0),
                   ),
                 )
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0, bottom: 16.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, bottom: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text('รหัสนักศึกษา', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 12.0),
+                  padding: const EdgeInsets.only(right: 12.0),
                   child: Text(
-                    '64010681',
-                    style: TextStyle(fontSize: 14.0),
+                    studentID,
+                    style: const TextStyle(fontSize: 14.0),
                   ),
                 )
               ],
@@ -303,20 +361,20 @@ class _InfoProfileState extends State<InfoProfile> {
             padding: EdgeInsets.only(left: 16.0, top: 16.0),
             child: Text('ข้อมูลส่วนตัว', style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0, bottom: 16.0),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, bottom: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text('ที่อยู่', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 12.0),
+                  padding: const EdgeInsets.only(right: 12.0),
                   child: Text(
-                    'Rnp',
-                    style: TextStyle(fontSize: 14.0),
+                    address,
+                    style: const TextStyle(fontSize: 14.0),
                   ),
                 )
               ],

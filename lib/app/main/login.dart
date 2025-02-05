@@ -31,7 +31,7 @@ class _LoginState extends State<LoginPage> {
             height: 90.0, // กำหนดความสูง
             width: 90.0, // กำหนดความกว้าง
             child: CircularProgressIndicator(
-              color: Colors.orange,
+              color: Color(0XFFE35205),
               strokeWidth: 12.0, // ปรับความหนาของวงกลม
               strokeCap: StrokeCap.round,
             ),

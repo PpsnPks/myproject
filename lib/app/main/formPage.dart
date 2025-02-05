@@ -56,7 +56,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
 
   Future<void> _submitForm(String role) async {
     if (_validateForm()) {
-      FormService formService = FormService();
+      UserService formService = UserService();
       final result = await formService.form(
         '${firstNameController.text} ${lastNameController.text}',
         emailController.text,

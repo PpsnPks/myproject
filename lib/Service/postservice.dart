@@ -64,6 +64,7 @@ class PostService {
   }
 
   Future<Map<String, dynamic>> getPost(int page, int length) async {
+    final url = "${Environment.baseUrl}/getposts";
     try {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
@@ -73,36 +74,37 @@ class PostService {
       Map<String, String> headers = {
         'Authorization': 'Bearer $accessToken',
         "Accept": "application/json",
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       };
 
       // Body (แปลงข้อมูลให้เป็น JSON string)
-      Map<String, dynamic> queryParams = {
-        "status": null,
+      Map<String, dynamic> body = {
         "draw": 1,
         "columns": [],
         "order": [
           {"column": 0, "dir": "asc"}
         ],
-        "start": 1,
+        "start": 0,
         "length": 10,
-        "search": {"value": "", "regex": false}
+        "search": {"value": "", "regex": false},
+        "tag": "",
+        "category": "",
+        "status": "ok"
       };
 
       // แปลง Map เป็น JSON string ก่อนส่ง
-      // String jsonBody = json.encode(body);
-      final Uri url = Uri.parse(postUrl).replace(queryParameters: queryParams);
+      String jsonBody = json.encode(body);
       // Get Request
-      final response = await http.get(url, headers: headers);
+      final response = await http.post(Uri.parse(url), headers: headers, body: jsonBody);
 
       // ตรวจสอบสถานะของ Response
       if (response.statusCode == 200) {
         print('888888 ${response.statusCode}');
-        // List<Post> data = (jsonDecode(response.body)['data'] as List).map((postJson) => Post.fromJson(postJson)).toList();
-        print('888888 ${jsonDecode(response.body)['data']['data']}');
+        List<Post> data = (jsonDecode(response.body)['data']['data'] as List).map((postJson) => Post.fromJson(postJson)).toList();
+        print('888888 $data');
         return {
           "success": true,
-          "data": Postservice().getCategoryProducts() //data,
+          "data": data //data,
         };
       } else {
         print('888888 ${response.statusCode}');
@@ -114,7 +116,7 @@ class PostService {
     } catch (e) {
       return {
         "success": false,
-        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ",
+        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ $e",
       };
     }
   }
@@ -131,7 +133,7 @@ class Postservice {
         faculty: 'วิศวะกรรมศาสตร์',
         id: '100.0',
         imageUrl: 'assets/images/fan_example.png',
-        title: 'ตามหาพัดลม',
+        // title: 'ตามหาพัดลม',
         detail: 'พัดลม Xiaomi สภาพดี ใช้งานมาไม่นาน สภาพปกติไม่มีส่วนไหนชำรุด',
         tags: 'เครื่องใช้ไฟฟ้า',
       ),
@@ -141,7 +143,7 @@ class Postservice {
         faculty: 'วิศวะกรรมศาสตร์',
         id: '100.0',
         imageUrl: 'assets/images/tuyen.png',
-        title: 'ต้องการ ตู้เย็น',
+        // title: 'ต้องการ ตู้เย็น',
         detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
         tags: 'เครื่องใช้ไฟฟ้า',
       ),
@@ -151,7 +153,7 @@ class Postservice {
         faculty: 'วิศวะกรรมศาสตร์',
         id: '100.0',
         imageUrl: 'assets/images/tuyen.png',
-        title: 'ตู้เย็น',
+        // title: 'ตู้เย็น',
         detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
         tags: 'เครื่องใช้ไฟฟ้า',
       ),
@@ -165,7 +167,7 @@ class Post {
   final String faculty;
   final String id;
   final String imageUrl;
-  final String title;
+  // final String title;
   final String detail;
   final String tags;
 
@@ -175,19 +177,19 @@ class Post {
     required this.faculty,
     required this.id,
     required this.imageUrl,
-    required this.title,
+    // required this.title,
     required this.detail,
     required this.tags,
   });
 
   factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
-      profile: data['user']['pic'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
+      profile: "${Environment.imgUrl}/${data['user']['pic']}", // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
       name: data['user']['name'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
       faculty: data['user']['faculty'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
       id: data['id'].toString(),
-      imageUrl: data['image'],
-      title: data['category'], // หรือเปลี่ยนให้ตรงกับ field ที่คุณต้องการ
+      imageUrl: '${Environment.imgUrl}/${data['image']}',
+      // title: data['category'], // หรือเปลี่ยนให้ตรงกับ field ที่คุณต้องการ
       detail: data['detail'],
       tags: data['tag'],
     );
