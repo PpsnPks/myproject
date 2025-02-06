@@ -29,9 +29,8 @@ class RegisterService {
         headers: headers,
         body: jsonEncode(body),
       );
-
       // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         // แปลง JSON เป็น Map
         final data = jsonDecode(response.body);
         return {
@@ -43,7 +42,7 @@ class RegisterService {
         // กรณีเกิดข้อผิดพลาดจาก API
         return {
           "success": false,
-          "message": jsonDecode(response.body)['message'] ?? "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
+          "message": "${response.statusCode} ${jsonDecode(response.body)['message']}" ?? "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
         };
       }
     } catch (e) {

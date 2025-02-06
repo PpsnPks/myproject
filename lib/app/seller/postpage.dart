@@ -12,18 +12,28 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   List<Post> posts = [];
   final scrollController = ScrollController();
+  int page = 1;
+  int perPage = 2;
+  bool isLoadingMore = false;
+  bool hasMore = true;
 
-  _loadmore(int page, int length) async {
-    Map<String, dynamic> response = await PostService().getPost(1, 10);
+  _loadmore() async {
+    List<Post> newPosts = [];
+    Map<String, dynamic> response = await PostService().getPost(page, perPage);
     if (response['success'] == true) {
-      final newPosts = response['data'];
+      newPosts = response['data'];
       print("11111111111 $newPosts");
-      setState(() {
-        posts.addAll(newPosts);
-        // page++;  // เพิ่มเลขหน้าเพื่อโหลดข้อมูลหน้าถัดไป
-      });
-      print('22222222222');
-      return;
+      if (newPosts.isEmpty) {
+        setState(() {
+          hasMore = false;
+        });
+        return;
+      } else {
+        setState(() {
+          posts.addAll(newPosts);
+        });
+        return;
+      }
     }
     print('lllllllllll  $response');
     return;
@@ -33,7 +43,7 @@ class _PostPageState extends State<PostPage> {
   void initState() {
     super.initState();
     scrollController.addListener(_scorollListener);
-    _loadmore(1, 10); // ดึงข้อมูลจาก API
+    _loadmore(); // ดึงข้อมูลจาก API
     //   _loadData();
 
     //   // ตั้งค่า ScrollController เพื่อจับการเลื่อน
@@ -72,6 +82,7 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[400],
       appBar: AppBar(
         title: const Text("โพสต์"),
         centerTitle: true,
@@ -85,112 +96,153 @@ class _PostPageState extends State<PostPage> {
       ),
       body: ListView.builder(
         controller: scrollController,
-        itemCount: posts.length,
+        itemCount: (isLoadingMore || !hasMore) ? posts.length + 1 : posts.length,
         itemBuilder: (context, index) {
-          final product = posts[index];
-          return Card(
-            elevation: 0,
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Section: User Info
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(product.profile),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.name,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            product.faculty,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                // Section: Post Title
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.detail,
-                        maxLines: 3,
-                        style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        product.tags,
-                        style: const TextStyle(
-                          fontSize: 8,
-                          color: Color(0xFFFA5A2A),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Section: Image
-                if (product.imageUrl.isNotEmpty)
+          if (index < posts.length) {
+            final post = posts[index];
+            return Card(
+              elevation: 0,
+              color: Colors.white,
+              margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Section: User Info
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(post.profile),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              post.name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 0),
+                            Text(
+                              post.faculty,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Section: Post Title
+                  Padding(
+                    padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          post.detail,
+                          maxLines: 3,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          post.tags,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Color(0xFFFA5A2A),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Section: Image
+                  if (post.imageUrl.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
                             width: 2.0, // กำหนดความหนาของขอบ
                           ),
-                          // borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
+                          borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
                         ),
-                        child: Image.network(
-                          product.imageUrl,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Text('โหลดรูปไม่ได้ ❌');
-                          },
-                          width: double.infinity,
-                          height: 360,
-                          fit: BoxFit.cover,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: Image.network(
+                            post.imageUrl,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Text('โหลดรูปไม่ได้ ❌');
+                            },
+                            width: double.infinity,
+                            height: 360,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
+                  // Section: Post Details
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+                      child: IconButton(
+                          onPressed: () => {},
+                          icon: const Icon(
+                            Icons.chat_outlined,
+                            color: Color(0xFFA5A9B6),
+                          ))),
+                ],
+              ),
+            );
+          } else {
+            if (isLoadingMore) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                          child: SizedBox(
+                        width: 10.0,
+                        height: 10.0,
+                        child: CircularProgressIndicator(
+                          color: Color(0XFFE35205),
+                          strokeWidth: 2.0,
+                        ),
+                      )),
+                      SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                      Text(
+                        'กำลังโหลดโพสต์เพิ่มเติม...',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                      ),
+                    ],
                   ),
-                // Section: Post Details
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                    child: IconButton(
-                        onPressed: () => {},
-                        icon: const Icon(
-                          Icons.chat_outlined,
-                          color: Color(0xFFA5A9B6),
-                        ))),
-              ],
-            ),
-          );
+                ),
+              );
+            } else if (!hasMore) {
+              return const Padding(
+                padding: EdgeInsets.only(top: 8.0, bottom: 10.0),
+                child: Center(
+                  child: Text(
+                    'ไม่มีโพสต์ที่จะแสดงเพิ่มเติม',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                  ),
+                ),
+              );
+            }
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -204,8 +256,16 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void _scorollListener() {
+  void _scorollListener() async {
     if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+      page += 1;
+      setState(() {
+        isLoadingMore = true;
+      });
+      await _loadmore();
+      setState(() {
+        isLoadingMore = false;
+      });
       print('max');
     }
     print('scroll listener called');

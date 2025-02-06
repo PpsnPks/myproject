@@ -62,53 +62,75 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> registerUser() async {
-  if (_emailController.text.isNotEmpty &&
-      _nameController.text.isNotEmpty &&
-      _passwordController.text.isNotEmpty &&
-      _confirmPasswordController.text.isNotEmpty) {
-    Map<String, dynamic> userData = {
-      'name': _nameController.text,
-      'email': _emailController.text,
-      'password': _passwordController.text,
-      'password_confirmation': _confirmPasswordController.text,
-    };
-
-    final Uri url = Uri.parse('${Environment.baseUrl}/auth/register');
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(userData),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final int userId = responseData['user_id'];  
-        print(userId);// ดึงค่า user_id จากการตอบสนอง
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ลงทะเบียนสำเร็จ')),
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: SizedBox(
+            height: 90.0, // กำหนดความสูง
+            width: 90.0, // กำหนดความกว้าง
+            child: CircularProgressIndicator(
+              color: Color(0XFFE35205),
+              strokeWidth: 12.0, // ปรับความหนาของวงกลม
+              strokeCap: StrokeCap.round,
+            ),
+          ),
         );
-        print('Navigating to OTP page');
-        Navigator.pushReplacementNamed(
-          context, 
-          '/otp',
-          arguments: {
-            'email': _emailController.text,
-            'user_id': userId,  // ส่งค่า user_id ไปยังหน้า OTP
-          },
+      },
+    );
+    if (_emailController.text.isNotEmpty &&
+        _nameController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _confirmPasswordController.text.isNotEmpty) {
+      Map<String, dynamic> userData = {
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'password': _passwordController.text,
+        'password_confirmation': _confirmPasswordController.text,
+      };
+
+      final Uri url = Uri.parse('${Environment.baseUrl}/auth/register');
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(userData),
         );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('การลงทะเบียนล้มเหลว')),
-        );
+        if (mounted) {
+          Navigator.pop(context);
+        }
+        print('${response.statusCode}');
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+          final int userId = responseData['user_id'];
+          print(userId); // ดึงค่า user_id จากการตอบสนอง
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('ลงทะเบียนสำเร็จ')),
+          );
+          print('Navigating to OTP page');
+          Navigator.pushReplacementNamed(
+            context,
+            '/otp',
+            arguments: {
+              'email': _emailController.text,
+              'user_id': userId, // ส่งค่า user_id ไปยังหน้า OTP
+            },
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('การลงทะเบียนล้มเหลว')),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+        print('เกิดข้อผิดพลาด: $error');
       }
-    } catch (error) {
-      print('เกิดข้อผิดพลาด: $error');
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -122,106 +144,108 @@ class _RegisterPageState extends State<RegisterPage> {
         elevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const Text(
-                  'ลงทะเบียน',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'ชื่อ',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'อีเมล',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  validator: validateEmail,
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  obscureText: _obscureText,
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'รหัสผ่าน',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  validator: validatePassword,
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  obscureText: _obscureText2,
-                  controller: _confirmPasswordController,
-                  decoration: InputDecoration(
-                    labelText: 'ยืนยันรหัสผ่าน',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText2 ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText2 = !_obscureText2;
-                        });
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  validator: validateConfirmPassword,
-                ),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: const Color(0XFFE35205),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      registerUser();
-                    }
-                  },
-                  child: const Text(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  const Text(
                     'ลงทะเบียน',
-                    style: TextStyle(fontSize: 18, color: Color(0XFFFFFFFF)),
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 40),
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: 'ชื่อ',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'อีเมล',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    validator: validateEmail,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    obscureText: _obscureText,
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'รหัสผ่าน',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    validator: validatePassword,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    obscureText: _obscureText2,
+                    controller: _confirmPasswordController,
+                    decoration: InputDecoration(
+                      labelText: 'ยืนยันรหัสผ่าน',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText2 ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText2 = !_obscureText2;
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    validator: validateConfirmPassword,
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: const Color(0XFFE35205),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        registerUser();
+                      }
+                    },
+                    child: const Text(
+                      'ลงทะเบียน',
+                      style: TextStyle(fontSize: 18, color: Color(0XFFFFFFFF)),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

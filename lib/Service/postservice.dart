@@ -64,7 +64,7 @@ class PostService {
   }
 
   Future<Map<String, dynamic>> getPost(int page, int length) async {
-    final url = "${Environment.baseUrl}/getposts";
+    const url = "${Environment.baseUrl}/getposts";
     try {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
@@ -84,8 +84,8 @@ class PostService {
         "order": [
           {"column": 0, "dir": "asc"}
         ],
-        "start": 0,
-        "length": 10,
+        "start": (page - 1) * length,
+        "length": length,
         "search": {"value": "", "regex": false},
         "tag": "",
         "category": "",

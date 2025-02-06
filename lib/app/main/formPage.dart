@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:myproject/Service/uploadimgservice.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:myproject/app/main/role.dart';
@@ -30,35 +31,42 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
   final List<String> years = ['ปี 1', 'ปี 2', 'ปี 3', 'ปี 4'];
 
   int currentStep = 0;
-
+  late final XFile image;
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    image = (await picker.pickImage(source: ImageSource.gallery))!;
 
     if (image != null) {
-      final Uint8List bytes = await image.readAsBytes();
+      final Uint8List bytes = await image!.readAsBytes();
       setState(() {
         _base64Image = base64Encode(bytes);
       });
     }
   }
 
-  void _navigateToRolePage() async {
-    final selectedRole = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RolePage()),
-    );
+  // void _navigateToRolePage() async {
+  //   final selectedRole = await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const RolePage()),
+  //   );
 
-    if (selectedRole != null) {
-      _submitForm(selectedRole);
+  //   if (selectedRole != null) {
+  //     _submitForm(selectedRole);
+  //   }
+  // }
+
+  Future<void> _submitForm() async {
+    var response = await UploadImgService().uploadImg(image);
+    var imgPath = '';
+    if (response['success']) {
+      imgPath = response['image'];
     }
-  }
-
-  Future<void> _submitForm(String role) async {
     if (_validateForm()) {
       UserService formService = UserService();
+      String role = 'buy';
       final result = await formService.form(
         '${firstNameController.text} ${lastNameController.text}',
+        imgPath,
         emailController.text,
         phoneController.text,
         'N/A', // Address field
@@ -69,10 +77,13 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
       );
 
       if (result['success'] == true) {
+        print('บันทึกข้อมูลสำเร็จ: ${result["data"]}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('บันทึกข้อมูลสำเร็จ: ${result["data"]}')),
         );
+        Navigator.pushReplacementNamed(context, '/role');
       } else {
+        print('เกิดข้อผิดพลาด: ${result["message"]}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('เกิดข้อผิดพลาด: ${result["message"]}')),
         );
@@ -100,7 +111,8 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
         currentStep++;
       });
     } else {
-      _navigateToRolePage(); // Navigate to role selection at the final step
+      print('before submit form');
+      _submitForm(); // Navigate to role selection at the final step
     }
   }
 
@@ -130,7 +142,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
             child: Row(
               children: [
                 ElevatedButton(
-                  onPressed: currentStep == 2 ? _navigateToRolePage : details.onStepContinue,
+                  onPressed: details.onStepContinue,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0XFFE35205),
                     foregroundColor: Colors.white,

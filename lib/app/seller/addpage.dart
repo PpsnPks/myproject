@@ -88,7 +88,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
   Future<void> _add() async {
     final addService = AddService();
-    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImg(pickedFiles);
+    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImgs(pickedFiles);
     List images_path = [];
     if (uploadResponse['success']) {
       images_path = uploadResponse['images'];

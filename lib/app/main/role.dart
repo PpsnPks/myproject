@@ -20,7 +20,7 @@ class RolePage extends StatelessWidget {
               const Text(
                 'คุณสนใจที่จะเป็น',
                 style: TextStyle(
-                  fontSize: 47,
+                  fontSize: 36,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -43,8 +43,8 @@ class RolePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                        textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -62,8 +62,8 @@ class RolePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                        textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
