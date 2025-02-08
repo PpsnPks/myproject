@@ -69,6 +69,7 @@ class _AddPostPageState extends State<AddPostPage> {
 
     if (result['success']) {
       print("โพสต์สำเร็จ");
+      Navigator.pushReplacementNamed(context, '/post');
     } else {
       print(result['message']);
     }

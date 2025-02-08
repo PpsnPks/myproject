@@ -69,7 +69,6 @@ class PostService {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
-
       // Header
       Map<String, String> headers = {
         'Authorization': 'Bearer $accessToken',
@@ -82,7 +81,7 @@ class PostService {
         "draw": 1,
         "columns": [],
         "order": [
-          {"column": 0, "dir": "asc"}
+          {"column": 0, "dir": "desc"}
         ],
         "start": (page - 1) * length,
         "length": length,
@@ -99,7 +98,7 @@ class PostService {
 
       // ตรวจสอบสถานะของ Response
       if (response.statusCode == 200) {
-        print('888888 ${response.statusCode}');
+        print('888888 ${response.statusCode} $accessToken');
         List<Post> data = (jsonDecode(response.body)['data']['data'] as List).map((postJson) => Post.fromJson(postJson)).toList();
         print('888888 $data');
         return {
@@ -183,6 +182,7 @@ class Post {
   });
 
   factory Post.fromJson(Map<String, dynamic> data) {
+    print('aaa ${data['image']}');
     return Post(
       profile: "${Environment.imgUrl}/${data['user']['pic']}", // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
       name: data['user']['name'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
