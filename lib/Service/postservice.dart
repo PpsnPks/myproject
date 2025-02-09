@@ -9,7 +9,13 @@ class PostService {
   final String postUrl = "${Environment.baseUrl}/posts";
 
   // ฟังก์ชันสำหรับ post
-  Future<Map<String, dynamic>> addPost(String image, String detail, String category, String tag, String price) async {
+  Future<Map<String, dynamic>> addPost(
+    String image, 
+    String detail, 
+    String category, 
+    String tag, 
+    String price) 
+    async {
     try {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
@@ -121,52 +127,12 @@ class PostService {
   }
 }
 
-class Postservice {
-  Future<List<Post>> getCategoryProducts() async {
-    // จำลองข้อมูล
-    await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
-    return [
-      Post(
-        profile: '',
-        name: 'ภูมิ ไพรศรี',
-        faculty: 'วิศวะกรรมศาสตร์',
-        id: '100.0',
-        imageUrl: 'assets/images/fan_example.png',
-        // title: 'ตามหาพัดลม',
-        detail: 'พัดลม Xiaomi สภาพดี ใช้งานมาไม่นาน สภาพปกติไม่มีส่วนไหนชำรุด',
-        tags: 'เครื่องใช้ไฟฟ้า',
-      ),
-      Post(
-        profile: '',
-        name: 'รัชพล รุจิเวช',
-        faculty: 'วิศวะกรรมศาสตร์',
-        id: '100.0',
-        imageUrl: 'assets/images/tuyen.png',
-        // title: 'ต้องการ ตู้เย็น',
-        detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
-        tags: 'เครื่องใช้ไฟฟ้า',
-      ),
-      Post(
-        profile: '',
-        name: 'สมหวัง ใจดี',
-        faculty: 'วิศวะกรรมศาสตร์',
-        id: '100.0',
-        imageUrl: 'assets/images/tuyen.png',
-        // title: 'ตู้เย็น',
-        detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
-        tags: 'เครื่องใช้ไฟฟ้า',
-      ),
-    ];
-  }
-}
-
 class Post {
   final String profile;
   final String name;
   final String faculty;
   final String id;
   final String imageUrl;
-  // final String title;
   final String detail;
   final String tags;
 
@@ -176,7 +142,6 @@ class Post {
     required this.faculty,
     required this.id,
     required this.imageUrl,
-    // required this.title,
     required this.detail,
     required this.tags,
   });

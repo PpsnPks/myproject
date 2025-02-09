@@ -21,15 +21,16 @@ class _AddProductPageState extends State<AddProductPage> {
   bool isSelling = true;
   bool isRenting = false;
   bool isPreOrder = false;
-  String? selectedCondition;
-  String? selectedUsageTime;
   String? defect;
   int quantity = 1;
   String? product_defect;
   String? product_years;
   // สำหรับ สภาพสินค้า
+  String? selectedCondition;
+  String? selectedUsageTime;
   String? selectedUsagePeriod; // สำหรับ ระยะเวลาการใช้งาน
   String? selectedPickupLocation;
+  String? selectedPickupCategory;
 
   final List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
@@ -101,7 +102,7 @@ class _AddProductPageState extends State<AddProductPage> {
     // กำหนดราคาเป็น 0 หากเลือก "แจก" (isRenting == true)
     final productPrice = isRenting ? '0' : _productPriceController.text;
 
-    final result = await addService.addproduct(
+    final result = await addService.addProduct(
       _productNameController.text,
       images_path, //_productImagesController.text,
       _productQtyController.text,
@@ -303,10 +304,43 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: _productCategoryController,
+              // TextField(
+              //   controller: _productCategoryController,
+              //   decoration: InputDecoration(
+              //     labelText: 'หมวดหมู่',
+              //     enabledBorder: OutlineInputBorder(
+              //       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+              //       borderRadius: BorderRadius.circular(12),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+              //       borderRadius: BorderRadius.circular(12),
+              //     ),
+              //     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              //   ),
+              // ),
+              // const Text('หมวดหมู่', style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                items: const [
+                  DropdownMenuItem(value: 'ของใช้ทั่วไป', child: Text('ของใช้ทั่วไป')),
+                  DropdownMenuItem(value: 'อิเล็กทรอนิกส์', child: Text('อิเล็กทรอนิกส์')),
+                  DropdownMenuItem(value: 'เครื่องใช้ไฟฟ้า', child: Text('เครื่องใช้ไฟฟ้า')),
+                  DropdownMenuItem(value: 'หนังสือ', child: Text('หนังสือ')),
+                  DropdownMenuItem(value: 'การศึกษา', child: Text('การศึกษา')),
+                  DropdownMenuItem(value: 'เฟอร์นิเจอร์', child: Text('เฟอร์นิเจอร์')),
+                  DropdownMenuItem(value: 'แฟชั่น', child: Text('แฟชั่น')),
+                  DropdownMenuItem(value: 'อื่นๆ', child: Text('อื่นๆ')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    selectedPickupCategory = value;
+                    _productCategoryController.text = value!;
+                  });
+                },
+                value: selectedPickupCategory,
+                hint: const Text('หมวดหมู่'),
                 decoration: InputDecoration(
-                  labelText: 'หมวดหมู่',
                   enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                     borderRadius: BorderRadius.circular(12),
@@ -439,8 +473,6 @@ class _AddProductPageState extends State<AddProductPage> {
               ),
               const SizedBox(height: 16),
               if (!isPreOrder) ...[
-                const Text('สภาพสินค้า', style: TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   items: const [
                     DropdownMenuItem(value: '1', child: Text('มือหนึ่ง')),
@@ -449,22 +481,21 @@ class _AddProductPageState extends State<AddProductPage> {
                   onChanged: (value) {
                     setState(() {
                       selectedCondition = value;
-                      // Set value in _productConditionController when "มือหนึ่ง" or "มือสอง" is selected
                       _productConditionController.text = value!;
 
-                      // When "มือหนึ่ง" is selected, clear defect and years data
+                      // เมื่อเลือก "มือหนึ่ง" ให้ล้างข้อมูลตำหนิและอายุการใช้งาน
                       if (value == '1') {
                         _productDefectController.clear();
                         _productYearsController.clear();
                       } else {
-                        // For "มือสอง", set empty values for defect and years
+                        // สำหรับ "มือสอง" ให้ตั้งค่าเป็นค่าว่างสำหรับ defect และ years
                         _productDefectController.text = '';
                         _productYearsController.text = '';
                       }
                     });
                   },
                   value: selectedCondition,
-                  hint: const Text('เลือกรายการ'),
+                  hint: const Text('สภาพสินค้า'),
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -477,10 +508,9 @@ class _AddProductPageState extends State<AddProductPage> {
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
                 ),
-                // Show defect and usage years fields only if "มือสอง" is selected
-                if (selectedCondition == 'มือสอง') ...[
-                  const SizedBox(height: 8),
-                  const Text('อายุการใช้งานสินค้า', style: TextStyle(fontSize: 16)),
+
+                // แสดงฟิลด์ "อายุการใช้งาน" และ "ตำหนิ" เมื่อเลือก "มือสอง"
+                if (selectedCondition == '2') ...[
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     items: const [
@@ -496,7 +526,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       });
                     },
                     value: product_years,
-                    hint: const Text('เลือกรายการ'),
+                    hint: const Text('อายุการใช้งานสินค้า'),
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -510,18 +540,6 @@ class _AddProductPageState extends State<AddProductPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // TextField(
-                  //   controller: _productDefectController,
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       product_defect = value;
-                  //     });
-                  //   },
-                  //   decoration: const InputDecoration(
-                  //     labelText: 'ระบุตำหนิของสินค้า',
-                  //     border: OutlineInputBorder(),
-                  //   ),
-                  // ),
                   TextField(
                     controller: _productDefectController,
                     onChanged: (value) {
@@ -542,11 +560,11 @@ class _AddProductPageState extends State<AddProductPage> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                     ),
                   ),
-                ],
+                ]
               ], // สถานที่นัดรับสินค้า
               const SizedBox(height: 8),
-              const Text('สถานที่นัดรับสินค้า', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 8),
+              // const Text('สถานที่นัดรับสินค้า', style: TextStyle(fontSize: 16)),
+              // const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 items: const [
                   DropdownMenuItem(value: 'เกกี 1', child: Text('เกกี 1')),
@@ -564,7 +582,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   });
                 },
                 value: selectedPickupLocation,
-                hint: const Text('เลือกรายการ'),
+                hint: const Text('สถานที่นัดรับสินค้า'),
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
