@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -13,7 +14,7 @@ class _PostPageState extends State<PostPage> {
   List<Post> posts = [];
   final scrollController = ScrollController();
   int page = 1;
-  int perPage = 2;
+  int perPage = 5;
   bool isLoadingMore = false;
   bool hasMore = true;
 
@@ -178,18 +179,39 @@ class _PostPageState extends State<PostPage> {
                           ),
                           borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Image.network(
-                            post.imageUrl,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Text('โหลดรูปไม่ได้ ❌');
-                            },
+                        child: CachedNetworkImage(
+                          imageUrl: post.imageUrl,
+                          placeholder: (context, url) => const SizedBox(
                             width: double.infinity,
                             height: 360,
-                            fit: BoxFit.cover,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0XFFE35205),
+                                strokeCap: StrokeCap.round,
+                                // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+                              ),
+                            ),
                           ),
+                          imageBuilder: (context, ImageProvider) {
+                            return Container(
+                              width: double.infinity,
+                              height: 360,
+                              decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
+                            );
+                          },
                         ),
+                        // ClipRRect(
+                        //   borderRadius: BorderRadius.circular(20.0),
+                        //   child: Image.network(
+                        //     post.imageUrl,
+                        //     errorBuilder: (context, error, stackTrace) {
+                        //       return const Text('กำลังโหลดรูป'); //ไม่ได้ ❌
+                        //     },
+                        //     width: double.infinity,
+                        //     height: 360,
+                        //     fit: BoxFit.cover,
+                        //   ),
+                        // ),
                       ),
                     ),
                   // Section: Post Details

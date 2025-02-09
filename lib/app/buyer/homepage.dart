@@ -14,7 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Product>> homeProducts;
-
   @override
   void initState() {
     super.initState();
@@ -25,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         // ใช้ SingleChildScrollView รอบๆ Column
         child: Stack(
@@ -252,11 +252,11 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            const Positioned(
+            Positioned(
               top: 0,
               left: 0,
               right: 0,
-              child: SearchInputField(), // คงตำแหน่ง SearchInputField ไว้ด้านบน
+              child: searchInputField(), // คงตำแหน่ง SearchInputField ไว้ด้านบน
             ),
           ],
         ),
@@ -264,52 +264,20 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: buyerFooter(context, 'home'),
     );
   }
-}
 
-// ignore: non_constant_identifier_names
-Column CatergoryButton(BuildContext context, String icon, String label, String route) {
-  return Column(children: [
-    OutlinedButton(
-      onPressed: () {
-        Navigator.pushNamed(context, route);
-      },
-      style: OutlinedButton.styleFrom(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)), // ทำให้มุมเป็นเหลี่ยม
-        ),
-        padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
-        side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0), // Add border color and thickness
-        minimumSize: const Size(64, 64),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            icon,
-            width: 32.0, // Icon width
-            height: 32.0, // Icon height
-            // ignore: deprecated_member_use
-            color: const Color(0xFFFA5A2A),
-          ),
-          //Icon(icon, size: 30, color: const Color(0xFFFA5A2A)),  // ไอคอนในปุ่ม
-        ],
-      ),
-    ),
-    const SizedBox(height: 8.0), // ระยะห่างระหว่างไอคอนและข้อความ
-    Text(label, style: const TextStyle(fontSize: 12)),
-  ]);
-}
+  void printtext(String a) {
+    print(a);
+  }
 
-class SearchInputField extends StatelessWidget {
-  const SearchInputField({super.key});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget searchInputField() {
     return Container(
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0, bottom: 10),
         child: TextField(
+          onSubmitted: (value) {
+            setState(() {});
+          },
           decoration: InputDecoration(
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(left: 14.0, right: 8.0), // Adjust the padding value as needed
@@ -347,6 +315,40 @@ class SearchInputField extends StatelessWidget {
       ),
     );
   }
+}
+
+// ignore: non_constant_identifier_names
+Column CatergoryButton(BuildContext context, String icon, String label, String route) {
+  return Column(children: [
+    OutlinedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, route);
+      },
+      style: OutlinedButton.styleFrom(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)), // ทำให้มุมเป็นเหลี่ยม
+        ),
+        padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
+        side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0), // Add border color and thickness
+        minimumSize: const Size(64, 64),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            icon,
+            width: 32.0, // Icon width
+            height: 32.0, // Icon height
+            // ignore: deprecated_member_use
+            color: const Color(0xFFFA5A2A),
+          ),
+          //Icon(icon, size: 30, color: const Color(0xFFFA5A2A)),  // ไอคอนในปุ่ม
+        ],
+      ),
+    ),
+    const SizedBox(height: 8.0), // ระยะห่างระหว่างไอคอนและข้อความ
+    Text(label, style: const TextStyle(fontSize: 12)),
+  ]);
 }
 
 final List<String> imgList = [
