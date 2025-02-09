@@ -71,7 +71,7 @@ class _CartPageState extends State<CartBPage>
           }
         },
       ),
-      bottomNavigationBar: buyerFooter(context, 'cart-seller'),
+      bottomNavigationBar: buyerFooter(context, 'cart-buyer'),
     );
   }
 
