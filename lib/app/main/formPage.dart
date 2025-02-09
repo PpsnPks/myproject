@@ -140,7 +140,14 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
           return Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: Row(
+              mainAxisAlignment: currentStep == 2 ? MainAxisAlignment.center : MainAxisAlignment.end,
               children: [
+                if (currentStep > 0)
+                  OutlinedButton(
+                    onPressed: details.onStepCancel,
+                    child: const Text('ย้อนกลับ'),
+                  ),
+                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: details.onStepContinue,
                   style: ElevatedButton.styleFrom(
@@ -149,12 +156,6 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                   ),
                   child: Text(currentStep == 2 ? 'เริ่มต้นใช้งาน' : 'ถัดไป'),
                 ),
-                const SizedBox(width: 8),
-                if (currentStep > 0)
-                  OutlinedButton(
-                    onPressed: details.onStepCancel,
-                    child: const Text('ย้อนกลับ'),
-                  ),
               ],
             ),
           );
