@@ -18,10 +18,39 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   late Future<List<Product>> likedProducts;
+  List<Product> products = [];
+  final scrollController = ScrollController();
+  int page = 1;
+  int perPage = 5;
+  bool isLoadingMore = false;
+  bool hasMore = true;
+  _loadmore() async {
+    List<Product> newPosts = [];
+    Map<String, dynamic> response = await ProductService().getProduct(page, perPage);
+    if (response['success'] == true) {
+      newPosts = response['data'];
+      print("11111111111 $newPosts");
+      if (newPosts.isEmpty) {
+        setState(() {
+          hasMore = false;
+        });
+        return;
+      } else {
+        setState(() {
+          products.addAll(newPosts);
+        });
+        return;
+      }
+    }
+    print('lllllllllll  $response');
+    return;
+  }
 
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(_scorollListener);
+    _loadmore(); // ดึงข้อมูลจาก API
     // เรียก LikeService เพื่อดึงข้อมูลสินค้าที่ถูกใจ
     likedProducts = Categoryservice().getCategoryProducts();
   }
@@ -145,21 +174,41 @@ class _CategoryPageState extends State<CategoryPage> {
       ),
       body: Stack(
         children: [
-          FutureBuilder<List<Product>>(
-            future: likedProducts,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
-              } else {
-                final products = snapshot.data!;
-
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.only(left: 12, right: 12, top: 66),
-                  child: Row(
+          ListView.builder(
+              padding: const EdgeInsets.only(left: 12, right: 12, top: 66),
+              controller: scrollController,
+              itemCount: ((products.isEmpty && isLoadingMore) || !hasMore) ? 2 : 1,
+              itemBuilder: (context, index) {
+                if (products.isEmpty && isLoadingMore) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                              child: SizedBox(
+                            width: 10.0,
+                            height: 10.0,
+                            child: CircularProgressIndicator(
+                              color: Color(0XFFE35205),
+                              strokeWidth: 2.0,
+                            ),
+                          )),
+                          SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                          Text(
+                            'กำลังโหลดสินค้า',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else if (products.isEmpty) {
+                  return const Center(child: Text('ไม่พบสินค้า'));
+                } else if (products.isNotEmpty && index == 0) {
+                  return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
@@ -185,31 +234,92 @@ class _CategoryPageState extends State<CategoryPage> {
                         ),
                       ),
                     ],
-                  ),
-                  // Column(
-                  //   children: [
-                  //     for (int i = 0; i < products.length; i += 2) // วนลูปทีละ 2
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.start,
-                  //         children: [
-                  //           Expanded(
-                  //             child: productCard(products[i]), // สร้าง Card สำหรับสินค้าแรก
-                  //           ),
-                  //           const SizedBox(width: 12), // ระยะห่างระหว่างคอลัมน์
-                  //           if (i + 1 < products.length) // ตรวจสอบว่ามีสินค้าชิ้นที่ 2 ในแถวนี้ไหม
-                  //             Expanded(
-                  //               child: productCard(products[i + 1]), // สร้าง Card สำหรับสินค้าอันที่สอง
-                  //             )
-                  //           else
-                  //             const Expanded(child: SizedBox()), // ถ้าไม่มีสินค้าชิ้นที่สอง ให้ใช้ SizedBox() เพื่อรักษาโครงสร้าง
-                  //         ],
-                  //       ),
-                  //   ],
-                  // ),
-                );
-              }
-            },
-          ),
+                  );
+                } else if (products.isNotEmpty && index == 1) {
+                  if (isLoadingMore) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                                child: SizedBox(
+                              width: 10.0,
+                              height: 10.0,
+                              child: CircularProgressIndicator(
+                                color: Color(0XFFE35205),
+                                strokeWidth: 2.0,
+                              ),
+                            )),
+                            SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                            Text(
+                              'กำลังโหลดโพสต์เพิ่มเติม...',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 8.0, bottom: 10.0),
+                      child: Center(
+                        child: Text(
+                          'ไม่มีโพสต์ที่จะแสดงเพิ่มเติม',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                        ),
+                      ),
+                    );
+                  }
+                }
+              }),
+          // FutureBuilder<List<Product>>(
+          //   future: likedProducts,
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return const Center(child: CircularProgressIndicator());
+          //     } else if (snapshot.hasError) {
+          //       return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
+          //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          //       return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
+          //     } else {
+          //       final products = snapshot.data!;
+
+          //       return SingleChildScrollView(
+          //         padding: const EdgeInsets.only(left: 12, right: 12, top: 66),
+          //         child: Row(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             Expanded(
+          //               child: Column(
+          //                 children: [
+          //                   for (int i = 0; i < products.length; i += 2)
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(4.0),
+          //                       child: productCard(products[i]),
+          //                     )
+          //                 ],
+          //               ),
+          //             ),
+          //             Expanded(
+          //               child: Column(
+          //                 children: [
+          //                   for (int i = 1; i < products.length; i += 2)
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(4.0),
+          //                       child: productCard(products[i]),
+          //                     )
+          //                 ],
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       );
+          //     }
+          //   },
+          // ),
           Positioned(
             top: 0,
             left: 0,
@@ -220,6 +330,21 @@ class _CategoryPageState extends State<CategoryPage> {
       ),
       bottomNavigationBar: buyerFooter(context, 'home'),
     );
+  }
+
+  void _scorollListener() async {
+    if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+      page += 1;
+      setState(() {
+        isLoadingMore = true;
+      });
+      await _loadmore();
+      setState(() {
+        isLoadingMore = false;
+      });
+      print('max');
+    }
+    print('scroll listener called');
   }
 
   Widget productCard(Product data) {

@@ -51,10 +51,11 @@ class LoginService {
 
         // final test = await Securestorage().readSecureData('token');
         // print('okk === $test');
-        return {
-          "success": true,
-          "data": jsonDecode(response.body),
-        };
+        if (data['user_data'] == []) {
+          return {"success": true, "data": jsonDecode(response.body), "first": true};
+        } else {
+          return {"success": true, "data": jsonDecode(response.body), "first": false};
+        }
       } else {
         // กรณีเกิดข้อผิดพลาดจาก API
         return {
@@ -71,44 +72,44 @@ class LoginService {
     }
   }
 
-  Future<Map<String, dynamic>> checkFirstTime() async {
-    try {
-      AuthService authService = AuthService();
-      String? accessToken = await authService.getAccessToken(); // Header
-      String userId = await Securestorage().readSecureData('userId');
-      Map<String, String> headers = {
-        'Authorization': 'Bearer $accessToken',
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      };
+  // Future<Map<String, dynamic>> checkFirstTime() async {
+  //   try {
+  //     AuthService authService = AuthService();
+  //     String? accessToken = await authService.getAccessToken(); // Header
+  //     String userId = await Securestorage().readSecureData('userId');
+  //     Map<String, String> headers = {
+  //       'Authorization': 'Bearer $accessToken',
+  //       "Accept": "application/json",
+  //       "Content-Type": "application/json",
+  //     };
 
-      // POST Request
-      final response = await http.get(
-        Uri.parse("$url2/${int.parse(userId)}"),
-        headers: headers,
-      );
+  //     // POST Request
+  //     final response = await http.get(
+  //       Uri.parse("$url2/${int.parse(userId)}"),
+  //       headers: headers,
+  //     );
 
-      // พิมพ์ response.body เพื่อดูข้อมูลที่ได้รับจาก API
-      print("Response body: ${response.body}");
+  //     // พิมพ์ response.body เพื่อดูข้อมูลที่ได้รับจาก API
+  //     print("Response body: ${response.body}");
 
-      // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 404) {
-        return {
-          "success": true,
-          "first": true,
-        };
-      } else {
-        return {
-          "success": true,
-          "first": false,
-        };
-      }
-    } catch (e) {
-      // กรณีเกิดข้อผิดพลาดทั่วไป
-      return {
-        "success": false,
-        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
-      };
-    }
-  }
+  //     // ตรวจสอบสถานะของ Response
+  //     if (response.statusCode == 404) {
+  //       return {
+  //         "success": true,
+  //         "first": true,
+  //       };
+  //     } else {
+  //       return {
+  //         "success": true,
+  //         "first": false,
+  //       };
+  //     }
+  //   } catch (e) {
+  //     // กรณีเกิดข้อผิดพลาดทั่วไป
+  //     return {
+  //       "success": false,
+  //       "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
+  //     };
+  //   }
+  // }
 }

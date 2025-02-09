@@ -17,7 +17,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
   void initState() {
     super.initState();
     cartProducts = CartService().getCartProducts();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   // Helper method to filter products by step

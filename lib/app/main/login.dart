@@ -53,22 +53,15 @@ class _LoginState extends State<LoginPage> {
 
     if (result['success']) {
       // เก็บ token หรือทำการ Redirect
-      final resultCheck = await _loginService.checkFirstTime();
       if (mounted) {
         Navigator.pop(context);
       }
-      if (resultCheck['success']) {
-        if (resultCheck['first']) {
-          print("First Time");
-          Navigator.pushReplacementNamed(context, '/infoform');
-        } else {
-          print("NOt First Time");
-          Navigator.pushReplacementNamed(context, '/role');
-        }
+      if (result['first']) {
+        print("First Time");
+        Navigator.pushReplacementNamed(context, '/infoform');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('กรุณาลองอีกครั้ง')),
-        );
+        print("NOt First Time");
+        Navigator.pushReplacementNamed(context, '/role');
       }
 
       // Navigator.pushNamed(context, '/role'); // แก้ไขตาม route ของคุณ

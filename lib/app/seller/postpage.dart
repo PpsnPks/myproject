@@ -83,7 +83,7 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[400],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("โพสต์"),
         centerTitle: true,
@@ -99,132 +99,163 @@ class _PostPageState extends State<PostPage> {
         controller: scrollController,
         itemCount: (isLoadingMore || !hasMore) ? posts.length + 1 : posts.length,
         itemBuilder: (context, index) {
-          if (index < posts.length) {
-            final post = posts[index];
-            return Card(
-              elevation: 0,
-              color: Colors.white,
-              margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
+          if (posts.isEmpty) {
+            return Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height - kToolbarHeight - kBottomNavigationBarHeight - kBottomNavigationBarHeight,
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(width: 2.0, color: Colors.grey), // เส้นขอบด้านบนหนา 2 สีเทา
+                ),
+                // color: Colors.orange, // กำหนดพื้นหลังสีส้ม
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Section: User Info
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(post.profile),
+              child: const Center(
+                child: Text(
+                  'ไม่พบรายการโพสต์',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
+                ),
+              ),
+            );
+          } else if (index < posts.length) {
+            final post = posts[index];
+            return Row(
+              children: [
+                Container(
+                  height: 2.0,
+                  width: double.infinity,
+                  color: Colors.grey[400],
+                ),
+                Card(
+                  elevation: 0,
+                  color: Colors.white,
+                  // margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Section: User Info
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(post.profile),
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  post.name,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 0),
+                                Text(
+                                  post.faculty,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 10),
-                        Column(
+                      ),
+                      // Section: Post Title
+                      Padding(
+                        padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              post.name,
+                              post.detail,
+                              maxLines: 3,
                               style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
                             ),
-                            const SizedBox(height: 0),
+                            const SizedBox(height: 4),
                             Text(
-                              post.faculty,
+                              post.tags,
                               style: const TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey,
+                                fontSize: 10,
+                                color: Color(0xFFFA5A2A),
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  // Section: Post Title
-                  Padding(
-                    padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          post.detail,
-                          maxLines: 3,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          post.tags,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Color(0xFFFA5A2A),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Section: Image
-                  if (post.imageUrl.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
-                            width: 2.0, // กำหนดความหนาของขอบ
-                          ),
-                          borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: post.imageUrl,
-                          placeholder: (context, url) => const SizedBox(
-                            width: double.infinity,
-                            height: 360,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: Color(0XFFE35205),
-                                strokeCap: StrokeCap.round,
-                                // strokeWidth: 12.0, // ปรับความหนาของวงกลม
-                              ),
-                            ),
-                          ),
-                          imageBuilder: (context, ImageProvider) {
-                            return Container(
-                              width: double.infinity,
-                              height: 360,
-                              decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
-                            );
-                          },
-                        ),
-                        // ClipRRect(
-                        //   borderRadius: BorderRadius.circular(20.0),
-                        //   child: Image.network(
-                        //     post.imageUrl,
-                        //     errorBuilder: (context, error, stackTrace) {
-                        //       return const Text('กำลังโหลดรูป'); //ไม่ได้ ❌
-                        //     },
-                        //     width: double.infinity,
-                        //     height: 360,
-                        //     fit: BoxFit.cover,
-                        //   ),
-                        // ),
                       ),
-                    ),
-                  // Section: Post Details
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
-                      child: IconButton(
-                          onPressed: () => {},
-                          icon: const Icon(
-                            Icons.chat_outlined,
-                            color: Color(0xFFA5A9B6),
-                          ))),
-                ],
-              ),
+                      // Section: Image
+                      if (post.imageUrl.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
+                                width: 2.0, // กำหนดความหนาของขอบ
+                              ),
+                              borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: post.imageUrl,
+                              placeholder: (context, url) => const SizedBox(
+                                width: double.infinity,
+                                height: 360,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color(0XFFE35205),
+                                    strokeCap: StrokeCap.round,
+                                    // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+                                  ),
+                                ),
+                              ),
+                              imageBuilder: (context, ImageProvider) {
+                                return Container(
+                                  width: double.infinity,
+                                  height: 360,
+                                  decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
+                                );
+                              },
+                            ),
+                            // ClipRRect(
+                            //   borderRadius: BorderRadius.circular(20.0),
+                            //   child: Image.network(
+                            //     post.imageUrl,
+                            //     errorBuilder: (context, error, stackTrace) {
+                            //       return const Text('กำลังโหลดรูป'); //ไม่ได้ ❌
+                            //     },
+                            //     width: double.infinity,
+                            //     height: 360,
+                            //     fit: BoxFit.cover,
+                            //   ),
+                            // ),
+                          ),
+                        ),
+                      // Section: Post Details
+                      Padding(
+                          padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+                          child: IconButton(
+                              onPressed: () => {},
+                              icon: const Icon(
+                                Icons.chat_outlined,
+                                color: Color(0xFFA5A9B6),
+                              ))),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 2.0,
+                  width: double.infinity,
+                  color: Colors.grey[400],
+                ),
+              ],
             );
           } else {
             if (isLoadingMore) {

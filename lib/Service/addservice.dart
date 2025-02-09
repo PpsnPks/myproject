@@ -12,7 +12,7 @@ class AddService {
   Future<Map<String, dynamic>> addproduct(
       String productName,
       List productImages,
-      String productQty,
+      int productQty,
       String productPrice,
       String productDescription,
       String productCategory,
@@ -28,10 +28,11 @@ class AddService {
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
       String userId = await Securestorage().readSecureData('userId') ?? '99999';
-      String? productConditionValue = productType == 'preorder' ? '1' : productCondition;
-      print(productName);
-      print(productConditionValue);
-
+      String? productConditionValue = productType == 'preorder' ? 'มือหนึ่ง' : productCondition;
+      // print(productName);
+      // print(productConditionValue);
+      print(
+          'productName = $productName \n productImages = $productImages \n productQty = $productQty \n productPrice = $productPrice \n productDescription = $productDescription \n productCategory = $productCategory \n productType = $productType \n dateExp = $dateExp \n productLocation = $productLocation \n productCondition = $productCondition \n productDefect = $productDefect \n productYears = $productYears \n tag = $tag');
       if (accessToken == null) {
         return {
           "success": false,
@@ -50,7 +51,7 @@ class AddService {
       Map<String, dynamic> body = {
         "product_name": productName.isEmpty ? "N/A" : productName,
         "product_images": productImages,
-        "product_qty": int.parse(productQty),
+        "product_qty": productQty,
         "product_price": int.parse(productPrice),
         "product_description": productDescription,
         "product_category": productCategory,

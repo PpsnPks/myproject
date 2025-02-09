@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
 
-BottomNavigationBar sellerFooter(BuildContext context, String selected) {
-  return BottomNavigationBar(
-    type: BottomNavigationBarType.fixed, // ป้องกันขยับเมื่อเลือก
-    currentIndex: _getSelectedIndex(selected), // กำหนด index ตามหน้าที่เลือก
-    selectedItemColor: const Color(0xFFFA5A2A), // กำหนดสีของ label และ icon เมื่อ selected
-    unselectedItemColor: const Color(0xFFA5A9B6),
-    onTap: (index) {
-      _onItemTapped(index, context);
-    },
-    items: [
-      _buildNavItem(Icons.home_outlined, 'หน้าหลัก', 'post', selected),
-      _buildNavItem(Icons.all_inbox_rounded, 'คลัง', 'seller', selected),
-      _buildNavItem(Icons.shopping_cart_outlined, 'รายการ', 'cart-seller', selected),
-      _buildNavItem(Icons.sms_outlined, 'แชท', 'chat', selected),
-      _buildNavItem(Icons.person_outline_rounded, 'โปรไฟล์', 'profile', selected),
-    ],
+Widget sellerFooter(BuildContext context, String selected) {
+  return Container(
+    decoration: BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1), // สีเงา
+          blurRadius: 10, // ความเบลอของเงา
+          spreadRadius: 2, // การกระจายของเงา
+          offset: const Offset(0, -1), // ตำแหน่งเงา (ให้เงาขึ้นด้านบน)
+        ),
+      ],
+    ),
+    child: BottomNavigationBar(
+      type: BottomNavigationBarType.fixed, // ป้องกันขยับเมื่อเลือก
+      currentIndex: _getSelectedIndex(selected), // กำหนด index ตามหน้าที่เลือก
+      selectedItemColor: const Color(0xFFFA5A2A), // กำหนดสีของ label และ icon เมื่อ selected
+      unselectedItemColor: const Color(0xFFA5A9B6),
+      backgroundColor: Colors.white,
+      onTap: (index) {
+        _onItemTapped(index, context);
+      },
+      items: [
+        _buildNavItem(Icons.home_outlined, 'หน้าหลัก', 'post', selected),
+        _buildNavItem(Icons.all_inbox_rounded, 'คลัง', 'seller', selected),
+        _buildNavItem(Icons.shopping_cart_outlined, 'รายการ', 'cart-seller', selected),
+        _buildNavItem(Icons.sms_outlined, 'แชท', 'chat', selected),
+        _buildNavItem(Icons.person_outline_rounded, 'โปรไฟล์', 'profile', selected),
+      ],
+    ),
   );
 }
 
