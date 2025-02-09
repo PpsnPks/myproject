@@ -244,7 +244,10 @@ class _AddPostPageState extends State<AddPostPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _post,
+                    onPressed: () async {
+                      await _post(); // Wait for the action to complete
+                      Navigator.pushNamed(context, '/post'); // Navigate to /seller after completion
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFA5A2A),
                       padding: const EdgeInsets.symmetric(vertical: 18),
