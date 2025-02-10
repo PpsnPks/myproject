@@ -12,6 +12,7 @@ class InfoProfile extends StatefulWidget {
 }
 
 class _InfoProfileState extends State<InfoProfile> {
+  String pic = '-';
   String hideEmail = '-';
   String hidePhone = '-';
   String studentID = '-';
@@ -43,6 +44,7 @@ class _InfoProfileState extends State<InfoProfile> {
     if (response['success']) {
       final userData = response['data'];
       setState(() {
+        pic = userData['pic'];
         var phoneNumber = userData['mobile'];
         var email = userData['email'];
         hidePhone = '${phoneNumber.substring(0, 3)}-***-${phoneNumber.substring(6)}';
@@ -81,9 +83,9 @@ class _InfoProfileState extends State<InfoProfile> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage('assets/images/a.jpg'),
+                  backgroundImage: NetworkImage(pic)
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -118,64 +120,6 @@ class _InfoProfileState extends State<InfoProfile> {
             ),
           ),
 
-          // Add buttons for Buyer and Seller
-          // Padding(
-          //   padding: const EdgeInsets.only(
-          //       left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
-          //   child: Row(
-          //     children: [
-          //       // Buyer Button
-          //       Expanded(
-          //         child: ElevatedButton(
-          //           onPressed: () {
-          //             setState(() {
-          //               isBuyerSelected = true;
-          //               isSellerSelected = false;
-          //             });
-          //           },
-          //           style: ElevatedButton.styleFrom(
-          //             backgroundColor: isBuyerSelected
-          //                 ? const Color(0xFFE35205)
-          //                 : const Color(0xFFFCEEEA), // Background color
-          //             foregroundColor: isBuyerSelected
-          //                 ? Colors.white
-          //                 : const Color(0xFFE35205), // Text color
-          //             padding: const EdgeInsets.symmetric(vertical: 16),
-          //           ),
-          //           child: const Text(
-          //             'คนซื้อ',
-          //             style: TextStyle(fontSize: 16),
-          //           ),
-          //         ),
-          //       ),
-          //       const SizedBox(width: 8), // Add spacing between buttons
-          //       // Seller Button
-          //       Expanded(
-          //         child: ElevatedButton(
-          //           onPressed: () {
-          //             setState(() {
-          //               isBuyerSelected = false;
-          //               isSellerSelected = true;
-          //             });
-          //           },
-          //           style: ElevatedButton.styleFrom(
-          //             backgroundColor: isSellerSelected
-          //                 ? const Color(0xFFE35205)
-          //                 : const Color(0xFFFCEEEA), // Background color
-          //             foregroundColor: isSellerSelected
-          //                 ? Colors.white
-          //                 : const Color(0xFFE35205), // Text color
-          //             padding: const EdgeInsets.symmetric(vertical: 16),
-          //           ),
-          //           child: const Text(
-          //             'คนขาย',
-          //             style: TextStyle(fontSize: 16),
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
           Container(
             height: 8.0,
             width: MediaQuery.of(context).size.width,
@@ -238,7 +182,7 @@ class _InfoProfileState extends State<InfoProfile> {
             padding: EdgeInsets.only(left: 16.0, top: 16.0),
             child: Text('ข้อมูลส่วนตัว', style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -250,26 +194,7 @@ class _InfoProfileState extends State<InfoProfile> {
                 Padding(
                   padding: EdgeInsets.only(right: 12.0),
                   child: Text(
-                    'ภูมิ',
-                    style: TextStyle(fontSize: 14.0),
-                  ),
-                )
-              ],
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0),
-                  child: Text('นามสกุล', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 12.0),
-                  child: Text(
-                    'ไพรศรี',
+                    name,
                     style: TextStyle(fontSize: 14.0),
                   ),
                 )
@@ -385,86 +310,6 @@ class _InfoProfileState extends State<InfoProfile> {
             width: MediaQuery.of(context).size.width,
             color: const Color(0xFFDFE2EC),
           ),
-          const SizedBox(height: 10.0),
-          // TextButton(
-          //   onPressed: () {
-          //     // Navigator.pushNamed(context, '/login');
-          //     showModalBottomSheet(
-          //       context: context,
-          //       builder: (BuildContext context) {
-          //         return Container(
-          //           padding: const EdgeInsets.all(16),
-          //           height: 150,
-          //           width: MediaQuery.of(context).size.width,
-          //           child: Column(
-          //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //             children: [
-          //               const Text(
-          //                 'คุณต้องการออกจากระบบใช่หรือไม่',
-          //                 style: TextStyle(
-          //                     fontSize: 24, fontWeight: FontWeight.w500),
-          //               ),
-          //               Row(
-          //                 crossAxisAlignment: CrossAxisAlignment.center,
-          //                 mainAxisAlignment: MainAxisAlignment.center,
-          //                 children: [
-          //                   ElevatedButton(
-          //                     onPressed: () {
-          //                       Navigator.pushNamed(context, '/login');
-          //                     },
-          //                     style: ElevatedButton.styleFrom(
-          //                       foregroundColor: Colors.white,
-          //                       backgroundColor:
-          //                           const Color(0xFFE35205), // Text color
-          //                       padding: const EdgeInsets.symmetric(
-          //                           horizontal: 70, vertical: 20),
-          //                       textStyle: const TextStyle(
-          //                           fontSize: 16, fontWeight: FontWeight.w500),
-          //                       shape: RoundedRectangleBorder(
-          //                         borderRadius: BorderRadius.circular(
-          //                             15), // ทำให้ปุ่มโค้งมน
-          //                       ),
-          //                     ),
-          //                     child: const Text('ยืนยัน'),
-          //                   ),
-          //                   const SizedBox(width: 20.0),
-          //                   ElevatedButton(
-          //                     onPressed: () {
-          //                       Navigator.pop(context);
-          //                     },
-          //                     style: ElevatedButton.styleFrom(
-          //                       foregroundColor: const Color(0xFFE35205),
-          //                       backgroundColor:
-          //                           const Color(0xFFFCEEEA), // Text color
-          //                       padding: const EdgeInsets.symmetric(
-          //                           horizontal: 70, vertical: 20),
-          //                       textStyle: const TextStyle(
-          //                           fontSize: 16, fontWeight: FontWeight.w500),
-          //                       shape: RoundedRectangleBorder(
-          //                         borderRadius: BorderRadius.circular(
-          //                             15), // ทำให้ปุ่มโค้งมน
-          //                       ),
-          //                     ),
-          //                     child: const Text('ยกเลิก'),
-          //                   ),
-          //                 ],
-          //               ),
-          //             ],
-          //           ),
-          //         );
-          //       },
-          //     );
-          //   },
-          //   child: const Center(
-          //     child: Text(
-          //       'ออกจากระบบ',
-          //       style: TextStyle(
-          //         fontSize: 16,
-          //         color: Color(0xFFE35205),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

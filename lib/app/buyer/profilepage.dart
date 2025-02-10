@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
+import 'package:myproject/Service/formservice.dart';
+import 'package:myproject/app/main/secureStorage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,10 +15,61 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isBuyerSelected = true; // Default to Buyer tab
   bool isGridSelected = true; // Default to Grid view
 
-  // จำลองข้อมูลผู้ใช้
-  final String userName = 'ภูมิ ไพรศรี';
-  final String userEmail = '640***@kmitl.ac.th';
-  final String userPhone = '081-375-5536';
+  String pic = '-';
+  String hideEmail = '-';
+  String hidePhone = '-';
+  String studentID = '-';
+  String name = '-';
+  String faculty = '-';
+  String department = '-';
+  String classyear = '-';
+  String address = '-';
+  Future<void> getDataUser() async {
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (context) {
+    //     return const Center(
+    //       child: SizedBox(
+    //         height: 90.0, // กำหนดความสูง
+    //         width: 90.0, // กำหนดความกว้าง
+    //         child: CircularProgressIndicator(
+    //           color: Color(0XFFE35205),
+    //           strokeWidth: 12.0, // ปรับความหนาของวงกลม
+    //           strokeCap: StrokeCap.round,
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
+    final id = await Securestorage().readSecureData('userId');
+    final response = await UserService().getUserById(int.parse(id));
+    if (response['success']) {
+      final userData = response['data'];
+      setState(() {
+        pic = userData['pic'];
+        var phoneNumber = userData['mobile'];
+        var email = userData['email'];
+        hidePhone = '${phoneNumber.substring(0, 3)}-***-${phoneNumber.substring(6)}';
+        hideEmail = '${email.substring(0, 3)}***${email.substring(6)}';
+        studentID = '${email.substring(0, 8)}';
+        name = userData['name'];
+        faculty = userData['faculty'];
+        department = userData['department'];
+        classyear = userData['classyear'];
+        address = userData['address'];
+      });
+    }
+    // if (mounted) {
+    //     Navigator.pop(context);
+    //   }
+  }
+
+  @override
+  void initState() {
+    super.initState(); // กำหนดค่าเริ่มต้นให้ userData เป็น Future ที่ว่าง
+    getDataUser();
+  }
 
   // รายการสินค้า (คนซื้อ)
   final List<Map<String, String>> buyerItems = [
@@ -60,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         title: const Text('ออกจากระบบ'),
                         onTap: () {
                           // Handle logout action
-                          Navigator.pop(context); // Close the bottom sheet
+                          Navigator.pop(context, '/login'); // Close the bottom sheet
                           // Add your logout logic here
                         },
                       ),
@@ -80,16 +133,16 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage('assets/images/a.jpg'),
+                  backgroundImage: NetworkImage(pic),
                 ),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      userName,
+                      name,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -97,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      userEmail,
+                      hideEmail,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
@@ -105,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      userPhone,
+                      hidePhone,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,

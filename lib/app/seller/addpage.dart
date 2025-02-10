@@ -24,15 +24,14 @@ class _AddProductPageState extends State<AddProductPage> {
   bool isRenting = false;
   bool isPreOrder = false;
   int quantity = 1;
-  String? selectedCondition;
-  String? selectedUsageTime;
   String? defect;
-  String? product_defect;
   String? product_years;
   String? product_cate;
-  // สำหรับ สภาพสินค้า
+  String? selectedCondition; // สำหรับ สภาพสินค้า
+  String? selectedUsageTime;
   String? selectedUsagePeriod; // สำหรับ ระยะเวลาการใช้งาน
   String? selectedPickupLocation;
+  String? selectedPickupCategory;
 
   List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
@@ -69,16 +68,16 @@ class _AddProductPageState extends State<AddProductPage> {
     quantity = 1;
   }
 
-  List<XFile> pickedFiles = [];
+  List<XFile> files = [];
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
-    pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
+    List<XFile> pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
 
-    if (pickedFiles.length > 5) {
-      //_imageBytesList.length +
+    if (_imageBytesList.length + pickedFiles.length > 5) {
+      //
       // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
+        SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
       );
     } else {
       // อ่านภาพเป็น bytes และเพิ่มลงในรายการ
@@ -87,7 +86,8 @@ class _AddProductPageState extends State<AddProductPage> {
       );
 
       setState(() {
-        _imageBytesList = [];
+        // _imageBytesList = [];
+        files.addAll(pickedFiles);
         _imageBytesList.addAll(newImageBytes); // เพิ่มภาพที่เลือกใหม่
       });
     }
@@ -95,22 +95,22 @@ class _AddProductPageState extends State<AddProductPage> {
 
   Future<void> _add() async {
     final addService = AddService();
-    // Map<String, dynamic> uploadResponse = await UploadImgService().uploadImgs(pickedFiles);
-    List images_path = [];
-    // if (uploadResponse['success']) {
-    //   images_path = uploadResponse['images'];
-    //   print('all_url_images = ${uploadResponse['images']}');
-    // } else {
-    //   print('upload error = ${uploadResponse['message']}');
-    //   return;
-    // }
+    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImgs(files);
+    List imagesPath = [];
+    if (uploadResponse['success']) {
+      imagesPath = uploadResponse['images'];
+      print('all_url_images = ${uploadResponse['images']}');
+    } else {
+      print('upload error = ${uploadResponse['message']}');
+      return;
+    }
 
     // กำหนดราคาเป็น 0 หากเลือก "แจก" (isRenting == true)
     final productPrice = isRenting ? '0' : _productPriceController.text;
 
-    final result = await addService.addproduct(
+    final result = await addService.addProduct(
       _productNameController.text,
-      images_path, //_productImagesController.text,
+      imagesPath, //_productImagesController.text,
       quantity, // _productQtyController.text
       productPrice,
       _productDescriptionController.text,
@@ -219,7 +219,7 @@ class _AddProductPageState extends State<AddProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("เพิ่ม"),
+        title: Text("เพิ่ม"),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
@@ -401,8 +401,6 @@ class _AddProductPageState extends State<AddProductPage> {
                   validator: validateName,
                 ),
                 const SizedBox(height: 8),
-                const Text('หมวดหมู่', style: TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   items: [
                     for (var item in category)
@@ -418,7 +416,7 @@ class _AddProductPageState extends State<AddProductPage> {
                     });
                   },
                   value: product_cate,
-                  hint: const Text('เลือกหมวดหมู่'),
+                  hint: const Text('หมวดหมู่สินค้า'),
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -597,8 +595,6 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
                 const SizedBox(height: 16),
                 if (!isPreOrder) ...[
-                  const Text('สภาพสินค้า', style: TextStyle(fontSize: 16)),
-                  const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     items: const [
                       DropdownMenuItem(value: 'มือหนึ่ง', child: Text('มือหนึ่ง')),
@@ -622,7 +618,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       });
                     },
                     value: selectedCondition,
-                    hint: const Text('เลือกรายการ'),
+                    hint: const Text('สภาพสินค้า'),
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -647,8 +643,6 @@ class _AddProductPageState extends State<AddProductPage> {
                   // Show defect and usage years fields only if "มือสอง" is selected
                   if (selectedCondition == 'มือสอง') ...[
                     const SizedBox(height: 8),
-                    const Text('อายุการใช้งานสินค้า', style: TextStyle(fontSize: 16, color: Colors.grey)),
-                    const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
                       items: const [
                         DropdownMenuItem(value: 'น้อยกว่า 1 ปี', child: Text('น้อยกว่า 1 ปี')),
@@ -663,7 +657,7 @@ class _AddProductPageState extends State<AddProductPage> {
                         });
                       },
                       value: product_years,
-                      hint: const Text('เลือกรายการ'),
+                      hint: const Text('อายุการใช้งานสินค้า'),
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -702,7 +696,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       controller: _productDefectController,
                       onChanged: (value) {
                         setState(() {
-                          product_defect = value;
+                          defect = value;
                         });
                       },
                       decoration: InputDecoration(
@@ -730,8 +724,6 @@ class _AddProductPageState extends State<AddProductPage> {
                   ],
                 ], // สถานที่นัดรับสินค้า
                 const SizedBox(height: 8),
-                const Text('สถานที่นัดรับสินค้า', style: TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   items: const [
                     DropdownMenuItem(value: 'เกกี 1', child: Text('เกกี 1')),
@@ -749,7 +741,7 @@ class _AddProductPageState extends State<AddProductPage> {
                     });
                   },
                   value: selectedPickupLocation,
-                  hint: const Text('เลือกรายการ'),
+                  hint: const Text('สถานที่นัดรับสินค้า'),
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),

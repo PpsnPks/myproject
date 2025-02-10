@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-import '../../Service/homeservice.dart';
+import '../../Service/addservice.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,12 +15,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<Product>> homeProducts;
+  Future<List<Product>> getProducts() async {
+    try {
+      final response = await AddService().getProduct(1, 10); // เรียก API
+      print('ss1 ${response['data'].toString()}');
+      if (response['success']) {
+        return response['data'];
+      } else {
+        throw Exception('Failed to load products');
+      }
+    } catch (e) {
+      print("Error loading products: $e");
+      return []; // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
+    }
+  }
+
+  late Future<List<Product>> homeProducts; // ประกาศตัวแปรให้ถูกต้อง
+
   @override
   void initState() {
     super.initState();
-    // เรียก LikeService เพื่อดึงข้อมูลสินค้าที่ถูกใจ
-    homeProducts = Homeservice().getHomeProducts();
+    homeProducts = getProducts(); // เรียกฟังก์ชันเพื่อโหลดข้อมูล
   }
 
   @override
@@ -98,39 +115,37 @@ class _HomePageState extends State<HomePage> {
 
                         // FutureBuilder เพื่อโหลดข้อมูลสินค้า
                         FutureBuilder<List<Product>>(
-                          future: homeProducts,
+                          future: homeProducts, // ใช้ homeProducts ที่ประกาศแล้ว
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Center(child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
-                              return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
+                              return Center(child: Text('Error: ${snapshot.error}'));
                             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
+                              return const Center(child: Text('ไม่มีสินค้า'));
                             } else {
                               final products = snapshot.data!;
-
+                              print("Products loaded: ${products.length}");
                               return GridView.builder(
-                                padding: const EdgeInsets.only(left: 12, right: 12), // เพิ่ม padding ให้ดูสมส่วน
+                                padding: const EdgeInsets.only(left: 12, right: 12),
                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2, // 2 คอลัมน์
+                                  crossAxisCount: 2,
                                   childAspectRatio: 0.67,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 8,
                                 ),
                                 itemCount: products.length,
-                                shrinkWrap: true, // ย่อ GridView ตามเนื้อหา
-                                physics: const NeverScrollableScrollPhysics(), // ปิดการเลื่อน
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   final product = products[index];
                                   return GestureDetector(
                                     onTap: () {
-                                      Navigator.pushNamed(context, '/selectproduct'); // เปลี่ยนหน้าไปที่ '/selectproduct' เมื่อกดคาร์ด
+                                      Navigator.pushNamed(context, '/selectproduct');
                                     },
                                     child: LayoutBuilder(
                                       builder: (context, constraints) {
-                                        // ignore: unused_local_variable
-                                        double aspectRatio = (product.title.length > 20) ? 0.6 : 0.8; // ปรับค่า childAspectRatio ตามความยาว
-
+                                        double aspectRatio = (product.product_name.length > 20) ? 0.6 : 0.8;
                                         return Card(
                                           color: const Color(0xFFFFFFFF),
                                           shape: RoundedRectangleBorder(
@@ -141,57 +156,40 @@ class _HomePageState extends State<HomePage> {
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 ClipRRect(
                                                   borderRadius: BorderRadius.circular(8),
-                                                  child: Image.asset(
-                                                    product.imageUrl, // ใช้ imageUrl จาก product
-                                                    height: constraints.maxWidth - 28, // ปรับขนาดรูปภาพ
+                                                  child: Image.network(
+                                                    product.product_images[0], // Use [0] for the first image
+                                                    height: constraints.maxWidth - 28,
                                                     width: constraints.maxWidth - 28,
                                                     fit: BoxFit.contain,
-                                                    alignment: Alignment.topCenter,
                                                   ),
                                                 ),
                                                 const SizedBox(height: 10),
                                                 Flexible(
                                                   child: Text(
-                                                    product.title, // ใช้ title จาก product
+                                                    product.product_name,
                                                     style: const TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 16,
                                                     ),
-                                                    overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
-                                                    maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
                                                   ),
                                                 ),
-                                                SizedBox(
-                                                  height: 42,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(top: 4.0),
-                                                    child: Expanded(
-                                                      child: Text(
-                                                        product.detail, // ใช้ title จาก product
-                                                        style: const TextStyle(
-                                                            fontWeight: FontWeight.normal, fontSize: 12, color: Color(0xFFA5A9B6)),
-                                                        overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
-                                                        maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                //const SizedBox(height: 36),
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ห่างกัน
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Container(
                                                       decoration: BoxDecoration(
-                                                        border: Border.all(color: Colors.grey), // กำหนดสีขอบ
-                                                        borderRadius: BorderRadius.circular(12), // กำหนดมุมโค้งมนของกรอบ
+                                                        border: Border.all(color: Colors.grey),
+                                                        borderRadius: BorderRadius.circular(12),
                                                       ),
                                                       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                                       child: Text(
-                                                        product.category, // หมวดหมู่ของสินค้า
+                                                        product.product_category,
                                                         style: TextStyle(
                                                           color: Colors.blueGrey[400],
                                                           fontSize: 10,
@@ -200,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                                                       ),
                                                     ),
                                                     Text(
-                                                      '${product.price} ฿', // ใช้ price จาก product พร้อมแสดงหน่วยเงิน
+                                                      '${product.product_price} ฿',
                                                       style: const TextStyle(
                                                         color: Colors.orange,
                                                         fontSize: 15,
@@ -221,6 +219,7 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                         ),
+
                         const SizedBox(height: 24),
                         const Padding(
                           padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
@@ -376,34 +375,25 @@ final List<Widget> imageSliders = imgList
         ))
     .toList();
 
-class Post {
-  final String profile;
-  final String name;
-  final String faculty;
-  final String title;
-  final String tags;
-  final String imageUrl;
-  final String detail;
+class Product {
+  final String product_name;
+  final String product_category;
+  final String product_images;
+  final double product_price;
 
-  Post({
-    required this.profile,
-    required this.name,
-    required this.faculty,
-    required this.title,
-    required this.tags,
-    required this.imageUrl,
-    required this.detail,
+  Product({
+    required this.product_name,
+    required this.product_category,
+    required this.product_images,
+    required this.product_price,
   });
-}
 
-final posts = [
-  Post(
-    profile: 'https://example.com/profile1.jpg',
-    name: 'John Doe',
-    faculty: 'Computer Engineering',
-    title: 'Flutter Post Example',
-    tags: '#Tech #Flutter',
-    imageUrl: 'https://example.com/image1.jpg',
-    detail: 'This is an example detail for the product or post.',
-  ),
-];
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      product_name: json['product_name'],
+      product_category: json['product_category'],
+      product_images: json['product_images'],
+      product_price: json['product_price'],
+    );
+  }
+}
