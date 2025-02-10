@@ -14,28 +14,36 @@ class _PostPageState extends State<PostPage> {
   List<Post> posts = [];
   final scrollController = ScrollController();
   int page = 1;
-  int perPage = 5;
+  int perPage = 3;
   bool isLoadingMore = false;
   bool hasMore = true;
 
   _loadmore() async {
     List<Post> newPosts = [];
+    setState(() {
+      isLoadingMore = true;
+    });
     Map<String, dynamic> response = await PostService().getPost(page, perPage);
     if (response['success'] == true) {
       newPosts = response['data'];
-      print("11111111111 $newPosts");
+      print("11111111111 ${newPosts.length}");
       if (newPosts.isEmpty) {
         setState(() {
+          isLoadingMore = false;
           hasMore = false;
         });
         return;
       } else {
         setState(() {
+          isLoadingMore = false;
           posts.addAll(newPosts);
         });
         return;
       }
     }
+    setState(() {
+      isLoadingMore = false;
+    });
     print('lllllllllll  $response');
     return;
   }
@@ -96,11 +104,39 @@ class _PostPageState extends State<PostPage> {
         ),
       ),
       body: ListView.builder(
+        shrinkWrap: true,
         controller: scrollController,
         itemCount: (isLoadingMore || !hasMore) ? posts.length + 1 : posts.length,
         itemBuilder: (context, index) {
-          if (posts.isEmpty) {
-            return Container(
+          if (posts.isEmpty && isLoadingMore) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                        child: SizedBox(
+                      width: 10.0,
+                      height: 10.0,
+                      child: CircularProgressIndicator(
+                        color: Color(0XFFE35205),
+                        strokeWidth: 2.0,
+                      ),
+                    )),
+                    SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                    Text(
+                      'กำลังโหลดโพสต์เพิ่มเติม...',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else if (posts.isEmpty) {
+            return Center(
+                child: Container(
               alignment: Alignment.center,
               height: MediaQuery.of(context).size.height - kToolbarHeight - kBottomNavigationBarHeight - kBottomNavigationBarHeight,
               decoration: const BoxDecoration(
@@ -115,10 +151,10 @@ class _PostPageState extends State<PostPage> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
                 ),
               ),
-            );
+            ));
           } else if (index < posts.length) {
             final post = posts[index];
-            return Row(
+            return Column(
               children: [
                 Container(
                   height: 2.0,
@@ -135,7 +171,6 @@ class _PostPageState extends State<PostPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Section: User Info
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
                         child: Row(
@@ -155,7 +190,7 @@ class _PostPageState extends State<PostPage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 0),
+                                const SizedBox(height: 1),
                                 Text(
                                   post.faculty,
                                   style: const TextStyle(
@@ -224,21 +259,8 @@ class _PostPageState extends State<PostPage> {
                                 );
                               },
                             ),
-                            // ClipRRect(
-                            //   borderRadius: BorderRadius.circular(20.0),
-                            //   child: Image.network(
-                            //     post.imageUrl,
-                            //     errorBuilder: (context, error, stackTrace) {
-                            //       return const Text('กำลังโหลดรูป'); //ไม่ได้ ❌
-                            //     },
-                            //     width: double.infinity,
-                            //     height: 360,
-                            //     fit: BoxFit.cover,
-                            //   ),
-                            // ),
                           ),
                         ),
-                      // Section: Post Details
                       Padding(
                           padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
                           child: IconButton(
@@ -296,6 +318,7 @@ class _PostPageState extends State<PostPage> {
               );
             }
           }
+          return null;
         },
       ),
       floatingActionButton: FloatingActionButton(

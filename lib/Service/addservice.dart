@@ -93,7 +93,9 @@ class AddService {
       };
     }
   }
+}
 
+class ProductService {
   Future<Map<String, dynamic>> getProduct(int page, int length) async {
     const url = "${Environment.baseUrl}/getproducts";
     try {
@@ -126,9 +128,78 @@ class AddService {
         "length": length,
         "search": {"value": "", "regex": false},
         "product_type": "",
-        "product_category": "",
+        "product_category": "", //category
         "product_condition": "",
-        "price_order": "desc",
+        "price_order": "asc",
+        "status": ""
+      };
+
+      // แปลง Map เป็น JSON string ก่อนส่ง
+      String jsonBody = json.encode(body);
+      // Get Request
+      final response = await http.post(Uri.parse(url), headers: headers, body: jsonBody);
+      print('qqq ${response.statusCode} \n ${response.body}');
+
+      // ตรวจสอบสถานะของ Response
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        print('qqq $decodedResponse');
+        if (decodedResponse != null && decodedResponse['data'] != null) {
+          List<Product> data = (decodedResponse['data']['data'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+
+          return {"success": true, "data": data};
+        } else {
+          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        }
+      } else {
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> getProductCategory(int page, int length, String category, String search) async {
+    const url = "${Environment.baseUrl}/getproducts";
+    try {
+      // ดึง accessToken จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
+
+      if (accessToken == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
+      }
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Body (แปลงข้อมูลให้เป็น JSON string)
+      Map<String, dynamic> body = {
+        "draw": 1,
+        "columns": [],
+        "order": [
+          {"column": 0, "dir": "desc"}
+        ],
+        "start": (page - 1) * length,
+        "length": length,
+        "search": {"value": search, "regex": false},
+        "product_type": "",
+        "product_category": category, //category
+        "product_condition": "",
+        "price_order": "asc",
         "status": ""
       };
 
@@ -166,7 +237,7 @@ class AddService {
 
 class Product {
   final String product_name;
-  final String product_images;
+  final List product_images;
   final String product_qty;
   final String product_price;
   final String product_description;
@@ -221,8 +292,7 @@ class Product {
     print('qqq2 $data');
     return Product(
       product_name: data['product_name'] ?? "",
-      product_images:
-          data['user'] != null && data['user']['product_images'] != null ? "${Environment.imgUrl}/${data['user']['product_images']}" : "",
+      product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
       product_qty: data['product_qty'].toString(),
       product_price: data['product_price'] ?? "",
       product_description: data['product_description'] ?? "",

@@ -1,14 +1,11 @@
 import 'package:myproject/environment.dart';
-import 'package:myproject/auth_service.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Categoryservice {
-  Future<List<Product>> getCategoryProducts() async {
+  Future<List<ProductCat>> getCategoryProducts() async {
     // จำลองข้อมูล
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/old_fan.png',
         title: 'พัดลม HATARI 16 นิ้ว',
         detail:
@@ -17,7 +14,7 @@ class Categoryservice {
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/tuyen.png',
         title: 'ตู้เย็น',
         detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
@@ -25,7 +22,7 @@ class Categoryservice {
         price: '1500',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/old_fan.png',
         title: 'พัดลม HATARI 16 นิ้ว',
         detail:
@@ -34,7 +31,7 @@ class Categoryservice {
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/tuyen.png',
         title: 'ตู้เย็น',
         detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
@@ -42,7 +39,7 @@ class Categoryservice {
         price: '1500',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/tuyen.png',
         title: 'ตู้เย็น',
         detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
@@ -50,7 +47,7 @@ class Categoryservice {
         price: '1500',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/old_fan.png',
         title: 'พัดลม HATARI 16 นิ้ว',
         detail:
@@ -59,7 +56,7 @@ class Categoryservice {
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/tuyen.png',
         title: 'ตู้เย็น',
         detail: 'ตู้เย็นมือสอง ใช้งานมา 1 ปี',
@@ -67,7 +64,7 @@ class Categoryservice {
         price: '1500',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductCat(
         imageUrl: 'assets/images/old_fan.png',
         title: 'พัดลม HATARI 16 นิ้ว',
         detail:
@@ -80,71 +77,7 @@ class Categoryservice {
   }
 }
 
-class ProductService {
-  Future<Map<String, dynamic>> getProduct(int page, int length) async {
-    const url = "${Environment.baseUrl}/getproducts";
-    try {
-      // ดึง accessToken จาก AuthService
-      AuthService authService = AuthService();
-      String? accessToken = await authService.getAccessToken();
-
-      // Header
-      Map<String, String> headers = {
-        'Authorization': 'Bearer $accessToken',
-        "Accept": "application/json",
-        'Content-Type': 'application/json',
-      };
-
-      // Body (แปลงข้อมูลให้เป็น JSON string)
-
-      Map<String, dynamic> body = {
-        // "status": null,
-        "draw": 1,
-        "columns": [],
-        "order": [
-          {"column": 0, "dir": "desc"}
-        ],
-        "start": (page - 1) * length,
-        "length": length,
-        "search": {"value": "", "regex": false},
-        "product_type": "",
-        "product_category": "",
-        "product_condition": "",
-        "price_order": "desc",
-        "status": ""
-      };
-
-      // แปลง Map เป็น JSON string ก่อนส่ง
-      String jsonBody = json.encode(body);
-      // Get Request
-      final response = await http.post(Uri.parse(url), headers: headers, body: jsonBody);
-
-      // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 200) {
-        print('888888 ${response.statusCode}');
-        List<Product> data = (jsonDecode(response.body)['data']['data'] as List).map((postJson) => Product.fromJson(postJson)).toList();
-        print('888888 $data');
-        return {
-          "success": true,
-          "data": data //data,
-        };
-      } else {
-        print('888888 ${response.statusCode}');
-        return {
-          "success": false,
-          "message": 'error ${response.statusCode} ${response.body}',
-        };
-      }
-    } catch (e) {
-      return {
-        "success": false,
-        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ $e",
-      };
-    }
-  }
-}
-
-class Product {
+class ProductCat {
   final String imageUrl;
   final String title;
   final String detail;
@@ -152,7 +85,7 @@ class Product {
   final String category;
   final String types;
 
-  Product({
+  ProductCat({
     required this.imageUrl,
     required this.title,
     required this.detail,
@@ -161,9 +94,9 @@ class Product {
     required this.types,
   });
 
-  factory Product.fromJson(Map<String, dynamic> data) {
+  factory ProductCat.fromJson(Map<String, dynamic> data) {
     print('aaa ${data['image']}');
-    return Product(
+    return ProductCat(
       imageUrl: '${Environment.imgUrl}/${data['image'][0]}',
       title: data['user']['name'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
       detail: data['user']['faculty'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null

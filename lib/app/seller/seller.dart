@@ -11,7 +11,7 @@ class SellerPage extends StatefulWidget {
 }
 
 class _SellerPageState extends State<SellerPage> {
-  late Future<List<Product>> likedProducts;
+  late Future<List<ProductCat>> likedProducts;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _SellerPageState extends State<SellerPage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Product>>(
+      body: FutureBuilder<List<ProductCat>>(
         future: likedProducts,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -67,33 +67,27 @@ class _SellerPageState extends State<SellerPage> {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       // ignore: unused_local_variable
-                      double aspectRatio =
-                          (product.title.length > 20) ? 0.6 : 0.8;
+                      double aspectRatio = (product.title.length > 20) ? 0.6 : 0.8;
 
                       return Stack(
                         children: [
                           Card(
                             color: const Color(0xFFFFFFFF),
                             shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                  color: Color(0xFFDFE2EC), width: 2.0),
+                              side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             elevation: 0,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment
-                                    .start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
+                                crossAxisAlignment: CrossAxisAlignment.start, // จัดการจัดตำแหน่งเป็นแนวตั้ง
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.asset(
-                                      product
-                                          .imageUrl, // ใช้ imageUrl จาก product
-                                      height: constraints.maxWidth -
-                                          28, // ปรับขนาดรูปภาพ
+                                      product.imageUrl, // ใช้ imageUrl จาก product
+                                      height: constraints.maxWidth - 28, // ปรับขนาดรูปภาพ
                                       width: constraints.maxWidth - 28,
                                       fit: BoxFit.contain,
                                       alignment: Alignment.topCenter,
@@ -107,25 +101,20 @@ class _SellerPageState extends State<SellerPage> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
-                                      overflow: TextOverflow
-                                          .ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
+                                      overflow: TextOverflow.ellipsis, // ใช้ ellipsis เพื่อแสดงจุดไข่ปลาเมื่อยาวเกินไป
                                       maxLines: 2, // จำกัดจำนวนบรรทัดที่จะแสดง
                                     ),
                                   ),
                                   const SizedBox(height: 36),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween, // จัดตำแหน่งให้ห่างกัน
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ห่างกัน
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey), // กำหนดสีขอบ
-                                          borderRadius: BorderRadius.circular(
-                                              12), // กำหนดมุมโค้งมนของกรอบ
+                                          border: Border.all(color: Colors.grey), // กำหนดสีขอบ
+                                          borderRadius: BorderRadius.circular(12), // กำหนดมุมโค้งมนของกรอบ
                                         ),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 8),
+                                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                         child: Text(
                                           product.category, // หมวดหมู่ของสินค้า
                                           style: TextStyle(
@@ -162,16 +151,13 @@ class _SellerPageState extends State<SellerPage> {
                                       padding: const EdgeInsets.all(16),
                                       height: 150,
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           ListTile(
-                                            leading: const Icon(Icons.edit,
-                                                color: Colors.grey),
+                                            leading: const Icon(Icons.edit, color: Colors.grey),
                                             title: const Text('แก้ไข'),
                                             onTap: () {
-                                              Navigator.pop(
-                                                  context); // ปิด BottomSheet
+                                              Navigator.pop(context); // ปิด BottomSheet
                                               Navigator.pushNamed(
                                                 context,
                                                 '/editproduct',
@@ -180,12 +166,10 @@ class _SellerPageState extends State<SellerPage> {
                                             },
                                           ),
                                           ListTile(
-                                            leading: const Icon(Icons.delete,
-                                                color: Colors.red),
+                                            leading: const Icon(Icons.delete, color: Colors.red),
                                             title: const Text('ลบ'),
                                             onTap: () {
-                                              Navigator.pop(
-                                                  context); // ปิด BottomSheet
+                                              Navigator.pop(context); // ปิด BottomSheet
                                               // เรียกฟังก์ชันสำหรับลบสินค้า
                                               _confirmDelete(context, product);
                                             },
@@ -223,7 +207,7 @@ class _SellerPageState extends State<SellerPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/addproduct'); 
+          Navigator.pushNamed(context, '/addproduct');
         },
         backgroundColor: const Color(0xFFFA5A2A),
         child: const Icon(Icons.add, color: Colors.white),
@@ -233,7 +217,7 @@ class _SellerPageState extends State<SellerPage> {
   }
 }
 
-void _confirmDelete(BuildContext context, Product product) {
+void _confirmDelete(BuildContext context, ProductCat product) {
   showDialog(
     context: context,
     builder: (BuildContext context) {

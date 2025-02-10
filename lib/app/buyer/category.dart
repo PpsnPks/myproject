@@ -1,9 +1,9 @@
 // lib/main/like.dart
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:myproject/Service/categoryservice.dart';
+import 'package:myproject/Service/addservice.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
-// import 'package:myproject/service/likeservice.dart';
 
 class CategoryPage extends StatefulWidget {
   final String category;
@@ -21,27 +21,38 @@ class _CategoryPageState extends State<CategoryPage> {
   List<Product> products = [];
   final scrollController = ScrollController();
   int page = 1;
-  int perPage = 5;
+  int perPage = 6;
   bool isLoadingMore = false;
   bool hasMore = true;
+  bool hasError = false;
+  String searchText = "";
   _loadmore() async {
     List<Product> newPosts = [];
-    Map<String, dynamic> response = await ProductService().getProduct(page, perPage);
+    setState(() {
+      isLoadingMore = true;
+    });
+    Map<String, dynamic> response = await ProductService().getProductCategory(page, perPage, widget.category, searchText);
     if (response['success'] == true) {
       newPosts = response['data'];
       print("11111111111 $newPosts");
       if (newPosts.isEmpty) {
         setState(() {
+          isLoadingMore = false;
           hasMore = false;
         });
         return;
       } else {
         setState(() {
+          isLoadingMore = false;
           products.addAll(newPosts);
         });
         return;
       }
     }
+    setState(() {
+      isLoadingMore = false;
+      hasMore = false;
+    });
     print('lllllllllll  $response');
     return;
   }
@@ -52,7 +63,7 @@ class _CategoryPageState extends State<CategoryPage> {
     scrollController.addListener(_scorollListener);
     _loadmore(); // ดึงข้อมูลจาก API
     // เรียก LikeService เพื่อดึงข้อมูลสินค้าที่ถูกใจ
-    likedProducts = Categoryservice().getCategoryProducts();
+    // likedProducts = Categoryservice().getCategoryProducts();
   }
 
   @override
@@ -177,7 +188,7 @@ class _CategoryPageState extends State<CategoryPage> {
           ListView.builder(
               padding: const EdgeInsets.only(left: 12, right: 12, top: 66),
               controller: scrollController,
-              itemCount: ((products.isEmpty && isLoadingMore) || !hasMore) ? 2 : 1,
+              itemCount: ((products.isNotEmpty && isLoadingMore) || (products.isNotEmpty && !hasMore)) ? 2 : 1,
               itemBuilder: (context, index) {
                 if (products.isEmpty && isLoadingMore) {
                   return const Center(
@@ -275,51 +286,6 @@ class _CategoryPageState extends State<CategoryPage> {
                   }
                 }
               }),
-          // FutureBuilder<List<Product>>(
-          //   future: likedProducts,
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return const Center(child: CircularProgressIndicator());
-          //     } else if (snapshot.hasError) {
-          //       return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
-          //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          //       return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
-          //     } else {
-          //       final products = snapshot.data!;
-
-          //       return SingleChildScrollView(
-          //         padding: const EdgeInsets.only(left: 12, right: 12, top: 66),
-          //         child: Row(
-          //           crossAxisAlignment: CrossAxisAlignment.start,
-          //           children: [
-          //             Expanded(
-          //               child: Column(
-          //                 children: [
-          //                   for (int i = 0; i < products.length; i += 2)
-          //                     Padding(
-          //                       padding: const EdgeInsets.all(4.0),
-          //                       child: productCard(products[i]),
-          //                     )
-          //                 ],
-          //               ),
-          //             ),
-          //             Expanded(
-          //               child: Column(
-          //                 children: [
-          //                   for (int i = 1; i < products.length; i += 2)
-          //                     Padding(
-          //                       padding: const EdgeInsets.all(4.0),
-          //                       child: productCard(products[i]),
-          //                     )
-          //                 ],
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //       );
-          //     }
-          //   },
-          // ),
           Positioned(
             top: 0,
             left: 0,
@@ -362,16 +328,49 @@ class _CategoryPageState extends State<CategoryPage> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                data.imageUrl, //'assets/images/old_book.jpg',
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.contain,
+              child: CachedNetworkImage(
+                imageUrl: data.product_images.isNotEmpty
+                    ? data.product_images[0]
+                    : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                placeholder: (context, url) => const SizedBox(
+                  width: double.infinity,
+                  height: 120,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0XFFE35205),
+                      strokeCap: StrokeCap.round,
+                      // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+                    ),
+                  ),
+                ),
+                imageBuilder: (context, ImageProvider) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                      return Container(
+                        width: size,
+                        height: size, // ให้ height เท่ากับ width
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: ImageProvider,
+                            fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
+              // Image.network(
+              //   data.product_images[0], //'assets/images/old_book.jpg',
+              //   height: 120,
+              //   width: double.infinity,
+              //   fit: BoxFit.contain,
+              // ),
             ),
             const SizedBox(height: 10),
             Text(
-              data.title,
+              data.product_name,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -381,19 +380,19 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
             const SizedBox(height: 5),
             Text(
-              data.detail,
+              'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
               style: const TextStyle(
                 fontSize: 12,
                 color: Color(0xFFA5A9B6),
               ),
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 3,
             ),
             const SizedBox(height: 5),
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                '${data.price} ฿',
+                '${data.product_price} ฿',
                 style: const TextStyle(
                   color: Colors.orange,
                   fontSize: 15,
@@ -414,7 +413,11 @@ class _CategoryPageState extends State<CategoryPage> {
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 10),
         child: TextField(
           onSubmitted: (value) {
-            setState(() {});
+            setState(() {
+              searchText = value;
+              products = [];
+              _loadmore();
+            });
           },
           decoration: InputDecoration(
               prefixIcon: Padding(
