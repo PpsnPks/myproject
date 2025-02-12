@@ -93,6 +93,7 @@ class UserService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
+        data['pic'] = '${Environment.imgUrl}/${data['pic']}';
         return {
           "success": true,
           "data": data, // รับข้อมูลจาก API

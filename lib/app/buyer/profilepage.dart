@@ -73,9 +73,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // รายการสินค้า (คนซื้อ)
   final List<Map<String, String>> buyerItems = [
-    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า A'},
-    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า B'},
-    {'image': 'assets/images/sample_item.png', 'title': 'สินค้า C'},
+    {'image': 'assets/images/old_book.jpg', 'title': 'สินค้า A'},
+    {'image': 'assets/images/old_fan.png', 'title': 'สินค้า B'},
+    {'image': 'assets/images/tuyen.png', 'title': 'สินค้า C'},
   ];
 
   @override

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:myproject/environment.dart';
 
-import 'otp.dart'; // Import หน้า OTP
-
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -127,6 +125,9 @@ class _RegisterPageState extends State<RegisterPage> {
         if (mounted) {
           Navigator.pop(context);
         }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: $error')),
+        );
         print('เกิดข้อผิดพลาด: $error');
       }
     }

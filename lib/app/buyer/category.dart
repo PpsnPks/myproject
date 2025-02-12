@@ -1,9 +1,9 @@
 // lib/main/like.dart
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:myproject/Service/categoryservice.dart';
+import 'package:myproject/Service/addservice.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
-// import 'package:myproject/service/likeservice.dart';
 
 class CategoryPage extends StatefulWidget {
   final String category;
@@ -18,12 +18,52 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   late Future<List<Product>> likedProducts;
+  List<Product> products = [];
+  final scrollController = ScrollController();
+  int page = 1;
+  int perPage = 6;
+  bool isLoadingMore = false;
+  bool hasMore = true;
+  bool hasError = false;
+  String searchText = "";
+  _loadmore() async {
+    List<Product> newPosts = [];
+    setState(() {
+      isLoadingMore = true;
+    });
+    Map<String, dynamic> response = await ProductService().getProductCategory(page, perPage, widget.category, searchText);
+    if (response['success'] == true) {
+      newPosts = response['data'];
+      print("11111111111 $newPosts");
+      if (newPosts.isEmpty) {
+        setState(() {
+          isLoadingMore = false;
+          hasMore = false;
+        });
+        return;
+      } else {
+        setState(() {
+          isLoadingMore = false;
+          products.addAll(newPosts);
+        });
+        return;
+      }
+    }
+    setState(() {
+      isLoadingMore = false;
+      hasMore = false;
+    });
+    print('lllllllllll  $response');
+    return;
+  }
 
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(_scorollListener);
+    _loadmore(); // ดึงข้อมูลจาก API
     // เรียก LikeService เพื่อดึงข้อมูลสินค้าที่ถูกใจ
-    likedProducts = Categoryservice().getCategoryProducts();
+    // likedProducts = Categoryservice().getCategoryProducts();
   }
 
   @override
@@ -145,21 +185,41 @@ class _CategoryPageState extends State<CategoryPage> {
       ),
       body: Stack(
         children: [
-          FutureBuilder<List<Product>>(
-            future: likedProducts,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
-              } else {
-                final products = snapshot.data!;
-
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.only(left: 12, right: 12, top: 66),
-                  child: Row(
+          ListView.builder(
+              padding: const EdgeInsets.only(left: 12, right: 12, top: 66),
+              controller: scrollController,
+              itemCount: ((products.isNotEmpty && isLoadingMore) || (products.isNotEmpty && !hasMore)) ? 2 : 1,
+              itemBuilder: (context, index) {
+                if (products.isEmpty && isLoadingMore) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                              child: SizedBox(
+                            width: 10.0,
+                            height: 10.0,
+                            child: CircularProgressIndicator(
+                              color: Color(0XFFE35205),
+                              strokeWidth: 2.0,
+                            ),
+                          )),
+                          SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                          Text(
+                            'กำลังโหลดสินค้า',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else if (products.isEmpty) {
+                  return const Center(child: Text('ไม่พบสินค้า'));
+                } else if (products.isNotEmpty && index == 0) {
+                  return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
@@ -185,31 +245,47 @@ class _CategoryPageState extends State<CategoryPage> {
                         ),
                       ),
                     ],
-                  ),
-                  // Column(
-                  //   children: [
-                  //     for (int i = 0; i < products.length; i += 2) // วนลูปทีละ 2
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.start,
-                  //         children: [
-                  //           Expanded(
-                  //             child: productCard(products[i]), // สร้าง Card สำหรับสินค้าแรก
-                  //           ),
-                  //           const SizedBox(width: 12), // ระยะห่างระหว่างคอลัมน์
-                  //           if (i + 1 < products.length) // ตรวจสอบว่ามีสินค้าชิ้นที่ 2 ในแถวนี้ไหม
-                  //             Expanded(
-                  //               child: productCard(products[i + 1]), // สร้าง Card สำหรับสินค้าอันที่สอง
-                  //             )
-                  //           else
-                  //             const Expanded(child: SizedBox()), // ถ้าไม่มีสินค้าชิ้นที่สอง ให้ใช้ SizedBox() เพื่อรักษาโครงสร้าง
-                  //         ],
-                  //       ),
-                  //   ],
-                  // ),
-                );
-              }
-            },
-          ),
+                  );
+                } else if (products.isNotEmpty && index == 1) {
+                  if (isLoadingMore) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                                child: SizedBox(
+                              width: 10.0,
+                              height: 10.0,
+                              child: CircularProgressIndicator(
+                                color: Color(0XFFE35205),
+                                strokeWidth: 2.0,
+                              ),
+                            )),
+                            SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                            Text(
+                              'กำลังโหลดโพสต์เพิ่มเติม...',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 8.0, bottom: 10.0),
+                      child: Center(
+                        child: Text(
+                          'ไม่มีโพสต์ที่จะแสดงเพิ่มเติม',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                        ),
+                      ),
+                    );
+                  }
+                }
+              }),
           Positioned(
             top: 0,
             left: 0,
@@ -220,6 +296,21 @@ class _CategoryPageState extends State<CategoryPage> {
       ),
       bottomNavigationBar: buyerFooter(context, 'home'),
     );
+  }
+
+  void _scorollListener() async {
+    if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+      page += 1;
+      setState(() {
+        isLoadingMore = true;
+      });
+      await _loadmore();
+      setState(() {
+        isLoadingMore = false;
+      });
+      print('max');
+    }
+    print('scroll listener called');
   }
 
   Widget productCard(Product data) {
@@ -237,16 +328,47 @@ class _CategoryPageState extends State<CategoryPage> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                data.imageUrl, //'assets/images/old_book.jpg',
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.contain,
+              child: CachedNetworkImage(
+                imageUrl: data.product_images.isNotEmpty
+                    ? data.product_images[0]
+                    : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                placeholder: (context, url) => LayoutBuilder(
+                  builder: (context, constraints) {
+                    double size = constraints.maxWidth;
+                    return SizedBox(
+                      width: size,
+                      height: size, // ให้สูงเท่ากับกว้าง
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0XFFE35205),
+                          strokeCap: StrokeCap.round,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                imageBuilder: (context, ImageProvider) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                      return Container(
+                        width: size,
+                        height: size, // ให้ height เท่ากับ width
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: ImageProvider,
+                            fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
             const SizedBox(height: 10),
             Text(
-              data.title,
+              data.product_name,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -256,19 +378,19 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
             const SizedBox(height: 5),
             Text(
-              data.detail,
+              'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
               style: const TextStyle(
                 fontSize: 12,
                 color: Color(0xFFA5A9B6),
               ),
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 3,
             ),
             const SizedBox(height: 5),
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                '${data.price} ฿',
+                '${data.product_price} ฿',
                 style: const TextStyle(
                   color: Colors.orange,
                   fontSize: 15,
@@ -289,7 +411,11 @@ class _CategoryPageState extends State<CategoryPage> {
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 10),
         child: TextField(
           onSubmitted: (value) {
-            setState(() {});
+            setState(() {
+              searchText = value;
+              products = [];
+              _loadmore();
+            });
           },
           decoration: InputDecoration(
               prefixIcon: Padding(

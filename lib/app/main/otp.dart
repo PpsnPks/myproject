@@ -1,6 +1,7 @@
 // otp.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:myproject/Service/otpservice.dart'; // Import OtpService
 
 class OtpPage extends StatefulWidget {
@@ -17,19 +18,26 @@ class _OtpPageState extends State<OtpPage> {
   final TextEditingController _otpController3 = TextEditingController();
   final TextEditingController _otpController4 = TextEditingController();
 
-  // String userId = 'user_id_placeholder'; 
-  // String email = 'email_placeholder'; 
+  late String userId; // ใช้ late เนื่องจากจะรับค่าจาก arguments
+  late String email; // ใช้ late เนื่องจากจะรับค่าจาก arguments
+  bool enableButton = false;
 
-  late String userId;  // ใช้ late เนื่องจากจะรับค่าจาก arguments
-  late String email;   // ใช้ late เนื่องจากจะรับค่าจาก arguments
-
-
+  void check4digitOTP() {
+    String otp = _otpController1.text.trim() + _otpController2.text.trim() + _otpController3.text.trim() + _otpController4.text.trim();
+    if (otp.length == 4) {
+      setState(() {
+        enableButton = true;
+      });
+    } else {
+      setState(() {
+        enableButton = false;
+      });
+    }
+  }
 
   void _verifyOtp() async {
-    String otp = _otpController1.text.trim() + 
-                 _otpController2.text.trim() + 
-                 _otpController3.text.trim() + 
-                 _otpController4.text.trim();
+    print('_verifyOtp');
+    String otp = _otpController1.text.trim() + _otpController2.text.trim() + _otpController3.text.trim() + _otpController4.text.trim();
 
     if (otp.length != 4) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,8 +69,8 @@ class _OtpPageState extends State<OtpPage> {
     // การจัดการกับ arguments อย่างปลอดภัย
     final args = ModalRoute.of(context)?.settings.arguments as Map?; // ใช้ null-aware
     if (args != null) {
-      email = args['email'];  // ใช้ตัวแปร email ที่ประกาศไว้แล้ว
-      userId = args['user_id'].toString();  // ใช้ตัวแปร userId ที่ประกาศไว้แล้ว
+      email = args['email'];
+      userId = args['user_id'].toString();
       // แสดงค่าใน console (log)
       print('Received email: $email');
       print('Received user_id: $userId');
@@ -74,7 +82,6 @@ class _OtpPageState extends State<OtpPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -88,7 +95,8 @@ class _OtpPageState extends State<OtpPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          child: SingleChildScrollView( // ทำให้สามารถเลื่อนหน้าจอได้
+          child: SingleChildScrollView(
+            // ทำให้สามารถเลื่อนหน้าจอได้
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // ตรงกลาง
               crossAxisAlignment: CrossAxisAlignment.center, // ตรงกลาง
@@ -100,39 +108,42 @@ class _OtpPageState extends State<OtpPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
                 // OTP Input 4 ช่อง
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _otpInputField(_otpController1),
-                    const SizedBox(width: 10),
-                    _otpInputField(_otpController2),
-                    const SizedBox(width: 10),
-                    _otpInputField(_otpController3),
-                    const SizedBox(width: 10),
-                    _otpInputField(_otpController4),
-                  ],
+                Form(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _otpInputField(_otpController1),
+                      const SizedBox(width: 10),
+                      _otpInputField(_otpController2),
+                      const SizedBox(width: 10),
+                      _otpInputField(_otpController3),
+                      const SizedBox(width: 10),
+                      _otpInputField(_otpController4),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 30),
                 // Submit Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: const Color(0XFFE35205),
+                    backgroundColor: enableButton ? const Color(0XFFE35205) : const Color.fromARGB(122, 227, 83, 5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  onPressed: _verifyOtp, // Verify OTP when button is pressed
-                  child: const Text(
+                  onPressed: () => {enableButton ? _verifyOtp() : print('null')}, // Verify OTP when button is pressed
+                  child: Text(
                     'ถัดไป',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Color(0XFFFFFFFF),
+                      color: enableButton ? const Color(0XFFFFFFFF) : const Color.fromARGB(129, 255, 255, 255),
                     ),
                   ),
                 ),
+                const SizedBox(height: 40),
               ],
             ),
           ),
@@ -144,14 +155,24 @@ class _OtpPageState extends State<OtpPage> {
   // ฟังก์ชันสำหรับสร้างช่องรับ OTP
   Widget _otpInputField(TextEditingController controller) {
     return SizedBox(
-      width: 60,
-      child: TextField(
+      width: 50,
+      height: 70,
+      child: TextFormField(
         controller: controller,
-        maxLength: 1,
+        onChanged: (value) {
+          check4digitOTP();
+          if (value.length == 1) {
+            FocusScope.of(context).nextFocus();
+          }
+        },
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(1),
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
         decoration: InputDecoration(
-          counterText: "", // ซ่อนตัวเลขที่แสดงความยาวของข้อความ
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),

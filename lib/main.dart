@@ -17,6 +17,7 @@ import 'package:myproject/app/buyer/selectproduct.dart';
 import 'package:myproject/app/main/chatPage.dart';
 import 'package:myproject/app/main/role.dart';
 import 'package:myproject/app/seller/confirm.dart';
+import 'package:myproject/app/seller/editpage.dart';
 import 'package:myproject/app/seller/notification.dart';
 import 'package:myproject/app/seller/postpage.dart';
 import 'package:myproject/app/seller/seller.dart';
@@ -31,6 +32,19 @@ void main() {
     debugShowCheckedModeBanner: false,
     title: "KMITL APP",
     home: const LoginPage(),
+    onGenerateRoute: (settings) {
+      if (settings.name!.startsWith('/editproduct/')) {
+        final id = settings.name!.split('/').last; // ดึง id จาก URL
+        // final product = settings.arguments;
+        return SlidePageRoute(
+          page: EditProductPage(
+            productId: id,
+          ),
+        );
+      }
+      return null;
+    },
+    initialRoute: '/',
     routes: {
       '/home': (context) => const HomePage(),
       '/like': (context) => const LikePage(),
@@ -66,6 +80,7 @@ void main() {
     },
   ));
 }
+
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});
 
@@ -73,4 +88,25 @@ class MyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Placeholder();
   }
+}
+
+class SlidePageRoute extends PageRouteBuilder {
+  final Widget page;
+
+  SlidePageRoute({required this.page})
+      : super(
+          pageBuilder: (context, animation, secondaryAnimation) => page,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        );
 }

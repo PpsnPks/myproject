@@ -1,10 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:myproject/Service/postservice.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import '../../Service/addservice.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,28 +14,68 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool loadingProduct = false;
+  List<Product> homeProducts = []; // ประกาศตัวแปรให้ถูกต้อง
 
-  Future<List<Product>> getProducts() async {
+  void getProducts() async {
     try {
-      final response = await AddService().getProduct(1, 10);  // เรียก API
+      setState(() {
+        loadingProduct = true;
+      });
+      final response = await ProductService().getProduct(1, 4); // เรียก API
       if (response['success']) {
-        List<Product> products = List<Product>.from(response['data'].map((item) => Product.fromJson(item)));
-        return products;
+        setState(() {
+          loadingProduct = false;
+          homeProducts = response['data'];
+        });
       } else {
+        setState(() {
+          loadingProduct = false;
+        });
         throw Exception('Failed to load products');
       }
     } catch (e) {
+      setState(() {
+        loadingProduct = false;
+      });
       print("Error loading products: $e");
-      return [];  // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
+      return; // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
     }
   }
 
- late Future<List<Product>> homeProducts;  // ประกาศตัวแปรให้ถูกต้อง
+  bool loadingPost = false;
+  List<Post> homePosts = [];
+  void getPost() async {
+    try {
+      setState(() {
+        loadingPost = true;
+      });
+      final response = await PostService().getPost(1, 3); // เรียก API
+      if (response['success']) {
+        setState(() {
+          loadingPost = false;
+          homePosts = response['data'];
+        });
+      } else {
+        setState(() {
+          loadingPost = false;
+        });
+        throw Exception('Failed to load products');
+      }
+    } catch (e) {
+      setState(() {
+        loadingPost = false;
+      });
+      print("Error loading products: $e");
+      return; // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    homeProducts = getProducts();  // เรียกฟังก์ชันเพื่อโหลดข้อมูล
+    getProducts(); // เรียกฟังก์ชันเพื่อโหลดข้อมูล
+    getPost();
   }
 
   @override
@@ -113,114 +152,61 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         const SizedBox(height: 10), // เพิ่มช่องว่างระหว่าง Row กับ FutureBuilder
-
-                        // FutureBuilder เพื่อโหลดข้อมูลสินค้า
-                        FutureBuilder<List<Product>>(
-                          future: homeProducts,  // ใช้ homeProducts ที่ประกาศแล้ว
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(child: Text('Error: ${snapshot.error}'));
-                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return const Center(child: Text('ไม่มีสินค้า'));
-                            } else {
-                              final products = snapshot.data!;
-                              print("Products loaded: ${products.length}");
-                              return GridView.builder(
-                                padding: const EdgeInsets.only(left: 12, right: 12),
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 0.67,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 8,
+                        loadingProduct
+                            ? const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                          child: SizedBox(
+                                        width: 10.0,
+                                        height: 10.0,
+                                        child: CircularProgressIndicator(
+                                          color: Color(0XFFE35205),
+                                          strokeWidth: 2.0,
+                                        ),
+                                      )),
+                                      SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                                      Text(
+                                        'กำลังโหลดสินค้า',
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                itemCount: products.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final product = products[index];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(context, '/selectproduct');
-                                    },
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        double aspectRatio = (product.product_name.length > 20) ? 0.6 : 0.8;
-                                        return Card(
-                                          color: const Color(0xFFFFFFFF),
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          elevation: 0,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  child: Image.network(
-                                                    product.product_images[0],  // Use [0] for the first image
-                                                    height: constraints.maxWidth - 28,
-                                                    width: constraints.maxWidth - 28,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 10),
-                                                Flexible(
-                                                  child: Text(
-                                                    product.product_name,
-                                                    style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                  ),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(color: Colors.grey),
-                                                        borderRadius: BorderRadius.circular(12),
-                                                      ),
-                                                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                                      child: Text(
-                                                        product.product_category,
-                                                        style: TextStyle(
-                                                          color: Colors.blueGrey[400],
-                                                          fontSize: 10,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      '${product.product_price} ฿',
-                                                      style: const TextStyle(
-                                                        color: Colors.orange,
-                                                        fontSize: 15,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              );
-                            }
-                          },
-                        ),
-    
+                              )
+                            : homeProducts.isNotEmpty
+                                ? Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            for (int i = 0; i < homeProducts.length; i += 2)
+                                              Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: productCard(homeProducts[i]),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            for (int i = 1; i < homeProducts.length; i += 2)
+                                              Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: productCard(homeProducts[i]),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const Center(child: Text('ไม่พบสินค้า')),
                         const SizedBox(height: 24),
                         const Padding(
                           padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
@@ -246,6 +232,52 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         const SizedBox(height: 10),
+                        loadingPost
+                            ? const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                          child: SizedBox(
+                                        width: 10.0,
+                                        height: 10.0,
+                                        child: CircularProgressIndicator(
+                                          color: Color(0XFFE35205),
+                                          strokeWidth: 2.0,
+                                        ),
+                                      )),
+                                      SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                                      Text(
+                                        'กำลังโหลดโพสต์',
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : homePosts.isNotEmpty
+                                ? Column(children: [
+                                    for (int i = 0; i < homePosts.length; i += 1)
+                                      Column(
+                                        children: [
+                                          // Container(
+                                          //   height: 2.0,
+                                          //   width: double.infinity,
+                                          //   color: Colors.grey[400],
+                                          // ),
+                                          postCard(homePosts[i]),
+                                          Container(
+                                            height: 2.0,
+                                            width: double.infinity,
+                                            color: Colors.grey[400],
+                                          ),
+                                        ],
+                                      )
+                                  ])
+                                : const Center(child: Text('ไม่พบรายการโพสต์')),
                       ],
                     ),
                   ),
@@ -267,6 +299,210 @@ class _HomePageState extends State<HomePage> {
 
   void printtext(String a) {
     print(a);
+  }
+
+  Widget productCard(Product data) {
+    return Card(
+      color: const Color(0xFFFFFFFF),
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: CachedNetworkImage(
+                imageUrl: data.product_images.isNotEmpty
+                    ? data.product_images[0]
+                    : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                placeholder: (context, url) => LayoutBuilder(
+                  builder: (context, constraints) {
+                    double size = constraints.maxWidth;
+                    return SizedBox(
+                      width: size,
+                      height: size, // ให้สูงเท่ากับกว้าง
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0XFFE35205),
+                          strokeCap: StrokeCap.round,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                imageBuilder: (context, ImageProvider) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                      return Container(
+                        width: size,
+                        height: size, // ให้ height เท่ากับ width
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: ImageProvider,
+                            fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              data.product_name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 5),
+            Text(
+              'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFFA5A9B6),
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+            ),
+            const SizedBox(height: 5),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                '${data.product_price} ฿',
+                style: const TextStyle(
+                  color: Colors.orange,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget postCard(Post data) {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      // margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(data.profile),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.name,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      data.faculty,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // Section: Post Title
+          Padding(
+            padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.detail,
+                  maxLines: 3,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  data.tags,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFFFA5A2A),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Section: Image
+          if (data.imageUrl.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
+                    width: 2.0, // กำหนดความหนาของขอบ
+                  ),
+                  borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: data.imageUrl,
+                  placeholder: (context, url) => const SizedBox(
+                    width: double.infinity,
+                    height: 360,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0XFFE35205),
+                        strokeCap: StrokeCap.round,
+                        // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+                      ),
+                    ),
+                  ),
+                  imageBuilder: (context, ImageProvider) {
+                    return Container(
+                      width: double.infinity,
+                      height: 360,
+                      decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
+                    );
+                  },
+                ),
+              ),
+            ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+              child: IconButton(
+                  onPressed: () => {},
+                  icon: const Icon(
+                    Icons.chat_outlined,
+                    color: Color(0xFFA5A9B6),
+                  ))),
+        ],
+      ),
+    );
   }
 
   Widget searchInputField() {
@@ -376,27 +612,25 @@ final List<Widget> imageSliders = imgList
         ))
     .toList();
 
-class Product {
-  final String product_name;
-  final String product_category;
-  final String product_images;
-  final double product_price;
+// class Product {
+//   final String product_name;
+//   final String product_category;
+//   final String product_images;
+//   final double product_price;
 
-  Product({
-    required this.product_name,
-    required this.product_category,
-    required this.product_images,
-    required this.product_price,
-  });
+//   Product({
+//     required this.product_name,
+//     required this.product_category,
+//     required this.product_images,
+//     required this.product_price,
+//   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      product_name: json['product_name'],
-      product_category: json['product_category'],
-      product_images: json['product_images'],
-      product_price: json['product_price'],
-    );
-  }
-}
-
-
+//   factory Product.fromJson(Map<String, dynamic> json) {
+//     return Product(
+//       product_name: json['product_name'],
+//       product_category: json['product_category'],
+//       product_images: json['product_images'],
+//       product_price: json['product_price'],
+//     );
+//   }
+// }

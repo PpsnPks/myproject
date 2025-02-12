@@ -9,8 +9,7 @@ class CartBPage extends StatefulWidget {
   State<CartBPage> createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartBPage>
-    with SingleTickerProviderStateMixin {
+class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixin {
   late Future<List<Product>> cartProducts;
   late TabController _tabController;
 
@@ -18,7 +17,7 @@ class _CartPageState extends State<CartBPage>
   void initState() {
     super.initState();
     cartProducts = CartService().getCartProducts();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   // Helper method to filter products by step
@@ -27,7 +26,7 @@ class _CartPageState extends State<CartBPage>
   }
 
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("รายการ"),
@@ -64,8 +63,7 @@ class _CartPageState extends State<CartBPage>
               controller: _tabController,
               children: [
                 buildStepContent(pendingApproval, 'ไม่มีสินค้ารอดำเนินการ'),
-                buildStepContent(
-                    pendingCollection, 'ไม่มีสินค้าดำเนินการสำเร็จ'),
+                buildStepContent(pendingCollection, 'ไม่มีสินค้าดำเนินการสำเร็จ'),
               ],
             );
           }
@@ -108,8 +106,7 @@ class _CartPageState extends State<CartBPage>
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
         decoration: BoxDecoration(
           color: Colors.white, // Background color
-          border:
-              Border.all(color: Colors.grey.shade300, width: 2), // Gray border
+          border: Border.all(color: Colors.grey.shade300, width: 2), // Gray border
           borderRadius: BorderRadius.circular(12), // Rounded corners
         ),
         child: Padding(
@@ -134,10 +131,7 @@ class _CartPageState extends State<CartBPage>
                   children: [
                     Text(
                       product.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          height: 1.6),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.6),
                       maxLines: 1,
                     ),
                     // const SizedBox(height: 4),
@@ -145,8 +139,7 @@ class _CartPageState extends State<CartBPage>
                       constraints: const BoxConstraints(minHeight: 57.0),
                       child: Text(
                         product.detail,
-                        style: const TextStyle(
-                            color: Colors.grey, fontSize: 13, height: 1.3),
+                        style: const TextStyle(color: Colors.grey, fontSize: 13, height: 1.3),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3,
                       ),
@@ -160,21 +153,15 @@ class _CartPageState extends State<CartBPage>
                           //   color: Colors.grey[200],
                           //   borderRadius: BorderRadius.circular(4),
                           // ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           child: const Text(
                             '', // product.category
-                            style: TextStyle(
-                                fontSize: 12, color: Colors.black, height: 1.2),
+                            style: TextStyle(fontSize: 12, color: Colors.black, height: 1.2),
                           ),
                         ),
                         Text(
                           '${product.price} ฿',
-                          style: const TextStyle(
-                              color: Color(0XFFE35205),
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              height: 1.0),
+                          style: const TextStyle(color: Color(0XFFE35205), fontSize: 18, fontWeight: FontWeight.bold, height: 1.0),
                         ),
                       ],
                     ),
