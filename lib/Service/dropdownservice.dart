@@ -24,7 +24,7 @@ class Dropdownservice {
       // ตรวจสอบสถานะของ Response
       if (response.statusCode == 200) {
         print('44444 ${response.statusCode}');
-        List data = jsonDecode(response.body);
+        List data = jsonDecode(response.body)['data']['data'];
         print('44444 $data');
         return data;
       } else {

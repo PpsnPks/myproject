@@ -188,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                                             for (int i = 0; i < homeProducts.length; i += 2)
                                               Padding(
                                                 padding: const EdgeInsets.all(4.0),
-                                                child: productCard(homeProducts[i]),
+                                                child: productCard(homeProducts[i], context),
                                               )
                                           ],
                                         ),
@@ -199,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                                             for (int i = 1; i < homeProducts.length; i += 2)
                                               Padding(
                                                 padding: const EdgeInsets.all(4.0),
-                                                child: productCard(homeProducts[i]),
+                                                child: productCard(homeProducts[i], context),
                                               )
                                           ],
                                         ),
@@ -293,6 +293,13 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/addpost');
+        },
+        backgroundColor: const Color(0xFFFA5A2A),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       bottomNavigationBar: buyerFooter(context, 'home'),
     );
   }
@@ -301,8 +308,20 @@ class _HomePageState extends State<HomePage> {
     print(a);
   }
 
-  Widget productCard(Product data) {
-    return Card(
+Widget productCard(Product data, BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      if (data != null) { 
+        Navigator.pushNamed(
+          context,
+          '/productdetail',
+          arguments: data,
+        );
+      } else {
+        print('Error: Product data is null');
+      }
+    },
+    child: Card(
       color: const Color(0xFFFFFFFF),
       shape: RoundedRectangleBorder(
         side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
@@ -325,7 +344,7 @@ class _HomePageState extends State<HomePage> {
                     double size = constraints.maxWidth;
                     return SizedBox(
                       width: size,
-                      height: size, // ให้สูงเท่ากับกว้าง
+                      height: size,
                       child: const Center(
                         child: CircularProgressIndicator(
                           color: Color(0XFFE35205),
@@ -338,14 +357,14 @@ class _HomePageState extends State<HomePage> {
                 imageBuilder: (context, ImageProvider) {
                   return LayoutBuilder(
                     builder: (context, constraints) {
-                      double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                      double size = constraints.maxWidth;
                       return Container(
                         width: size,
-                        height: size, // ให้ height เท่ากับ width
+                        height: size,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: ImageProvider,
-                            fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                            fit: BoxFit.fill,
                           ),
                         ),
                       );
@@ -389,8 +408,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget postCard(Post data) {
     return Card(

@@ -48,7 +48,7 @@ class _LikePageState extends State<LikePage> {
                   final product = products[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/selectproduct');
+                      Navigator.pushNamed(context, '/productdetail');
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(

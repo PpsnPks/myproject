@@ -5,6 +5,8 @@ import 'package:myproject/app/main/formPage.dart';
 import 'package:myproject/app/main/infoprofile.dart';
 import 'package:myproject/app/main/login.dart';
 import 'package:myproject/app/main/message.dart';
+import 'package:myproject/app/main/postdetailpage.dart';
+import 'package:myproject/app/main/productdetailpage.dart';
 import 'package:myproject/app/main/register.dart';
 import 'package:myproject/app/main/otp.dart';
 import 'package:myproject/app/seller/addpostpage.dart';
@@ -13,7 +15,6 @@ import 'package:myproject/app/buyer/category.dart';
 import 'package:myproject/app/buyer/confirm.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 import 'package:myproject/app/buyer/likepage.dart';
-import 'package:myproject/app/buyer/selectproduct.dart';
 import 'package:myproject/app/main/chatPage.dart';
 import 'package:myproject/app/main/role.dart';
 import 'package:myproject/app/seller/confirm.dart';
@@ -51,7 +52,6 @@ void main() {
       '/cart-buyer': (context) => const CartBPage(),
       '/cart-seller': (context) => const CartSPage(),
       '/post': (context) => const PostPage(),
-      '/selectproduct': (context) => const SelectProductPage(),
       '/confirm': (context) => const Confirm(),
       '/category': (context) => const CategoryPage('หมวดหมู่'),
       '/role': (context) => const RolePage(),
@@ -77,6 +77,8 @@ void main() {
       '/otp': (context) => const OtpPage(),
       '/infoform': (context) => const PersonalInfoForm(),
       '/infoprofile': (context) => const InfoProfile(),
+      '/productdetail': (context) => const ProductDetailPage(),
+      '/postdetail': (context) => const PostDetailPage(),
     },
   ));
 }
