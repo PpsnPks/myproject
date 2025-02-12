@@ -127,7 +127,10 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   getDropdown() async {
-    category = await Dropdownservice().getCategory();
+    var datacategory = await Dropdownservice().getCategory();
+    setState(() {
+      category = datacategory;
+    });
     print('category $category');
   }
 

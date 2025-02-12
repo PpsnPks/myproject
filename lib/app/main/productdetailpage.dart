@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/Service/selectproductservice.dart';
+import 'package:myproject/Service/productdetailservice.dart';
 
-class SelectProductPage extends StatefulWidget {
-  const SelectProductPage({super.key});
+class ProductDetailPage extends StatefulWidget {
+  const ProductDetailPage({super.key});
 
   @override
-  _SelectProductPageState createState() => _SelectProductPageState();
+  _ProductDetailPageState createState() => _ProductDetailPageState();
 }
 
-class _SelectProductPageState extends State<SelectProductPage> {
+class _ProductDetailPageState extends State<ProductDetailPage> {
   bool isFavorited = false; 
   int selectedQuantity = 1;
 
