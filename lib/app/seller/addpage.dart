@@ -1,15 +1,10 @@
-// import 'dart:io';
-// import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/addservice.dart'; // เพิ่มการนำเข้า
 import 'package:myproject/Service/dropdownservice.dart';
 import 'package:myproject/Service/uploadimgservice.dart';
-// import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:myproject/environment.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -74,10 +69,9 @@ class _AddProductPageState extends State<AddProductPage> {
     List<XFile> pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
 
     if (_imageBytesList.length + pickedFiles.length > 5) {
-      //
       // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
+        const SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
       );
     } else {
       // อ่านภาพเป็น bytes และเพิ่มลงในรายการ
@@ -216,10 +210,11 @@ class _AddProductPageState extends State<AddProductPage> {
     return null;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("เพิ่ม"),
+        title: const Text("เพิ่ม"),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
@@ -612,7 +607,7 @@ class _AddProductPageState extends State<AddProductPage> {
                           _productYearsController.clear();
                         } else {
                           // For "มือสอง", set empty values for defect and years
-                          _productDefectController.text = '';
+                          product_years = 'น้อยกว่า 1 ปี';
                           _productYearsController.text = '';
                         }
                       });
@@ -680,18 +675,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       validator: validateProductYear,
                     ),
                     const SizedBox(height: 8),
-                    // TextField(
-                    //   controller: _productDefectController,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       product_defect = value;
-                    //     });
-                    //   },
-                    //   decoration: const InputDecoration(
-                    //     labelText: 'ระบุตำหนิของสินค้า',
-                    //     border: OutlineInputBorder(),
-                    //   ),
-                    // ),
                     TextFormField(
                       controller: _productDefectController,
                       onChanged: (value) {

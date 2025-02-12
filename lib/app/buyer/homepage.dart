@@ -320,16 +320,20 @@ class _HomePageState extends State<HomePage> {
                 imageUrl: data.product_images.isNotEmpty
                     ? data.product_images[0]
                     : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                placeholder: (context, url) => const SizedBox(
-                  width: double.infinity,
-                  height: 120,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Color(0XFFE35205),
-                      strokeCap: StrokeCap.round,
-                      // strokeWidth: 12.0, // ปรับความหนาของวงกลม
-                    ),
-                  ),
+                placeholder: (context, url) => LayoutBuilder(
+                  builder: (context, constraints) {
+                    double size = constraints.maxWidth;
+                    return SizedBox(
+                      width: size,
+                      height: size, // ให้สูงเท่ากับกว้าง
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0XFFE35205),
+                          strokeCap: StrokeCap.round,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 imageBuilder: (context, ImageProvider) {
                   return LayoutBuilder(
