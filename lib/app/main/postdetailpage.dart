@@ -111,17 +111,23 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 // Stock & Buttons
                 // You can add stock info or other relevant fields as necessary
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/chat', arguments: {'sellerId': post.name});
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    backgroundColor: Colors.orange,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
-                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/chat', arguments: {'sellerId': post.name});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: const Color(0XFFE35205),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           );

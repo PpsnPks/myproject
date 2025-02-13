@@ -395,7 +395,7 @@ Widget productCard(Product data, BuildContext context) {
               child: Text(
                 '${data.product_price} ฿',
                 style: const TextStyle(
-                  color: Colors.orange,
+                  color: Color(0XFFE35205),
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),

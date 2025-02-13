@@ -96,7 +96,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     IconButton(
                       icon: Icon(
                         isLiked ? Icons.favorite : Icons.favorite_border,
-                        color: isLiked ? Colors.orange : Colors.grey,
+                        color: isLiked ? const Color(0XFFE35205) : Colors.grey,
                       ),
                       onPressed: () async {
                         setState(() {
@@ -149,7 +149,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(product.sellerName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        Text('คณะ: ${product.sellerFaculty}'),
+                        Text('${product.sellerFaculty}'),
                       ],
                     ),
                   ],
@@ -159,17 +159,34 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 // จำนวนสินค้าและปุ่มแชท
                 Text('จำนวนที่เหลือ: ${product.stock}', style: const TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/chat', arguments: {'sellerId': product.sellerName});
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    backgroundColor: Colors.orange,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
-                ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.pushNamed(context, '/chat', arguments: {'sellerId': product.sellerName});
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     padding: const EdgeInsets.symmetric(vertical: 15),
+                //     backgroundColor: const Color(0XFFE35205),
+                //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                //   ),
+                //   child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
+                // ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/chat', arguments: {'sellerId': product.sellerName});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: const Color(0XFFE35205),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           );
