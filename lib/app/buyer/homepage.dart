@@ -268,7 +268,7 @@ class _HomePageState extends State<HomePage> {
                                           //   width: double.infinity,
                                           //   color: Colors.grey[400],
                                           // ),
-                                          postCard(homePosts[i]),
+                                          postCard(homePosts[i], context),
                                           Container(
                                             height: 2.0,
                                             width: double.infinity,
@@ -311,16 +311,12 @@ class _HomePageState extends State<HomePage> {
 Widget productCard(Product data, BuildContext context) {
   return GestureDetector(
     onTap: () {
-      if (data != null) { 
+        Navigator.pop(context); // ปิด BottomSheet
         Navigator.pushNamed(
           context,
-          '/productdetail',
-          arguments: data,
+          '/productdetail/${data.id}',
         );
-      } else {
-        print('Error: Product data is null');
-      }
-    },
+      },
     child: Card(
       color: const Color(0xFFFFFFFF),
       shape: RoundedRectangleBorder(
@@ -413,8 +409,16 @@ Widget productCard(Product data, BuildContext context) {
 }
 
 
-  Widget postCard(Post data) {
-    return Card(
+  Widget postCard(Post data, BuildContext context) {
+    return GestureDetector(
+    onTap: () {
+        Navigator.pop(context); // ปิด BottomSheet
+        Navigator.pushNamed(
+          context,
+          '/postdetail/${data.id}',
+        );
+      },
+    child: Card(
       elevation: 0,
       color: Colors.white,
       // margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
@@ -523,6 +527,7 @@ Widget productCard(Product data, BuildContext context) {
                   ))),
         ],
       ),
+     )
     );
   }
 

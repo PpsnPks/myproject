@@ -1,144 +1,131 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/Service/productdetailservice.dart';
+import 'package:myproject/Service/postdetailservice.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class PostDetailPage extends StatefulWidget {
-  const PostDetailPage({super.key});
+  final String postId;
+
+  const PostDetailPage({super.key, required this.postId});
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
-  bool isFavorited = false;
+  int selectedQuantity = 1;
 
   @override
   Widget build(BuildContext context) {
-    // รับข้อมูล product จาก arguments
-    final product = ModalRoute.of(context)!.settings.arguments as Product?;
-
-    if (product == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text("รายละเอียดสินค้า")),
-        body: const Center(child: Text("ไม่พบข้อมูลสินค้า")),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
-        title: const Center(child: Text("รายละเอียดสินค้า")),
+        title: const Center(child: Text("รายละเอียดโพสต์")),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.chat_outlined),
+            onPressed: () {
+              Navigator.pushNamed(context, '/chat', arguments: {'sellerId': widget.postId});
+            },
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Product image slider
-            Container(
-              height: 200,
-              color: Colors.grey[300],
-              child: PageView.builder(
-                itemCount: product.imageUrl.length,
-                itemBuilder: (context, index) {
-                  return Image.network(product.imageUrl[index]);
-                },
+      body: FutureBuilder<Post>(
+        future: PostService().getPostById(widget.postId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('เกิดข้อผิดพลาดในการโหลดสินค้า'),
+                  Text(snapshot.error.toString(), style: const TextStyle(color: Colors.red)),
+                ],
               ),
-            ),
-            const SizedBox(height: 10),
-            // Product Title and Favorite Icon
-            Row(
+            );
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text("ไม่พบสินค้า"));
+          }
+
+          final post = snapshot.data!;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                // Product Images
+                if (post.postImage.isNotEmpty)
+                  SizedBox(
+                    height: 200,
+                    child: PageView.builder(
+                      itemCount: 1,  // Assuming there's only one image per post
+                      itemBuilder: (context, index) {
+                        return Image.network(
+                          post.postImage,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                        );
+                      },
                     ),
                   ),
+                const SizedBox(height: 10),
+
+                // Product Name
+                Text(post.detail, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+
+                // Product Price
+                Text('฿${post.price}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+
+                // Product Details
+                _buildDetailText('หมวดหมู่', post.category),
+                const SizedBox(height: 10),
+
+                // Seller Info
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(post.profilePic),
+                      radius: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${post.faculty}'),
+                      ],
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(
-                    isFavorited ? Icons.favorite : Icons.favorite_border,
-                    size: 30,
-                    color: isFavorited ? Colors.red : Colors.black,
-                  ),
+                const SizedBox(height: 10),
+
+                // Stock & Buttons
+                // You can add stock info or other relevant fields as necessary
+                const SizedBox(height: 20),
+                ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      isFavorited = !isFavorited;
-                    });
+                    Navigator.pushNamed(context, '/chat', arguments: {'sellerId': post.name});
                   },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: Colors.orange,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            // Product Price
-            Text(
-              product.price,
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            // Product Description
-            const Text(
-              'รายละเอียด',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 5),
-            Text(product.description),
-            const SizedBox(height: 10),
-            // Other product details
-            _buildDetailText('ประเภท', product.category),
-            _buildDetailText('สภาพสินค้า', product.conditionProduct),
-            _buildDetailText('ระยะเวลาการใช้งาน', product.durationUse),
-            _buildDetailText('ตำหนิสินค้า', product.defect),
-            _buildDetailText('สถานที่นัดรับ', product.deliveryLocation),
-            _buildDetailText('ระยะเวลา', product.timeForSell),
-            const SizedBox(height: 10),
-            // Seller Info
-            const Text(
-              'โพสต์โดย:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage('assets/profile.jpg'),
-                  radius: 20,
-                ),
-                const SizedBox(width: 10),
-                Text(product.seller),
-              ],
-            ),
-            const SizedBox(height: 10),
-            // Buy button
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/confirm');
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                backgroundColor: const Color(0xFFFA5A2A),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'แชท',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -147,10 +134,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 5),
         Text(detail),
         const SizedBox(height: 10),
@@ -158,3 +142,4 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 }
+

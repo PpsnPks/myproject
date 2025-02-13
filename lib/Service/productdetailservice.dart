@@ -1,65 +1,97 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
+import 'package:myproject/auth_service.dart';
 import 'package:myproject/environment.dart';
 
 class ProductService {
-  static Future<Product> getProduct() async {
-    final String baseUrl = "${Environment.baseUrl}/product/";// ใส่ URL ของ API ที่ต้องการดึงข้อมูล
-    final response = await http.get(Uri.parse(baseUrl));
+  Future<Product> getProductById(String id) async {
+    try {
+      String? accessToken = await AuthService().getAccessToken();
+      String url = "${Environment.baseUrl}/products/$id";
 
-    if (response.statusCode == 200) {
-      // แปลงข้อมูล JSON ที่ได้รับจาก API เป็น Product
-      final data = json.decode(response.body);
-      return Product(
-        name: data['name'],
-        price: data['price'],
-        description: data['description'],
-        category: data['category'],
-        conditionProduct: data['conditionProduct'],
-        durationUse: data['durationUse'],
-        defect: data['defect'],
-        timeForSell: data['timeForSell'],
-        deliveryLocation: data['deliveryLocation'],
-        deliveryDate: data['deliveryDate'],
-        seller: data['seller'],
-        stock: data['stock'],
-        imageUrl: List<String>.from(data['imageUrl']),
-      );
-    } else {
-      throw Exception('Failed to load product');
+      if (accessToken == null) {
+        throw Exception('กรุณาเข้าสู่ระบบก่อนทำรายการ');
+      }
+
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        if (decodedResponse != null) {
+          return Product.fromJson(decodedResponse);
+        } else {
+          throw Exception('ไม่พบข้อมูลสินค้า');
+        }
+      } else {
+        throw Exception('Error ${response.statusCode} ${response.body}');
+      }
+    } catch (e) {
+      throw Exception("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e");
     }
   }
 }
 
 class Product {
+  final String id;
   final String name;
   final String price;
+  final List<String> imageUrl;
   final String description;
   final String category;
-  final String conditionProduct;
+  final String condition;
   final String durationUse;
   final String defect;
-  final String timeForSell;
   final String deliveryLocation;
-  final String deliveryDate;
-  final String seller;
-  final num stock;
-  final List<String> imageUrl;
+  final String timeForSell;
+  final String sellerPic;
+  final String sellerName;
+  final String sellerFaculty;
+  final String createdAt;
+  final int stock;
 
   Product({
+    required this.id,
     required this.name,
     required this.price,
+    required this.imageUrl,
     required this.description,
     required this.category,
-    required this.conditionProduct,
+    required this.condition,
     required this.durationUse,
     required this.defect,
-    required this.timeForSell,
     required this.deliveryLocation,
-    required this.deliveryDate,
-    required this.seller,
+    required this.timeForSell,
+    required this.sellerPic,
+    required this.sellerName,
+    required this.sellerFaculty,
+    required this.createdAt,
     required this.stock,
-    required this.imageUrl,
   });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id']?.toString() ?? '',
+      name: json['product_name'] ?? 'ไม่มีชื่อสินค้า',
+      price: json['product_price'] ?? '',
+      imageUrl: List<String>.from(json['product_images'] ?? []),
+      description: json['product_description'] ?? '',
+      category: json['product_category'] ?? '',
+      condition: json['product_condition'] ?? '',
+      durationUse: json['product_condition'] == "มือสอง" ? (json['product_years'] ?? '-') : '',
+      defect: json['product_condition'] == "มือสอง" ? (json['product_defect'] ?? '-') : '',
+      deliveryLocation: json['product_location'] ?? '',
+      timeForSell: json['date_exp'] ?? '',
+      sellerPic: json['seller']?['pic'] ?? '',
+      sellerName: json['seller']?['name'] ?? 'ไม่ระบุ',
+      sellerFaculty: json['seller']?['faculty'] ?? 'ไม่ระบุ',
+      createdAt: json['created_at'] ?? '',
+      stock: json['product_qty'] ?? 1,
+    );
+  }
 }
