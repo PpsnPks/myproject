@@ -20,19 +20,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Center(child: Text("รายละเอียดโพสต์")),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.chat_outlined),
-            onPressed: () {
-              Navigator.pushNamed(context, '/chat', arguments: {'sellerId': widget.postId});
-            },
-          ),
-        ],
+        title: const Text("รายละเอียดโพสต์"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: FutureBuilder<Post>(
         future: PostService().getPostById(widget.postId),

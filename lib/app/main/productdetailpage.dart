@@ -25,21 +25,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pushReplacementNamed(context, '/home');  // เปลี่ยนเส้นทางไปที่หน้า home
-        },
-      ),
-        title: const Center(child: Text("รายละเอียดสินค้า")),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.chat_outlined),
-            onPressed: () {
-              Navigator.pushNamed(context, '/chat', arguments: {'sellerId': widget.productId});
-            },
-          ),
-        ],
+        title: const Text("รายละเอียดสินค้า"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: FutureBuilder<Product>(
         future: ProductService().getProductById(widget.productId),

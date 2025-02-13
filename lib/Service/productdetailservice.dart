@@ -74,24 +74,24 @@ class Product {
     required this.stock,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
+  factory Product.fromJson(Map<String, dynamic> data) {
     return Product(
-      id: json['id']?.toString() ?? '',
-      name: json['product_name'] ?? 'ไม่มีชื่อสินค้า',
-      price: json['product_price'] ?? '',
-      imageUrl: List<String>.from(json['product_images'] ?? []),
-      description: json['product_description'] ?? '',
-      category: json['product_category'] ?? '',
-      condition: json['product_condition'] ?? '',
-      durationUse: json['product_condition'] == "มือสอง" ? (json['product_years'] ?? '-') : '',
-      defect: json['product_condition'] == "มือสอง" ? (json['product_defect'] ?? '-') : '',
-      deliveryLocation: json['product_location'] ?? '',
-      timeForSell: json['date_exp'] ?? '',
-      sellerPic: json['seller']?['pic'] ?? '',
-      sellerName: json['seller']?['name'] ?? 'ไม่ระบุ',
-      sellerFaculty: json['seller']?['faculty'] ?? 'ไม่ระบุ',
-      createdAt: json['created_at'] ?? '',
-      stock: json['product_qty'] ?? 1,
+      id: data['id']?.toString() ?? '',
+      name: data['product_name'] ?? 'ไม่มีชื่อสินค้า',
+      price: data['product_price'] ?? '',
+      imageUrl: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
+      description: data['product_description'] ?? '',
+      category: data['product_category'] ?? '',
+      condition: data['product_condition'] ?? '',
+      durationUse: data['product_condition'] == "มือสอง" ? (data['product_years'] ?? '-') : '',
+      defect: data['product_condition'] == "มือสอง" ? (data['product_defect'] ?? '-') : '',
+      deliveryLocation: data['product_location'] ?? '',
+      timeForSell: data['date_exp'] ?? '',
+      sellerPic: "${Environment.imgUrl}/${data['seller']['pic']}",
+      sellerName: data['seller']?['name'] ?? 'ไม่ระบุ',
+      sellerFaculty: data['seller']?['faculty'] ?? 'ไม่ระบุ',
+      createdAt: data['created_at'] ?? '',
+      stock: data['product_qty'] ?? 1,
     );
   }
 }

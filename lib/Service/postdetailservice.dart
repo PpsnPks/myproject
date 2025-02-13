@@ -58,16 +58,16 @@ class Post {
     required this.price,
   });
 
-  factory Post.fromJson(Map<String, dynamic> json) {
+  factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
-      profilePic: json['user']?['pic'] ?? '',
-      name: json['user']?['name'] ?? 'ไม่ระบุ',
-      faculty: json['user']?['faculty'] ?? 'ไม่ระบุ',
-      detail: json['detail'] ?? '',
-      tag: json['tag'] ?? '',
-      postImage: json['image'] ?? '',
-      category: json['category'] ?? '',
-      price: json['price'] ?? '',
+      profilePic: "${Environment.imgUrl}/${data['user']['pic']}",
+      name: data['user']?['name'] ?? 'ไม่ระบุ',
+      faculty: data['user']?['faculty'] ?? 'ไม่ระบุ',
+      detail: data['detail'] ?? '',
+      tag: data['tag'] ?? '',
+      postImage: '${Environment.imgUrl}/${data['image']}',
+      category: data['category'] ?? '',
+      price: data['price'] ?? '',
     );
   }
 }
