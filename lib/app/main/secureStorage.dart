@@ -17,7 +17,7 @@ class Securestorage {
     await storage.delete(key: key);
   }
 
-  deleteAllSecureData(String key) async {
+  deleteAllSecureData() async {
     await storage.deleteAll();
   }
 }

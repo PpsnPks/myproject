@@ -1022,5 +1022,19 @@ class _EditProductPageState extends State<EditProductPage> {
 //         ),
 //       );
 //     },
+// errorWidget: (context, url, error) => LayoutBuilder(
+//                   builder: (context, constraints) {
+//                     return Container(
+//                       width: 300,
+//                       height: 200,
+//                       decoration: const BoxDecoration(
+//                         image: DecorationImage(
+//                           image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+//                           fit: BoxFit.fill,
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                 ),
 //   ),
 // );

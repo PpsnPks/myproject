@@ -53,40 +53,7 @@ class _PostPageState extends State<PostPage> {
     super.initState();
     scrollController.addListener(_scorollListener);
     _loadmore(); // ดึงข้อมูลจาก API
-    //   _loadData();
-
-    //   // ตั้งค่า ScrollController เพื่อจับการเลื่อน
-    //   _scrollController.addListener(() {
-    //     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-    //       // เลื่อนถึงจุดสุดท้ายแล้ว ให้โหลดข้อมูลเพิ่ม
-    //       if (!isLoading) {
-    //         setState(() {
-    //           isLoading = true;
-    //         });
-    //         _loadData();
-    //       }
-    //     }
-    //   });
   }
-  // Future<void> _loadData(int nowPage, int lenght) async {
-  //   // สมมติว่า `fetchPosts` คือฟังก์ชันที่ดึงข้อมูลจาก API หรือฐานข้อมูล
-  //   Map<String, dynamic> response = await PostService().getPost(nowPage, lenght);
-
-  //   if(response['success']){
-  //     List<Post> newPosts = response['data'].
-  //   }
-  //   // List<Post> newPosts
-
-  //   setState(() {
-  //     posts.addAll(newPosts);
-  //     page++;  // เพิ่มเลขหน้าเพื่อโหลดข้อมูลหน้าถัดไป
-  //     isLoading = false;
-  //   });
-  // }
-
-  // final ScrollController _scrollController = ScrollController();
-  // bool isLoading = false;
-  // int currentPage = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -238,26 +205,44 @@ class _PostPageState extends State<PostPage> {
                               ),
                               borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
                             ),
-                            child: CachedNetworkImage(
-                              imageUrl: post.imageUrl,
-                              placeholder: (context, url) => const SizedBox(
-                                width: double.infinity,
-                                height: 360,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: Color(0XFFE35205),
-                                    strokeCap: StrokeCap.round,
-                                    // strokeWidth: 12.0, // ปรับความหนาของวงกลม
-                                  ),
-                                ),
-                              ),
-                              imageBuilder: (context, ImageProvider) {
-                                return Container(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(22.0),
+                              child: CachedNetworkImage(
+                                imageUrl: post.imageUrl,
+                                placeholder: (context, url) => const SizedBox(
                                   width: double.infinity,
                                   height: 360,
-                                  decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
-                                );
-                              },
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: Color(0XFFE35205),
+                                      strokeCap: StrokeCap.round,
+                                      // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+                                    ),
+                                  ),
+                                ),
+                                imageBuilder: (context, ImageProvider) {
+                                  return Container(
+                                    width: double.infinity,
+                                    height: 360,
+                                    decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
+                                  );
+                                },
+                                errorWidget: (context, url, error) => LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    double size = constraints.maxWidth;
+                                    return Container(
+                                      width: size,
+                                      height: 360,
+                                      decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                           ),
                         ),
