@@ -80,6 +80,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 const SizedBox(height: 10),
 
                 // Seller Info
+                Text('โพสต์โดย',style: const TextStyle(fontWeight: FontWeight.bold)),
                 Row(
                   children: [
                     CircleAvatar(

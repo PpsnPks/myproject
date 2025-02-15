@@ -115,6 +115,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 const SizedBox(height: 10),
 
                 // รายละเอียดสินค้า
+                _buildDetailText('รายละเอียดสินค้า', product.description),
                 _buildDetailText('หมวดหมู่', product.category),
                 _buildDetailText('สภาพสินค้า', product.condition),
                 if (product.condition == 'มือสอง') ...[
@@ -126,6 +127,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 const SizedBox(height: 10),
 
                 // ข้อมูลผู้ขาย
+                Text('โพสต์โดย',style: const TextStyle(fontWeight: FontWeight.bold)),
                 Row(
                   children: [
                     CircleAvatar(

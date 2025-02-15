@@ -23,6 +23,7 @@ import 'package:myproject/app/seller/notification.dart';
 import 'package:myproject/app/seller/postpage.dart';
 import 'package:myproject/app/seller/seller.dart';
 import 'package:myproject/app/seller/addpage.dart';
+import 'package:myproject/app/main/viewprofile.dart';
 
 import 'app/buyer/profilepage.dart';
 
@@ -96,6 +97,7 @@ void main() {
       '/otp': (context) => const OtpPage(),
       '/infoform': (context) => const PersonalInfoForm(),
       '/infoprofile': (context) => const InfoProfile(),
+      '/viewprofile': (context) => const ViewProfilePage(),
     },
   ));
 }
