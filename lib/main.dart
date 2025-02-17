@@ -23,6 +23,7 @@ import 'package:myproject/app/seller/notification.dart';
 import 'package:myproject/app/seller/postpage.dart';
 import 'package:myproject/app/seller/seller.dart';
 import 'package:myproject/app/seller/addpage.dart';
+import 'package:myproject/app/main/viewprofile.dart';
 
 import 'app/buyer/profilepage.dart';
 
@@ -43,7 +44,26 @@ void main() {
           ),
         );
       }
+      else if (settings.name!.startsWith('/productdetail/')) {
+        final id = settings.name!.split('/').last; // ดึง id จาก URL
+        // final product = settings.arguments;
+        return SlidePageRoute(
+          page: ProductDetailPage(
+            productId: id,
+          ),
+        );
+      }
+      else if (settings.name!.startsWith('/postdetail/')) {
+        final id = settings.name!.split('/').last; // ดึง id จาก URL
+        // final product = settings.arguments;
+        return SlidePageRoute(
+          page: PostDetailPage(
+            postId: id,
+          ),
+        );
+      }
       return null;
+      
     },
     initialRoute: '/',
     routes: {
@@ -77,8 +97,7 @@ void main() {
       '/otp': (context) => const OtpPage(),
       '/infoform': (context) => const PersonalInfoForm(),
       '/infoprofile': (context) => const InfoProfile(),
-      '/productdetail': (context) => const ProductDetailPage(),
-      '/postdetail': (context) => const PostDetailPage(),
+      '/viewprofile': (context) => const ViewProfilePage(),
     },
   ));
 }

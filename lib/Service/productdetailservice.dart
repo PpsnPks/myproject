@@ -1,65 +1,97 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
+import 'package:myproject/auth_service.dart';
 import 'package:myproject/environment.dart';
 
 class ProductService {
-  static Future<Product> getProduct() async {
-    final String baseUrl = "${Environment.baseUrl}/product/";// ใส่ URL ของ API ที่ต้องการดึงข้อมูล
-    final response = await http.get(Uri.parse(baseUrl));
+  Future<Product> getProductById(String id) async {
+    try {
+      String? accessToken = await AuthService().getAccessToken();
+      String url = "${Environment.baseUrl}/products/$id";
 
-    if (response.statusCode == 200) {
-      // แปลงข้อมูล JSON ที่ได้รับจาก API เป็น Product
-      final data = json.decode(response.body);
-      return Product(
-        name: data['name'],
-        price: data['price'],
-        description: data['description'],
-        category: data['category'],
-        conditionProduct: data['conditionProduct'],
-        durationUse: data['durationUse'],
-        defect: data['defect'],
-        timeForSell: data['timeForSell'],
-        deliveryLocation: data['deliveryLocation'],
-        deliveryDate: data['deliveryDate'],
-        seller: data['seller'],
-        stock: data['stock'],
-        imageUrl: List<String>.from(data['imageUrl']),
-      );
-    } else {
-      throw Exception('Failed to load product');
+      if (accessToken == null) {
+        throw Exception('กรุณาเข้าสู่ระบบก่อนทำรายการ');
+      }
+
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        if (decodedResponse != null) {
+          return Product.fromJson(decodedResponse);
+        } else {
+          throw Exception('ไม่พบข้อมูลสินค้า');
+        }
+      } else {
+        throw Exception('Error ${response.statusCode} ${response.body}');
+      }
+    } catch (e) {
+      throw Exception("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e");
     }
   }
 }
 
 class Product {
+  final String id;
   final String name;
   final String price;
+  final List<String> imageUrl;
   final String description;
   final String category;
-  final String conditionProduct;
+  final String condition;
   final String durationUse;
   final String defect;
-  final String timeForSell;
   final String deliveryLocation;
-  final String deliveryDate;
-  final String seller;
-  final num stock;
-  final List<String> imageUrl;
+  final String timeForSell;
+  final String sellerPic;
+  final String sellerName;
+  final String sellerFaculty;
+  final String createdAt;
+  final int stock;
 
   Product({
+    required this.id,
     required this.name,
     required this.price,
+    required this.imageUrl,
     required this.description,
     required this.category,
-    required this.conditionProduct,
+    required this.condition,
     required this.durationUse,
     required this.defect,
-    required this.timeForSell,
     required this.deliveryLocation,
-    required this.deliveryDate,
-    required this.seller,
+    required this.timeForSell,
+    required this.sellerPic,
+    required this.sellerName,
+    required this.sellerFaculty,
+    required this.createdAt,
     required this.stock,
-    required this.imageUrl,
   });
+
+  factory Product.fromJson(Map<String, dynamic> data) {
+    return Product(
+      id: data['id']?.toString() ?? '',
+      name: data['product_name'] ?? 'ไม่มีชื่อสินค้า',
+      price: data['product_price'] ?? '',
+      imageUrl: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
+      description: data['product_description'] ?? '',
+      category: data['product_category'] ?? '',
+      condition: data['product_condition'] ?? '',
+      durationUse: data['product_condition'] == "มือสอง" ? (data['product_years'] ?? '-') : '',
+      defect: data['product_condition'] == "มือสอง" ? (data['product_defect'] ?? '-') : '',
+      deliveryLocation: data['product_location'] ?? '',
+      timeForSell: data['date_exp'] ?? '',
+      sellerPic: "${Environment.imgUrl}/${data['seller']['pic']}",
+      sellerName: data['seller']?['name'] ?? 'ไม่ระบุ',
+      sellerFaculty: data['seller']?['faculty'] ?? 'ไม่ระบุ',
+      createdAt: data['created_at'] ?? '',
+      stock: data['product_qty'] ?? 1,
+    );
+  }
 }

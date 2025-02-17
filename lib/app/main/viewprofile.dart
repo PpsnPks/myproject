@@ -4,19 +4,16 @@ import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:myproject/Service/formservice.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ViewProfilePage extends StatefulWidget {
+  const ViewProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ViewProfilePage> createState() => _ViewProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  bool isBuyerSelected = false; // Default to Buyer tab
-  bool isSellerSelected = false; // Default to Buyer tab
+class _ViewProfilePageState extends State<ViewProfilePage> {
+  bool isBuyerSelected = true; // Default to Buyer tab
   bool isGridSelected = true; // Default to Grid view
-
-  String role = '';
 
   String pic = '-';
   String hideEmail = '-';
@@ -68,25 +65,9 @@ class _ProfilePageState extends State<ProfilePage> {
     //   }
   }
 
-  void getRole() async {
-    role = await Securestorage().readSecureData('role');
-    if (role == 'buy') {
-      setState(() {
-        isBuyerSelected = true;
-        isSellerSelected = false;
-      });
-    } else if (role == 'sell') {
-      setState(() {
-        isBuyerSelected = false;
-        isSellerSelected = true;
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState(); // กำหนดค่าเริ่มต้นให้ userData เป็น Future ที่ว่าง
-    getRole();
     getDataUser();
   }
 
@@ -106,45 +87,43 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         foregroundColor: Colors.black,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () {
-              // Show options for logout, personal info
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        leading: const Icon(Icons.person),
-                        title: const Text('ข้อมูลส่วนตัว'),
-                        onTap: () {
-                          // Handle personal info action
-                          Navigator.pop(context); // Close the bottom sheet
-                          Navigator.pushNamed(context, '/infoprofile');
-                          // Navigate to personal information page if needed
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.exit_to_app),
-                        title: const Text('ออกจากระบบ'),
-                        onTap: () {
-                          // Handle logout action
-                          Navigator.pop(context); // Close the bottom sheet
-                          Securestorage().deleteAllSecureData();
-                          Navigator.pushReplacementNamed(context, '/login');
-                          // Add your logout logic here
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.more_vert),
+        //     onPressed: () {
+        //       // Show options for logout, personal info
+        //       showModalBottomSheet(
+        //         context: context,
+        //         builder: (BuildContext context) {
+        //           return Column(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: <Widget>[
+        //               ListTile(
+        //                 leading: const Icon(Icons.person),
+        //                 title: const Text('ข้อมูลส่วนตัว'),
+        //                 onTap: () {
+        //                   // Handle personal info action
+        //                   Navigator.pop(context); // Close the bottom sheet
+        //                   Navigator.pushNamed(context, '/infoprofile');
+        //                   // Navigate to personal information page if needed
+        //                 },
+        //               ),
+        //               ListTile(
+        //                 leading: const Icon(Icons.exit_to_app),
+        //                 title: const Text('ออกจากระบบ'),
+        //                 onTap: () {
+        //                   // Handle logout action
+        //                   Navigator.pop(context, '/login'); // Close the bottom sheet
+        //                   // Add your logout logic here
+        //                 },
+        //               ),
+        //             ],
+        //           );
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,64 +170,62 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           // Tab Buttons
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
-            child: Row(
-              children: [
-                // Buyer Tab
-                Expanded(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    decoration: BoxDecoration(
-                      color: isBuyerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          isBuyerSelected = true;
-                          isSellerSelected = false;
-                        });
-                      },
-                      child: Text(
-                        'คนซื้อ',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isBuyerSelected ? Colors.white : const Color(0xFFE35205),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // Seller Tab
-                Expanded(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    decoration: BoxDecoration(
-                      color: isSellerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          isBuyerSelected = false;
-                          isSellerSelected = true;
-                        });
-                      },
-                      child: Text(
-                        'คนขาย',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isSellerSelected ? Colors.white : const Color(0xFFE35205),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+          //   child: Row(
+          //     children: [
+          //       // Buyer Tab
+          //       Expanded(
+          //         child: AnimatedContainer(
+          //           duration: const Duration(milliseconds: 300),
+          //           decoration: BoxDecoration(
+          //             color: isBuyerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA),
+          //             borderRadius: BorderRadius.circular(8.0),
+          //           ),
+          //           child: TextButton(
+          //             onPressed: () {
+          //               setState(() {
+          //                 isBuyerSelected = true;
+          //               });
+          //             },
+          //             child: Text(
+          //               'คนซื้อ',
+          //               style: TextStyle(
+          //                 fontSize: 16,
+          //                 color: isBuyerSelected ? Colors.white : const Color(0xFFE35205),
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //       const SizedBox(width: 8),
+          //       // Seller Tab
+          //       Expanded(
+          //         child: AnimatedContainer(
+          //           duration: const Duration(milliseconds: 300),
+          //           decoration: BoxDecoration(
+          //             color: isBuyerSelected ? const Color(0xFFFCEEEA) : const Color(0xFFE35205),
+          //             borderRadius: BorderRadius.circular(8.0),
+          //           ),
+          //           child: TextButton(
+          //             onPressed: () {
+          //               setState(() {
+          //                 isBuyerSelected = false;
+          //               });
+          //             },
+          //             child: Text(
+          //               'คนขาย',
+          //               style: TextStyle(
+          //                 fontSize: 16,
+          //                 color: isBuyerSelected ? const Color(0xFFE35205) : Colors.white,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           // Grid and History Buttons
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
