@@ -18,15 +18,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String role = '';
 
-  String pic = '-';
-  String hideEmail = '-';
-  String hidePhone = '-';
-  String studentID = '-';
-  String name = '-';
-  String faculty = '-';
-  String department = '-';
-  String classyear = '-';
-  String address = '-';
+  String pic = '';
+  String hideEmail = '';
+  String hidePhone = '';
+  String studentID = '';
+  String name = '';
+  String faculty = '';
+  String department = '';
+  String classyear = '';
+  String address = '';
   Future<void> getDataUser() async {
     // showDialog(
     //   context: context,

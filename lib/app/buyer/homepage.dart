@@ -132,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
                                 'สินค้าเเนะนำ',
@@ -208,24 +209,34 @@ class _HomePageState extends State<HomePage> {
                                   )
                                 : const Center(child: Text('ไม่พบสินค้า')),
                         const SizedBox(height: 24),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(
+                              const Text(
                                 'โพสต์',
                                 style: TextStyle(
                                   fontSize: 17, // ขนาดฟอนต์
                                   fontWeight: FontWeight.bold, // หนา
                                 ),
                               ),
-                              Text(
-                                'ทั้งหมด',
-                                style: TextStyle(
-                                  fontSize: 12, // ขนาดฟอนต์
-                                  fontWeight: FontWeight.bold, // หนา
-                                  color: Color(0xFFFA5A2A),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/allpost',
+                                  );
+                                  print('click card');
+                                },
+                                child: const Text(
+                                  'ทั้งหมด',
+                                  style: TextStyle(
+                                    fontSize: 12, // ขนาดฟอนต์
+                                    fontWeight: FontWeight.bold, // หนา
+                                    color: Color(0xFFFA5A2A),
+                                  ),
                                 ),
                               ),
                             ],
@@ -311,15 +322,11 @@ class _HomePageState extends State<HomePage> {
   Widget productCard(Product data, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (data != null) {
-          Navigator.pushNamed(
-            context,
-            '/productdetail',
-            arguments: data,
-          );
-        } else {
-          print('Error: Product data is null');
-        }
+        Navigator.pushNamed(
+          context,
+          '/productdetail/${data.id}',
+        );
+        print('click card');
       },
       child: Card(
         color: const Color(0xFFFFFFFF),
@@ -371,6 +378,21 @@ class _HomePageState extends State<HomePage> {
                       },
                     );
                   },
+                  errorWidget: (context, url, error) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth;
+                      return Container(
+                        width: size,
+                        height: size,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

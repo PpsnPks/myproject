@@ -323,99 +323,95 @@ class _CategoryPageState extends State<CategoryPage> {
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: CachedNetworkImage(
-                    imageUrl: data.product_images.isNotEmpty
-                        ? data.product_images[0]
-                        : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                    placeholder: (context, url) => LayoutBuilder(
-                      builder: (context, constraints) {
-                        double size = constraints.maxWidth;
-                        return SizedBox(
-                          width: size,
-                          height: size, // ให้สูงเท่ากับกว้าง
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0XFFE35205),
-                              strokeCap: StrokeCap.round,
-                            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: CachedNetworkImage(
+                imageUrl: data.product_images.isNotEmpty
+                    ? data.product_images[0]
+                    : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                placeholder: (context, url) => LayoutBuilder(
+                  builder: (context, constraints) {
+                    double size = constraints.maxWidth;
+                    return SizedBox(
+                      width: size,
+                      height: size, // ให้สูงเท่ากับกว้าง
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0XFFE35205),
+                          strokeCap: StrokeCap.round,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                imageBuilder: (context, ImageProvider) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                      return Container(
+                        width: size,
+                        height: size, // ให้ height เท่ากับ width
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: ImageProvider,
+                            fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
                           ),
-                        );
-                      },
-                    ),
-                    imageBuilder: (context, ImageProvider) {
-                      return LayoutBuilder(
-                        builder: (context, constraints) {
-                          double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
-                          return Container(
-                            width: size,
-                            height: size, // ให้ height เท่ากับ width
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: ImageProvider,
-                                fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
-                              ),
-                            ),
-                          );
-                        },
+                        ),
                       );
                     },
-                    errorWidget: (context, url, error) => LayoutBuilder(
-                      builder: (context, constraints) {
-                        double size = constraints.maxWidth;
-                        return Container(
-                          width: size,
-                          height: size,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  );
+                },
+                errorWidget: (context, url, error) => LayoutBuilder(
+                  builder: (context, constraints) {
+                    double size = constraints.maxWidth;
+                    return Container(
+                      width: size,
+                      height: size,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  data.product_name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              data.product_name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 5),
+            Text(
+              'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFFA5A9B6),
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+            ),
+            const SizedBox(height: 5),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                '${data.product_price} ฿',
+                style: const TextStyle(
+                  color: Colors.orange,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFFA5A9B6),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 5),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    '${data.product_price} ฿',
-                    style: const TextStyle(
-                      color: Colors.orange,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
