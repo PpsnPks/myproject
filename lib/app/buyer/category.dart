@@ -26,12 +26,61 @@ class _CategoryPageState extends State<CategoryPage> {
   bool hasMore = true;
   bool hasError = false;
   String searchText = "";
+  String sortPrice = "asc";
+  String sortDate = "desc";
+  String productCondition = '';
+  String productType = '';
+
+  int filterIndex = 0;
+
+  resetFilter() {
+    sortPrice = "asc";
+    sortDate = "desc";
+    productCondition = '';
+    productType = '';
+  }
+
+  _loadnew() async {
+    List<Product> newPosts = [];
+    setState(() {
+      products = [];
+      isLoadingMore = true;
+    });
+    Map<String, dynamic> response = await ProductService()
+        .getProductCategory(page, perPage, widget.category, searchText, sortPrice, sortDate, productCondition, productType);
+    if (response['success'] == true) {
+      newPosts = response['data'];
+      print('$page, $perPage, ${widget.category}, $searchText, $sortPrice, $sortDate, $productCondition, $productType');
+      print("11111111111 $newPosts");
+      if (newPosts.isEmpty) {
+        setState(() {
+          isLoadingMore = false;
+          hasMore = false;
+        });
+        return;
+      } else {
+        setState(() {
+          isLoadingMore = false;
+          products = newPosts;
+        });
+        return;
+      }
+    }
+    setState(() {
+      isLoadingMore = false;
+      hasMore = false;
+    });
+    print('lllllllllll  $response');
+    return;
+  }
+
   _loadmore() async {
     List<Product> newPosts = [];
     setState(() {
       isLoadingMore = true;
     });
-    Map<String, dynamic> response = await ProductService().getProductCategory(page, perPage, widget.category, searchText);
+    Map<String, dynamic> response = await ProductService()
+        .getProductCategory(page, perPage, widget.category, searchText, sortPrice, sortDate, productCondition, productType);
     if (response['success'] == true) {
       newPosts = response['data'];
       print("11111111111 $newPosts");
@@ -107,7 +156,18 @@ class _CategoryPageState extends State<CategoryPage> {
                                   'เรียงตามราคา (สูงไปต่ำ)',
                                   style: TextStyle(fontSize: 16, color: Colors.black),
                                 ),
+                                trailing: filterIndex == 1 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 1) {
+                                    filterIndex = 1;
+                                    print('aaa 1');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  sortPrice = "desc";
+                                  _loadnew();
                                   Navigator.pop(context); // ปิด BottomSheet
                                 },
                               ),
@@ -115,15 +175,56 @@ class _CategoryPageState extends State<CategoryPage> {
                               ListTile(
                                 contentPadding: const EdgeInsets.all(0.0),
                                 title: const Text('เรียงตามราคา (ต่ำไปสูง)'),
+                                trailing: filterIndex == 2 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 2) {
+                                    filterIndex = 2;
+                                    print('aaa 2');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  sortPrice = "asc";
+                                  _loadnew();
                                   Navigator.pop(context);
                                 },
                               ),
                               const Divider(height: 0),
                               ListTile(
                                 contentPadding: const EdgeInsets.all(0.0),
-                                title: const Text('เรียงตามวันที่ลงสินค้า'),
+                                title: const Text('เรียงตามวันที่ลงสินค้า (เก่าสุด)'),
+                                trailing: filterIndex == 3 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 3) {
+                                    filterIndex = 3;
+                                    print('aaa 3');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  sortDate = "asc"; //เก่าสุด
+                                  _loadnew();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 0),
+                              ListTile(
+                                contentPadding: const EdgeInsets.all(0.0),
+                                title: const Text('เรียงตามวันที่ลงสินค้า (ล่าสุด)'),
+                                trailing: filterIndex == 4 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
+                                onTap: () {
+                                  if (filterIndex != 4) {
+                                    filterIndex = 4;
+                                    print('aaa 4');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  sortDate = "desc"; //ล่าสุด
+                                  _loadnew();
                                   Navigator.pop(context);
                                 },
                               ),
@@ -131,7 +232,18 @@ class _CategoryPageState extends State<CategoryPage> {
                               ListTile(
                                 contentPadding: const EdgeInsets.all(0.0),
                                 title: const Text('เรียงตามสภาพสินค้า (มือหนึ่ง)'),
+                                trailing: filterIndex == 5 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 5) {
+                                    filterIndex = 5;
+                                    print('aaa 5');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  productCondition = 'มือหนึ่ง';
+                                  _loadnew();
                                   Navigator.pop(context);
                                 },
                               ),
@@ -139,7 +251,18 @@ class _CategoryPageState extends State<CategoryPage> {
                               ListTile(
                                 contentPadding: const EdgeInsets.all(0.0),
                                 title: const Text('เรียงตามสภาพสินค้า (มือสอง)'),
+                                trailing: filterIndex == 6 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 6) {
+                                    filterIndex = 6;
+                                    print('aaa 6');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  productCondition = 'มือสอง';
+                                  _loadnew();
                                   Navigator.pop(context);
                                 },
                               ),
@@ -147,7 +270,18 @@ class _CategoryPageState extends State<CategoryPage> {
                               ListTile(
                                 contentPadding: const EdgeInsets.all(0.0),
                                 title: const Text('เรียงตามประเภทสินค้า (ขาย)'),
+                                trailing: filterIndex == 7 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 7) {
+                                    filterIndex = 7;
+                                    print('aaa 7');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  productType = 'sell';
+                                  _loadnew();
                                   Navigator.pop(context);
                                 },
                               ),
@@ -155,7 +289,18 @@ class _CategoryPageState extends State<CategoryPage> {
                               ListTile(
                                 contentPadding: const EdgeInsets.all(0.0),
                                 title: const Text('เรียงตามประเภทสินค้า (แจก)'),
+                                trailing: filterIndex == 8 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 8) {
+                                    filterIndex = 8;
+                                    print('aaa 8');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  productType = 'free';
+                                  _loadnew();
                                   Navigator.pop(context);
                                 },
                               ),
@@ -163,7 +308,18 @@ class _CategoryPageState extends State<CategoryPage> {
                               ListTile(
                                 contentPadding: const EdgeInsets.all(0.0),
                                 title: const Text('เรียงตามประเภทสินค้า (พรีออเดอร์)'),
+                                trailing: filterIndex == 9 ? const Icon(Icons.check_circle, color: Colors.green) : const Text(''),
                                 onTap: () {
+                                  if (filterIndex != 9) {
+                                    filterIndex = 9;
+                                    print('aaa 9');
+                                  } else {
+                                    filterIndex = 0;
+                                    print('aaa 0');
+                                  }
+                                  resetFilter();
+                                  productType = 'preorder';
+                                  _loadnew();
                                   Navigator.pop(context);
                                 },
                               ),
@@ -364,6 +520,21 @@ class _CategoryPageState extends State<CategoryPage> {
                     },
                   );
                 },
+                errorWidget: (context, url, error) => LayoutBuilder(
+                  builder: (context, constraints) {
+                    double size = constraints.maxWidth;
+                    return Container(
+                      width: size,
+                      height: size,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -413,8 +584,7 @@ class _CategoryPageState extends State<CategoryPage> {
           onSubmitted: (value) {
             setState(() {
               searchText = value;
-              products = [];
-              _loadmore();
+              _loadnew();
             });
           },
           decoration: InputDecoration(

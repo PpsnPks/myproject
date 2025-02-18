@@ -167,7 +167,8 @@ class ProductService {
     }
   }
 
-  Future<Map<String, dynamic>> getProductCategory(int page, int length, String category, String search) async {
+  Future<Map<String, dynamic>> getProductCategory(int page, int length, String category, String search, String sortPrice, String sortDate,
+      String productCondition, String productType) async {
     const url = "${Environment.baseUrl}/getproducts";
     try {
       // ดึง accessToken จาก AuthService
@@ -193,15 +194,15 @@ class ProductService {
         "draw": 1,
         "columns": [],
         "order": [
-          {"column": 0, "dir": "desc"}
+          {"column": 0, "dir": sortDate}
         ],
         "start": (page - 1) * length,
         "length": length,
         "search": {"value": search, "regex": false},
-        "product_type": "",
+        "product_type": productType,
         "product_category": category, //category
-        "product_condition": "",
-        "price_order": "asc",
+        "product_condition": productCondition,
+        "price_order": sortPrice, // "asc"  "desc"
         "status": ""
       };
 
@@ -481,6 +482,121 @@ class ProductService {
   }
 }
 
+class CartService {
+  Future<Map<String, dynamic>> getCartBuyer() async {
+    try {
+      // ดึง accessToken จาก AuthService
+      String? accessToken = await AuthService().getAccessToken();
+      String userId = await Securestorage().readSecureData('userId');
+      String url = "${Environment.baseUrl}/dealsid/$userId";
+
+      if (accessToken == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
+      }
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Get Request
+      final response = await http.get(Uri.parse(url), headers: headers);
+      print('qqq ${response.statusCode}');
+
+      // ตรวจสอบสถานะของ Response
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        print('qqq1 $decodedResponse');
+        if (decodedResponse != null) {
+          print('qqq2.1');
+          List<Product> data = (decodedResponse as List).map((postJson) => Product.fromJson(postJson['product'])).toList();
+          List<Seller> dataS = (decodedResponse).map((postJson) => Seller.fromJson(postJson['product']['seller'])).toList();
+          return {"success": true, "data": data, "dataS": dataS};
+        } else {
+          print('qqq2.2');
+
+          return {"success": false, "message": "status code: ${response.statusCode}"};
+        }
+      } else {
+        print('qqq2.3');
+
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
+      print('qqq2.4');
+
+      return {
+        "success": false,
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> getCartSeller() async {
+    try {
+      // ดึง accessToken จาก AuthService
+      String? accessToken = await AuthService().getAccessToken();
+      String userId = await Securestorage().readSecureData('userId');
+      String url = "${Environment.baseUrl}/dealsellerid/$userId";
+
+      if (accessToken == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
+      }
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Get Request
+      final response = await http.get(Uri.parse(url), headers: headers);
+      print('qqq ${response.statusCode}');
+
+      // ตรวจสอบสถานะของ Response
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        print('qqq1 $decodedResponse');
+        if (decodedResponse != null) {
+          print('qqq2.1');
+          List<Deal> data = (decodedResponse as List).map((postJson) => Deal.fromJson(postJson)).toList();
+          return {"success": true, "data": data};
+        } else {
+          print('qqq2.2');
+
+          return {"success": false, "message": "status code: ${response.statusCode}"};
+        }
+      } else {
+        print('qqq2.3');
+
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
+      print('qqq2.4');
+
+      return {
+        "success": false,
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+      };
+    }
+  }
+}
+
 class Product {
   final String id;
   final String product_name;
@@ -555,6 +671,225 @@ class Product {
       product_defect: data['product_defect'] ?? "",
       product_years: data['product_years'] ?? "",
       tag: data['tag'] ?? "",
+    );
+  }
+}
+
+class Deal {
+  final String deal_id;
+  final String deal_qty;
+  final String deal_date;
+  final String deal_status;
+  // final String deal_bill;
+
+  final String product_id;
+  final String product_name;
+  final List<dynamic> product_images;
+  final String product_qty;
+  final String product_price;
+  final String product_description;
+  final String product_category;
+  final String product_type;
+  final String product_seller_id;
+  final String product_date_exp;
+  final String product_location;
+  final String product_condition;
+  final String product_defect;
+  final String product_years;
+  final String product_tag;
+
+  final String seller_user_id;
+  final String seller_name;
+  final String seller_pic;
+  final String seller_email;
+  final String seller_mobile;
+  final String seller_address;
+  final String seller_faculty;
+  final String seller_department;
+  final String seller_classyear;
+  final String seller_status;
+
+  final String buyer_user_id;
+  final String buyer_name;
+  final String buyer_pic;
+  final String buyer_email;
+  final String buyer_mobile;
+  final String buyer_address;
+  final String buyer_faculty;
+  final String buyer_department;
+  final String buyer_classyear;
+  final String buyer_status;
+
+  Deal({
+    required this.deal_id,
+    required this.deal_qty,
+    required this.deal_date,
+    required this.deal_status,
+    // required this.deal_bill,
+    required this.buyer_user_id,
+    required this.buyer_name,
+    required this.buyer_pic,
+    required this.buyer_email,
+    required this.buyer_mobile,
+    required this.buyer_address,
+    required this.buyer_faculty,
+    required this.buyer_department,
+    required this.buyer_classyear,
+    required this.buyer_status,
+    required this.seller_user_id,
+    required this.seller_name,
+    required this.seller_pic,
+    required this.seller_email,
+    required this.seller_mobile,
+    required this.seller_address,
+    required this.seller_faculty,
+    required this.seller_department,
+    required this.seller_classyear,
+    required this.seller_status,
+    required this.product_id,
+    required this.product_name,
+    required this.product_images,
+    required this.product_qty,
+    required this.product_price,
+    required this.product_description,
+    required this.product_category,
+    required this.product_type,
+    required this.product_seller_id,
+    required this.product_date_exp,
+    required this.product_location,
+    required this.product_condition,
+    required this.product_defect,
+    required this.product_years,
+    required this.product_tag,
+  });
+
+  factory Deal.fromJson(Map<String, dynamic> data) {
+    return Deal(
+      deal_id: data['id']?.toString() ?? "",
+      deal_qty: data['qty']?.toString() ?? "",
+      deal_date: data['deal_date'],
+      deal_status: data['status'],
+      // deal_bill: data['id'],
+
+      buyer_user_id: data['buyer']['user_id']?.toString() ?? "",
+      buyer_name: data['buyer']['name'],
+      buyer_pic: '${Environment.imgUrl}/${data['buyer']['pic']}',
+      buyer_email: data['buyer']['email'],
+      buyer_mobile: data['buyer']['mobile'],
+      buyer_address: data['buyer']['address'],
+      buyer_faculty: data['buyer']['faculty'],
+      buyer_department: data['buyer']['department'],
+      buyer_classyear: data['buyer']['classyear'],
+      buyer_status: data['buyer']['status'] ?? 'qqq',
+
+      product_id: data['product']['id']?.toString() ?? "",
+      product_name: data['product']['product_name'] ?? "",
+      product_images: (data['product']['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
+      product_qty: data['product']['product_qty'].toString(),
+      product_price: data['product']['product_price'] ?? "",
+      product_description: data['product']['product_description'] ?? "",
+      product_category: data['product']['product_category'] ?? "",
+      product_type: data['product']['product_type'] ?? "",
+      product_seller_id: data['product']['seller_id'].toString(),
+      product_date_exp: data['product']['date_exp'] ?? "",
+      product_location: data['product']['product_location'] ?? "",
+      product_condition: data['product']['product_condition'] ?? "",
+      product_defect: data['product']['product_defect'] ?? "",
+      product_years: data['product']['product_years'] ?? "",
+      product_tag: data['product']['tag'] ?? "",
+      seller_user_id: data['product']['seller']['user_id']?.toString() ?? "",
+      seller_name: data['product']['seller']['name'],
+      seller_pic: '${Environment.imgUrl}/${data['product']['seller']['pic']}',
+      seller_email: data['product']['seller']['email'],
+      seller_mobile: data['product']['seller']['mobile'],
+      seller_address: data['product']['seller']['address'],
+      seller_faculty: data['product']['seller']['faculty'],
+      seller_department: data['product']['seller']['department'],
+      seller_classyear: data['product']['seller']['classyear'],
+      seller_status: data['product']['seller']['status'] ?? 'qqq',
+    );
+  }
+}
+
+class Buyer {
+  final String user_id;
+  final String name;
+  final String pic;
+  final String email;
+  final String mobile;
+  final String address;
+  final String faculty;
+  final String department;
+  final String classyear;
+  final String status;
+
+  Buyer({
+    required this.user_id,
+    required this.name,
+    required this.pic,
+    required this.email,
+    required this.mobile,
+    required this.address,
+    required this.faculty,
+    required this.department,
+    required this.classyear,
+    required this.status,
+  });
+
+  factory Buyer.fromJson(Map<String, dynamic> data) {
+    return Buyer(
+      user_id: data['user_id']?.toString() ?? "",
+      name: data['name'],
+      pic: '${Environment.imgUrl}/${data['pic']}',
+      email: data['email'],
+      mobile: data['mobile'],
+      address: data['address'],
+      faculty: data['faculty'],
+      department: data['department'],
+      classyear: data['classyear'],
+      status: data['status'] ?? 'qqq',
+    );
+  }
+}
+
+class Seller {
+  final String user_id;
+  final String name;
+  final String pic;
+  final String email;
+  final String mobile;
+  final String address;
+  final String faculty;
+  final String department;
+  final String classyear;
+  final String status;
+
+  Seller({
+    required this.user_id,
+    required this.name,
+    required this.pic,
+    required this.email,
+    required this.mobile,
+    required this.address,
+    required this.faculty,
+    required this.department,
+    required this.classyear,
+    required this.status,
+  });
+
+  factory Seller.fromJson(Map<String, dynamic> data) {
+    print('qqq2 $data');
+    return Seller(
+      user_id: data['user_id']?.toString() ?? "",
+      name: data['name'],
+      pic: '${Environment.imgUrl}/${data['pic']}',
+      email: data['email'],
+      mobile: data['mobile'],
+      address: data['address'],
+      faculty: data['faculty'],
+      department: data['department'],
+      classyear: data['classyear'],
+      status: data['status'] ?? 'qqq',
     );
   }
 }

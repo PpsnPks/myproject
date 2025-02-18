@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart';
-import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class PostPage extends StatefulWidget {
-  const PostPage({super.key});
+class AllPostPage extends StatefulWidget {
+  const AllPostPage({super.key});
 
   @override
-  State<PostPage> createState() => _PostPageState();
+  State<AllPostPage> createState() => _AllPostPageState();
 }
 
-class _PostPageState extends State<PostPage> {
+class _AllPostPageState extends State<AllPostPage> {
   List<Post> posts = [];
   final scrollController = ScrollController();
   int page = 1;
@@ -50,9 +49,10 @@ class _PostPageState extends State<PostPage> {
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     scrollController.addListener(_scorollListener);
-    _loadmore(); // ดึงข้อมูลจาก API
+    _loadmore();
   }
 
   @override
@@ -60,7 +60,7 @@ class _PostPageState extends State<PostPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("โพสต์"),
+        title: const Text("โพสต์ทั้งหมด"),
         centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -313,7 +313,6 @@ class _PostPageState extends State<PostPage> {
         backgroundColor: const Color(0xFFFA5A2A),
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      bottomNavigationBar: sellerFooter(context, 'post'),
     );
   }
 

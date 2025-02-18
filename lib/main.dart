@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/app/buyer/allpostpage.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
 import 'package:myproject/app/main/formPage.dart';
@@ -43,8 +44,7 @@ void main() {
             productId: id,
           ),
         );
-      }
-      else if (settings.name!.startsWith('/productdetail/')) {
+      } else if (settings.name!.startsWith('/productdetail/')) {
         final id = settings.name!.split('/').last; // ดึง id จาก URL
         // final product = settings.arguments;
         return SlidePageRoute(
@@ -52,8 +52,7 @@ void main() {
             productId: id,
           ),
         );
-      }
-      else if (settings.name!.startsWith('/postdetail/')) {
+      } else if (settings.name!.startsWith('/postdetail/')) {
         final id = settings.name!.split('/').last; // ดึง id จาก URL
         // final product = settings.arguments;
         return SlidePageRoute(
@@ -63,7 +62,6 @@ void main() {
         );
       }
       return null;
-      
     },
     initialRoute: '/',
     routes: {
@@ -98,6 +96,7 @@ void main() {
       '/infoform': (context) => const PersonalInfoForm(),
       '/infoprofile': (context) => const InfoProfile(),
       '/viewprofile': (context) => const ViewProfilePage(),
+      '/allpost': (context) => const AllPostPage(),
     },
   ));
 }

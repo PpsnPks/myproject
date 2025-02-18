@@ -12,18 +12,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool isBuyerSelected = true; // Default to Buyer tab
+  bool isBuyerSelected = false; // Default to Buyer tab
+  bool isSellerSelected = false; // Default to Buyer tab
   bool isGridSelected = true; // Default to Grid view
 
-  String pic = '-';
-  String hideEmail = '-';
-  String hidePhone = '-';
-  String studentID = '-';
-  String name = '-';
-  String faculty = '-';
-  String department = '-';
-  String classyear = '-';
-  String address = '-';
+  String role = '';
+
+  String pic = '';
+  String hideEmail = '';
+  String hidePhone = '';
+  String studentID = '';
+  String name = '';
+  String faculty = '';
+  String department = '';
+  String classyear = '';
+  String address = '';
   Future<void> getDataUser() async {
     // showDialog(
     //   context: context,
@@ -65,9 +68,25 @@ class _ProfilePageState extends State<ProfilePage> {
     //   }
   }
 
+  void getRole() async {
+    role = await Securestorage().readSecureData('role');
+    if (role == 'buy') {
+      setState(() {
+        isBuyerSelected = true;
+        isSellerSelected = false;
+      });
+    } else if (role == 'sell') {
+      setState(() {
+        isBuyerSelected = false;
+        isSellerSelected = true;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState(); // กำหนดค่าเริ่มต้นให้ userData เป็น Future ที่ว่าง
+    getRole();
     getDataUser();
   }
 
@@ -113,7 +132,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         title: const Text('ออกจากระบบ'),
                         onTap: () {
                           // Handle logout action
-                          Navigator.pop(context, '/login'); // Close the bottom sheet
+                          Navigator.pop(context); // Close the bottom sheet
+                          Securestorage().deleteAllSecureData();
+                          Navigator.pushReplacementNamed(context, '/login');
                           // Add your logout logic here
                         },
                       ),
@@ -186,6 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: () {
                         setState(() {
                           isBuyerSelected = true;
+                          isSellerSelected = false;
                         });
                       },
                       child: Text(
@@ -204,20 +226,21 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     decoration: BoxDecoration(
-                      color: isBuyerSelected ? const Color(0xFFFCEEEA) : const Color(0xFFE35205),
+                      color: isSellerSelected ? const Color(0xFFE35205) : const Color(0xFFFCEEEA),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextButton(
                       onPressed: () {
                         setState(() {
                           isBuyerSelected = false;
+                          isSellerSelected = true;
                         });
                       },
                       child: Text(
                         'คนขาย',
                         style: TextStyle(
                           fontSize: 16,
-                          color: isBuyerSelected ? const Color(0xFFE35205) : Colors.white,
+                          color: isSellerSelected ? Colors.white : const Color(0xFFE35205),
                         ),
                       ),
                     ),

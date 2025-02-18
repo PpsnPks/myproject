@@ -128,10 +128,11 @@ class _AddProductPageState extends State<AddProductPage> {
 
   getDropdown() async {
     var datacategory = await Dropdownservice().getCategory();
+    print('category $datacategory');
+
     setState(() {
       category = datacategory;
     });
-    print('category $category');
   }
 
   @override
@@ -216,6 +217,7 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("เพิ่ม"),
         centerTitle: true,

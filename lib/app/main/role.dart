@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/app/main/secureStorage.dart';
 
 class RolePage extends StatelessWidget {
   const RolePage({super.key});
@@ -37,7 +38,8 @@ class RolePage extends StatelessWidget {
                   SizedBox(
                     width: 150,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'buy');
                         Navigator.of(context).pushNamed('/home');
                       },
                       style: ElevatedButton.styleFrom(
@@ -56,7 +58,8 @@ class RolePage extends StatelessWidget {
                   SizedBox(
                     width: 150,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'sell');
                         Navigator.of(context).pushNamed('/post');
                       },
                       style: ElevatedButton.styleFrom(

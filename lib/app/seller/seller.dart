@@ -251,6 +251,21 @@ Widget productCardSeller(Product data) {
                   },
                 );
               },
+              errorWidget: (context, url, error) => LayoutBuilder(
+                builder: (context, constraints) {
+                  double size = constraints.maxWidth;
+                  return Container(
+                    width: size,
+                    height: size,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           const SizedBox(height: 10),

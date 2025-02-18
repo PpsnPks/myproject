@@ -132,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
                                 'สินค้าเเนะนำ',
@@ -208,24 +209,34 @@ class _HomePageState extends State<HomePage> {
                                   )
                                 : const Center(child: Text('ไม่พบสินค้า')),
                         const SizedBox(height: 24),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(
+                              const Text(
                                 'โพสต์',
                                 style: TextStyle(
                                   fontSize: 17, // ขนาดฟอนต์
                                   fontWeight: FontWeight.bold, // หนา
                                 ),
                               ),
-                              Text(
-                                'ทั้งหมด',
-                                style: TextStyle(
-                                  fontSize: 12, // ขนาดฟอนต์
-                                  fontWeight: FontWeight.bold, // หนา
-                                  color: Color(0xFFFA5A2A),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/allpost',
+                                  );
+                                  print('click card');
+                                },
+                                child: const Text(
+                                  'ทั้งหมด',
+                                  style: TextStyle(
+                                    fontSize: 12, // ขนาดฟอนต์
+                                    fontWeight: FontWeight.bold, // หนา
+                                    color: Color(0xFFFA5A2A),
+                                  ),
                                 ),
                               ),
                             ],
@@ -308,227 +319,259 @@ class _HomePageState extends State<HomePage> {
     print(a);
   }
 
-Widget productCard(Product data, BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-        Navigator.pop(context); // ปิด BottomSheet
+  Widget productCard(Product data, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
         Navigator.pushNamed(
           context,
           '/productdetail/${data.id}',
         );
+        print('click card');
       },
-    child: Card(
-      color: const Color(0xFFFFFFFF),
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
-                imageUrl: data.product_images.isNotEmpty
-                    ? data.product_images[0]
-                    : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                placeholder: (context, url) => LayoutBuilder(
-                  builder: (context, constraints) {
-                    double size = constraints.maxWidth;
-                    return SizedBox(
-                      width: size,
-                      height: size,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0XFFE35205),
-                          strokeCap: StrokeCap.round,
+      child: Card(
+        color: const Color(0xFFFFFFFF),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: data.product_images.isNotEmpty
+                      ? data.product_images[0]
+                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                  placeholder: (context, url) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth;
+                      return SizedBox(
+                        width: size,
+                        height: size,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0XFFE35205),
+                            strokeCap: StrokeCap.round,
+                          ),
                         ),
-                      ),
+                      );
+                    },
+                  ),
+                  imageBuilder: (context, ImageProvider) {
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        double size = constraints.maxWidth;
+                        return Container(
+                          width: size,
+                          height: size,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: ImageProvider,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
-                ),
-                imageBuilder: (context, ImageProvider) {
-                  return LayoutBuilder(
+                  errorWidget: (context, url, error) => LayoutBuilder(
                     builder: (context, constraints) {
                       double size = constraints.maxWidth;
                       return Container(
                         width: size,
                         height: size,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: ImageProvider,
+                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
                             fit: BoxFit.fill,
                           ),
                         ),
                       );
                     },
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              data.product_name,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 5),
-            Text(
-              'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xFFA5A9B6),
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-            ),
-            const SizedBox(height: 5),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                '${data.product_price} ฿',
-                style: const TextStyle(
-                  color: Color(0XFFE35205),
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                data.product_name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFFA5A9B6),
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              ),
+              const SizedBox(height: 5),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  '${data.product_price} ฿',
+                  style: const TextStyle(
+                    color: Colors.orange,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget postCard(Post data, BuildContext context) {
     return GestureDetector(
-    onTap: () {
-        Navigator.pop(context); // ปิด BottomSheet
-        Navigator.pushNamed(
-          context,
-          '/postdetail/${data.id}',
-        );
-      },
-    child: Card(
-      elevation: 0,
-      color: Colors.white,
-      // margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(data.profile),
+        onTap: () {
+          Navigator.pop(context); // ปิด BottomSheet
+          Navigator.pushNamed(
+            context,
+            '/postdetail/${data.id}',
+          );
+        },
+        child: Card(
+          elevation: 0,
+          color: Colors.white,
+          // margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(data.profile),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          data.faculty,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Column(
+              ),
+              // Section: Post Title
+              Padding(
+                padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      data.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      data.detail,
+                      maxLines: 3,
+                      style:
+                          const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
                     ),
-                    const SizedBox(height: 1),
+                    const SizedBox(height: 4),
                     Text(
-                      data.faculty,
+                      data.tags,
                       style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey,
+                        fontSize: 10,
+                        color: Color(0xFFFA5A2A),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          // Section: Post Title
-          Padding(
-            padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  data.detail,
-                  maxLines: 3,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  data.tags,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFFFA5A2A),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Section: Image
-          if (data.imageUrl.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
-                    width: 2.0, // กำหนดความหนาของขอบ
-                  ),
-                  borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: data.imageUrl,
-                  placeholder: (context, url) => const SizedBox(
-                    width: double.infinity,
-                    height: 360,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0XFFE35205),
-                        strokeCap: StrokeCap.round,
-                        // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+              ),
+              // Section: Image
+              if (data.imageUrl.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
+                        width: 2.0, // กำหนดความหนาของขอบ
+                      ),
+                      borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(22.0),
+                      child: CachedNetworkImage(
+                        imageUrl: data.imageUrl,
+                        placeholder: (context, url) => const SizedBox(
+                          width: double.infinity,
+                          height: 360,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0XFFE35205),
+                              strokeCap: StrokeCap.round,
+                              // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+                            ),
+                          ),
+                        ),
+                        imageBuilder: (context, ImageProvider) {
+                          return Container(
+                            width: double.infinity,
+                            height: 360,
+                            decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
+                          );
+                        },
+                        errorWidget: (context, url, error) => LayoutBuilder(
+                          builder: (context, constraints) {
+                            double size = constraints.maxWidth;
+                            return Container(
+                              width: size,
+                              height: size,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
-                  imageBuilder: (context, ImageProvider) {
-                    return Container(
-                      width: double.infinity,
-                      height: 360,
-                      decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
-                    );
-                  },
                 ),
-              ),
-            ),
-          Padding(
-              padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
-              child: IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(
-                    Icons.chat_outlined,
-                    color: Color(0xFFA5A9B6),
-                  ))),
-        ],
-      ),
-     )
-    );
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+                  child: IconButton(
+                      onPressed: () => {},
+                      icon: const Icon(
+                        Icons.chat_outlined,
+                        color: Color(0xFFA5A9B6),
+                      ))),
+            ],
+          ),
+        ));
   }
 
   Widget searchInputField() {
