@@ -167,7 +167,8 @@ class ProductService {
     }
   }
 
-  Future<Map<String, dynamic>> getProductCategory(int page, int length, String category, String search) async {
+  Future<Map<String, dynamic>> getProductCategory(int page, int length, String category, String search, String sortPrice, String sortDate,
+      String productCondition, String productType) async {
     const url = "${Environment.baseUrl}/getproducts";
     try {
       // ดึง accessToken จาก AuthService
@@ -193,15 +194,15 @@ class ProductService {
         "draw": 1,
         "columns": [],
         "order": [
-          {"column": 0, "dir": "desc"}
+          {"column": 0, "dir": sortDate}
         ],
         "start": (page - 1) * length,
         "length": length,
         "search": {"value": search, "regex": false},
-        "product_type": "",
+        "product_type": productType,
         "product_category": category, //category
-        "product_condition": "",
-        "price_order": "asc",
+        "product_condition": productCondition,
+        "price_order": sortPrice, // "asc"  "desc"
         "status": ""
       };
 
