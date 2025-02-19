@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         loadingProduct = true;
       });
-      final response = await ProductService().getProduct(1, 4); // เรียก API
+      final response = await ProductService().getProduct(1, 10); // เรียก API
       if (response['success']) {
         setState(() {
           loadingProduct = false;
@@ -141,14 +141,14 @@ class _HomePageState extends State<HomePage> {
                                   fontWeight: FontWeight.bold, // หนา
                                 ),
                               ),
-                              Text(
-                                'ทั้งหมด',
-                                style: TextStyle(
-                                  fontSize: 12, // ขนาดฟอนต์
-                                  fontWeight: FontWeight.bold, // หนา
-                                  color: Color(0xFFFA5A2A),
-                                ),
-                              ),
+                              // Text(
+                              //   'ทั้งหมด',
+                              //   style: TextStyle(
+                              //     fontSize: 12, // ขนาดฟอนต์
+                              //     fontWeight: FontWeight.bold, // หนา
+                              //     color: Color(0xFFFA5A2A),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -421,7 +421,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text(
                   '${data.product_price} ฿',
                   style: const TextStyle(
-                    color: Colors.orange,
+                    color: Color(0XFFE35205),
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),

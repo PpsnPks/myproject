@@ -125,6 +125,65 @@ class PostService {
       };
     }
   }
+
+  Future<Map<String, dynamic>> getPostUser(int userId) async {
+  String url = "${Environment.baseUrl}/postsid/$userId"; // URL ที่ต้องการ
+
+  try {
+    // ดึง accessToken จาก AuthService
+    AuthService authService = AuthService();
+    String? accessToken = await authService.getAccessToken();
+
+    if (accessToken == null) {
+      return {
+        "success": false,
+        "message": "Access token is missing.",
+      };
+    }
+
+    // Header
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $accessToken',
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    };
+
+    // ทำการ GET Request
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    // ตรวจสอบสถานะของ Response
+    if (response.statusCode == 200 && response.body.isNotEmpty) {
+      final responseBody = jsonDecode(response.body);
+
+      if (responseBody['data'] != null && responseBody['data']['data'] is List) {
+        List<Post> data = (responseBody['data']['data'] as List)
+            .cast<Map<String, dynamic>>() // ป้องกัน TypeError
+            .map((postJson) => Post.fromJson(postJson))
+            .toList();
+
+        return {
+          "success": true,
+          "data": data,
+        };
+      } else {
+        return {
+          "success": false,
+          "message": "No posts found.",
+        };
+      }
+    } else {
+      return {
+        "success": false,
+        "message": "Error ${response.statusCode}: ${response.body}",
+      };
+    }
+  } catch (e) {
+    return {
+      "success": false,
+      "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ: $e",
+    };
+  }
+}
 }
 
 class Post {

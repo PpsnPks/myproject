@@ -111,8 +111,6 @@ class _CategoryPageState extends State<CategoryPage> {
     super.initState();
     scrollController.addListener(_scorollListener);
     _loadmore(); // ดึงข้อมูลจาก API
-    // เรียก LikeService เพื่อดึงข้อมูลสินค้าที่ถูกใจ
-    // likedProducts = Categoryservice().getCategoryProducts();
   }
 
   @override
@@ -470,7 +468,15 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   Widget productCard(Product data) {
-    return Card(
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/productdetail/${data.id}',
+        );
+        print('click card');
+      },
+      child: Card(
       color: const Color(0xFFFFFFFF),
       shape: RoundedRectangleBorder(
         side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
@@ -563,7 +569,7 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Text(
                 '${data.product_price} ฿',
                 style: const TextStyle(
-                  color: Colors.orange,
+                  color: Color(0XFFE35205),
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
@@ -572,6 +578,7 @@ class _CategoryPageState extends State<CategoryPage> {
           ],
         ),
       ),
+    )
     );
   }
 

@@ -112,7 +112,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   width: 12,
                                   height: 12,
                                   decoration: BoxDecoration(
-                                    color: index == currentIndex ? const Color(0xFFFA5A2A) : Colors.grey,
+                                    color: index == currentIndex ? const Color(0XFFE35205) : Colors.grey,
                                     shape: BoxShape.circle,
                                   ),
                                 ),

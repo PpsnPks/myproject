@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/allpostpage.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
+import 'package:myproject/app/main/categoryform.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
 import 'package:myproject/app/main/formPage.dart';
 import 'package:myproject/app/main/infoprofile.dart';
@@ -10,15 +11,16 @@ import 'package:myproject/app/main/postdetailpage.dart';
 import 'package:myproject/app/main/productdetailpage.dart';
 import 'package:myproject/app/main/register.dart';
 import 'package:myproject/app/main/otp.dart';
+import 'package:myproject/app/main/tagform.dart';
 import 'package:myproject/app/seller/addpostpage.dart';
 import 'package:myproject/app/seller/cartspage.dart';
 import 'package:myproject/app/buyer/category.dart';
-import 'package:myproject/app/buyer/confirm.dart';
+// import 'package:myproject/app/buyer/confirm.dart';
 import 'package:myproject/app/buyer/homepage.dart';
 import 'package:myproject/app/buyer/likepage.dart';
 import 'package:myproject/app/main/chatPage.dart';
 import 'package:myproject/app/main/role.dart';
-import 'package:myproject/app/seller/confirm.dart';
+// import 'package:myproject/app/seller/confirm.dart';
 import 'package:myproject/app/seller/editpage.dart';
 import 'package:myproject/app/seller/notification.dart';
 import 'package:myproject/app/seller/postpage.dart';
@@ -70,7 +72,7 @@ void main() {
       '/cart-buyer': (context) => const CartBPage(),
       '/cart-seller': (context) => const CartSPage(),
       '/post': (context) => const PostPage(),
-      '/confirm': (context) => const Confirm(),
+      // '/confirm': (context) => const Confirm(),
       '/category': (context) => const CategoryPage('หมวดหมู่'),
       '/role': (context) => const RolePage(),
       '/seller': (context) => const SellerPage(),
@@ -88,7 +90,7 @@ void main() {
       '/chat': (context) => const Chatpage(),
       '/message': (context) => const Messagepage(),
       '/profile': (context) => const ProfilePage(),
-      '/confirm-seller': (context) => const ConfirmSeller(),
+      // '/confirm-seller': (context) => const ConfirmSeller(),
       '/login': (context) => const LoginPage(),
       '/register': (context) => const RegisterPage(),
       '/forgotpassword': (context) => const ForgotPasswordPage(),
@@ -97,6 +99,8 @@ void main() {
       '/infoprofile': (context) => const InfoProfile(),
       '/viewprofile': (context) => const ViewProfilePage(),
       '/allpost': (context) => const AllPostPage(),
+      '/categoryform' : (context) => const CategoryFormPage(),
+      '/tagform' : (context) => const TagFormPage(selectedCategories: [],),
     },
   ));
 }
