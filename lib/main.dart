@@ -60,6 +60,14 @@ void main() {
             postId: id,
           ),
         );
+      } else if (settings.name!.startsWith('/message/')) {
+        final recieveId = settings.name!.split('/').last; // ดึง id จาก URL
+        // final product = settings.arguments;
+        return SlidePageRoute(
+          page: Messagepage(
+            recieveId: recieveId,
+          ),
+        );
       }
       return null;
     },
@@ -86,7 +94,6 @@ void main() {
       '/others': (context) => const CategoryPage('อื่นๆ'),
       '/noti': (context) => const NotiPage(),
       '/chat': (context) => const Chatpage(),
-      '/message': (context) => const Messagepage(),
       '/profile': (context) => const ProfilePage(),
       '/confirm-seller': (context) => const ConfirmSeller(),
       '/login': (context) => const LoginPage(),

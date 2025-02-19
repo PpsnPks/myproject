@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
-import 'package:image_picker/image_picker.dart'; 
-import 'dart:io';
-import 'package:myproject/Service/messageservice.dart'; 
+import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+// import 'package:myproject/Service/chatservice.dart';
+import 'package:myproject/Service/messageservice.dart';
 
 class Messagepage extends StatefulWidget {
-  const Messagepage({super.key});
+  final String recieveId;
+  const Messagepage({super.key, required this.recieveId});
 
   @override
   State<Messagepage> createState() => _MessagepageState();
@@ -20,12 +21,23 @@ class _MessagepageState extends State<Messagepage> {
   // เพิ่มข้อมูลจำลอง buyer และ seller
   final String buyerId = "buyer_001";
   final String sellerId = "seller_001";
+  List<OldMessage> oldMessage = [];
+  late NewMessage newMessage;
+
+  void getOldMessage() async {
+    oldMessage = await MessageService().getoldMessage(widget.recieveId);
+    for (OldMessage item in oldMessage) {
+      print('${item.message}, sendid: ${item.senderId}, recieveid: ${item.receiverId}');
+    }
+  }
 
   void _sendMessage() async {
     if (_controller.text.isNotEmpty) {
       final messageText = _controller.text;
       final messageTime = DateFormat('HH:mm').format(DateTime.now());
 
+      newMessage = await MessageService().sendChat(widget.recieveId, _controller.text);
+      print(newMessage.message);
       // อัปเดต UI ก่อนส่งข้อมูล
       setState(() {
         _messages.add({
@@ -38,13 +50,53 @@ class _MessagepageState extends State<Messagepage> {
       _controller.clear();
 
       // ส่งข้อมูลไปยัง API
-      await _messageService.sendMessage(
-        buyerId: buyerId,
-        sellerId: sellerId,
-        message: messageText,
-      );
+      // await _messageService.sendMessage(
+      //   buyerId: buyerId,
+      //   sellerId: sellerId,
+      //   message: messageText,
+      // );
     }
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    PusherService().onNewMessage = (data) {
+      print("kkkk $data");
+      // setState(() {
+      //   messages.add(data); // เพิ่มข้อความใหม่เข้าไปใน UI
+      // });
+    };
+
+    PusherService().initPusher(widget.recieveId);
+    getOldMessage();
+  }
+
+  // void _sendMessage() async {
+  //   if (_controller.text.isNotEmpty) {
+  //     final messageText = _controller.text;
+  //     final messageTime = DateFormat('HH:mm').format(DateTime.now());
+
+  //     // อัปเดต UI ก่อนส่งข้อมูล
+  //     setState(() {
+  //       _messages.add({
+  //         'text': messageText,
+  //         'time': messageTime,
+  //         'image': null,
+  //       });
+  //     });
+
+  //     _controller.clear();
+
+  //     // ส่งข้อมูลไปยัง API
+  //     await _messageService.sendMessage(
+  //       buyerId: buyerId,
+  //       sellerId: sellerId,
+  //       message: messageText,
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +134,7 @@ class _MessagepageState extends State<Messagepage> {
                               color: const Color(0xFFE35205),
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                             child: Text(
                               message['text'],
                               style: const TextStyle(
@@ -105,7 +156,7 @@ class _MessagepageState extends State<Messagepage> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.photo),
-                  onPressed: () {}, 
+                  onPressed: () {},
                 ),
                 Expanded(
                   child: TextField(

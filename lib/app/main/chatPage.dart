@@ -10,7 +10,7 @@ class Chatpage extends StatefulWidget {
 }
 
 class _ChatpageState extends State<Chatpage> {
-  late Future<List<Product>> likedProducts;
+  late Future<List<ProductChat>> likedProducts;
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _ChatpageState extends State<Chatpage> {
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: FutureBuilder<List<Product>>(
+      body: FutureBuilder<List<ProductChat>>(
         future: likedProducts,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -82,15 +82,17 @@ class NotificationCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap, // ใช้ GestureDetector สำหรับการกด
       child: Card(
+        color: Colors.white,
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0)),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(100),
                 child: Image.asset(
                   imageUrl,
                   width: 50,

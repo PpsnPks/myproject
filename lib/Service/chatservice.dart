@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/auth_service.dart';
+import 'package:myproject/environment.dart';
 
 class Chatservice {
-  Future<List<Product>> getLikedProducts() async {
+  Future<List<ProductChat>> getLikedProducts() async {
     // จำลองข้อมูล
     await Future.delayed(const Duration(seconds: 1)); // จำลองเวลาโหลดข้อมูล
     return [
-      Product(
+      ProductChat(
         imageUrl: 'assets/images/a.jpg',
         title: '64010724',
         detail: 'พัดลม Xiaomi สภาพดี',
@@ -12,7 +17,7 @@ class Chatservice {
         price: '200',
         category: 'เครื่องใช้ไฟฟ้า',
       ),
-      Product(
+      ProductChat(
         imageUrl: 'assets/images/image1.png',
         title: '64525879',
         detail: 'พัดลม Xiaomi สภาพดี',
@@ -24,7 +29,7 @@ class Chatservice {
   }
 }
 
-class Product {
+class ProductChat {
   final String imageUrl;
   final String title;
   final String detail;
@@ -32,7 +37,7 @@ class Product {
   final String category;
   final String types;
 
-  Product({
+  ProductChat({
     required this.imageUrl,
     required this.title,
     required this.detail,
@@ -41,6 +46,3 @@ class Product {
     required this.types,
   });
 }
-
-
-
