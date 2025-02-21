@@ -22,7 +22,7 @@ Widget sellerFooter(BuildContext context, String selected) {
         _onItemTapped(index, context);
       },
       items: [
-        _buildNavItem(Icons.home_outlined, 'หน้าหลัก', 'post', selected),
+        _buildNavItem(Icons.web_asset_rounded, 'โพสต์', 'post', selected),
         _buildNavItem(Icons.all_inbox_rounded, 'คลัง', 'seller', selected),
         _buildNavItem(Icons.shopping_cart_outlined, 'รายการ', 'cart-seller', selected),
         _buildNavItem(Icons.sms_outlined, 'แชท', 'chat', selected),

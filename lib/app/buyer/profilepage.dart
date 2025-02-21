@@ -161,7 +161,7 @@ Future<void> initData() async {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        leading: const Icon(Icons.person),
+                        leading: const Icon(Icons.person_outline_rounded),
                         title: const Text('ข้อมูลส่วนตัว'),
                         onTap: () {
                           // Handle personal info action
@@ -171,7 +171,53 @@ Future<void> initData() async {
                         },
                       ),
                       ListTile(
-                        leading: const Icon(Icons.exit_to_app),
+                        leading: const Icon(Icons.info_outline_rounded),
+                        title: const Text('เกี่ยวกับ'),
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ListTile(
+                                    leading: const Icon(Icons.info_outline_rounded),
+                                    title: const Text('การใช้งาน'),
+                                    onTap: () {
+                                      // Handle personal info action
+                                      Navigator.pop(context); // Close the bottom sheet
+                                      Navigator.pushNamed(context, '');
+                                      // Navigate to personal information page if needed
+                                    },
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.info_outline_rounded),
+                                    title: const Text('การใช้งาน'),
+                                    onTap: () {
+                                      // Handle personal info action
+                                      Navigator.pop(context); // Close the bottom sheet
+                                      Navigator.pushNamed(context, '');
+                                      // Navigate to personal information page if needed
+                                    },
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.info_outline_rounded),
+                                    title: const Text('การใช้งาน'),
+                                    onTap: () {
+                                      // Handle personal info action
+                                      Navigator.pop(context); // Close the bottom sheet
+                                      Navigator.pushNamed(context, '');
+                                      // Navigate to personal information page if needed
+                                    },
+                                  ),
+                                ]
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.exit_to_app_outlined),
                         title: const Text('ออกจากระบบ'),
                         onTap: () {
                           // Handle logout action
@@ -247,7 +293,8 @@ Future<void> initData() async {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'buy');
                         setState(() {
                           isBuyerSelected = true;
                           isSellerSelected = false;
@@ -273,7 +320,8 @@ Future<void> initData() async {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'sell');
                         setState(() {
                           isBuyerSelected = false;
                           isSellerSelected = true;
@@ -375,61 +423,73 @@ Future<void> initData() async {
       ),
       itemBuilder: (context, index) {
         final post = homePosts[index]; // ดึงโพสต์จาก homePosts
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: CachedNetworkImage(
-                        imageUrl: post.imageUrl,
-                        placeholder: (context, url) => const SizedBox(
-                          width: double.infinity,
-                          height: 360,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0XFFE35205),
-                              strokeCap: StrokeCap.round,
-                              // strokeWidth: 12.0, // ปรับความหนาของวงกลม
-                            ),
-                          ),
-                        ),
-                        imageBuilder: (context, ImageProvider) {
-                          return Container(
-                            width: double.infinity,
-                            height: 360,
-                            decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
-                          );
-                        },
-                        errorWidget: (context, url, error) => LayoutBuilder(
-                          builder: (context, constraints) {
-                            double size = constraints.maxWidth;
-                            return Container(
-                              width: size,
-                              height: size,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            );
-                          },
+        return InkWell(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/postdetail/${post.id}',
+            );
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: CachedNetworkImage(
+                    imageUrl: post.imageUrl,
+                    placeholder: (context, url) => const SizedBox(
+                      width: double.infinity,
+                      height: 64,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0XFFE35205),
+                          strokeCap: StrokeCap.round,
                         ),
                       ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  post.detail, // แสดงชื่อโพสต์
-                  style: const TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
+                    ),
+                    imageBuilder: (context, ImageProvider) {
+                      return Container(
+                        width: double.infinity,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(image: ImageProvider, fit: BoxFit.fill),
+                        ),
+                      );
+                    },
+                    errorWidget: (context, url, error) => LayoutBuilder(
+                      builder: (context, constraints) {
+                        double size = constraints.maxWidth;
+                        return Container(
+                          width: size,
+                          height: size,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/notfound.png"),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    post.detail, // แสดงชื่อโพสต์
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

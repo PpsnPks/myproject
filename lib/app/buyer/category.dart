@@ -125,7 +125,7 @@ class _CategoryPageState extends State<CategoryPage> {
           IconButton(
             padding: const EdgeInsets.all(16.0),
             icon: const Icon(
-              Icons.sort_rounded,
+              Icons.menu,
               color: Color(0xFFA5A9B6),
               size: 30,
             ),
@@ -551,7 +551,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 fontSize: 16,
               ),
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 1,
             ),
             const SizedBox(height: 5),
             Text(
@@ -567,7 +567,7 @@ class _CategoryPageState extends State<CategoryPage> {
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                '${data.product_price} ฿',
+                data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
                 style: const TextStyle(
                   color: Color(0XFFE35205),
                   fontSize: 15,

@@ -4,58 +4,64 @@ import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/auth_service.dart';
 import 'package:myproject/environment.dart';
 
-
 class LikeService {
   Future<Map<String, dynamic>> getLikedProducts() async {
-    try {
-      // ดึง accessToken จาก AuthService
-      String? accessToken = await AuthService().getAccessToken();
-      String userId = await Securestorage().readSecureData('userId');
-      String url = "${Environment.baseUrl}/userslikes/$userId";
+  try {
+    // ดึง accessToken จาก AuthService
+    String? accessToken = await AuthService().getAccessToken();
+    String userId = await Securestorage().readSecureData('userId');
+    String url = "${Environment.baseUrl}/userslikes/$userId";
 
-      if (accessToken == null) {
-        return {
-          "success": false,
-          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
-        };
-      }
-
-      // Header
-      Map<String, String> headers = {
-        'Authorization': 'Bearer $accessToken',
-        "Accept": "application/json",
-        'Content-Type': 'application/json',
-      };
-
-      // Get Request
-      final response = await http.get(Uri.parse(url), headers: headers);
-
-      // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 200) {
-        var decodedResponse = jsonDecode(response.body);
-        print('$decodedResponse');
-        if (decodedResponse != null) {
-          List<ProductLike> data = (decodedResponse as List).map((postJson) => ProductLike.fromJson(postJson['product'])).toList();
-          return {"success": true, "data": data};
-        } else {
-
-          return {"success": false, "message": "status code: ${response.statusCode}"};
-        }
-      } else {
-
-        return {
-          "success": false,
-          "message": 'Error ${response.statusCode} ${response.body}',
-        };
-      }
-    } catch (e) {
-
+    if (accessToken == null) {
       return {
         "success": false,
-        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+        "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
       };
     }
+
+    // Header
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $accessToken',
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    };
+
+    // Get Request
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    // พิมพ์ response body ก่อนที่จะแปลงเป็น JSON
+    print("Response: ${response.body}");
+
+    // ตรวจสอบสถานะของ Response
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+
+      // พิมพ์ค่าที่แปลงแล้วจาก response body
+      print("Decoded Response: $responseBody");
+
+      if (responseBody is List) {
+        List<ProductLike> data = responseBody
+        .cast<Map<String, dynamic>>() // ป้องกัน TypeError
+            .map((postJson) => ProductLike.fromJson(postJson))
+            .toList();
+
+        return {"success": true, "data": data};
+      } else {
+        return {"success": false, "message": "Invalid response format"};
+      }
+    } else {
+      return {
+        "success": false,
+        "message": 'Error ${response.statusCode} ${response.body}',
+      };
+    }
+  } catch (e) {
+    return {
+      "success": false,
+      "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+    };
   }
+}
 
   Future<bool> likeProduct(ProductLike product) async {
     final url = Uri.parse('${Environment.baseUrl}/likes');
@@ -136,7 +142,7 @@ class ProductLike {
     return 'Product('
         'id: $id, '
         'product_name: $product_name, '
-        'product_images: $product_images, ' //${product_images.join(", ")}
+        'product_images: $product_images, ' //${product_images.join(", ")},
         'product_qty: $product_qty, '
         'product_price: $product_price, '
         'product_description: $product_description, '
@@ -153,23 +159,22 @@ class ProductLike {
   }
 
   factory ProductLike.fromJson(Map<String, dynamic> data) {
-    print('qqq2 $data');
-    return ProductLike(
-      id: data['id']?.toString() ?? "",
-      product_name: data['product_name'] ?? "",
-      product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
-      product_qty: data['product_qty'].toString(),
-      product_price: data['product_price'] ?? "",
-      product_description: data['product_description'] ?? "",
-      product_category: data['product_category'] ?? "",
-      product_type: data['product_type'] ?? "",
-      seller_id: data['seller_id'].toString(),
-      date_exp: data['date_exp'] ?? "",
-      product_location: data['product_location'] ?? "",
-      product_condition: data['product_condition'] ?? "",
-      product_defect: data['product_defect'] ?? "",
-      product_years: data['product_years'] ?? "",
-      tag: data['tag'] ?? "",
-    );
-  }
+  return ProductLike(
+    id: data['id']?.toString() ?? "",
+    product_name: data['product_name'] ?? "",
+    product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
+    product_qty: data['product_qty'].toString(),
+    product_price: data['product_price'] ?? "",
+    product_description: data['product_description'] ?? "",
+    product_category: data['product_category'] ?? "",
+    product_type: data['product_type'] ?? "",
+    seller_id: data['seller_id'].toString(),
+    date_exp: data['date_exp'] ?? "",
+    product_location: data['product_location'] ?? "",
+    product_condition: data['product_condition'] ?? "",
+    product_defect: data['product_defect'] ?? "",
+    product_years: data['product_years'] ?? "",
+    tag: data['tag'] ?? "",
+  );
+}
 }

@@ -284,7 +284,7 @@ Widget productCardSeller(Product data, BuildContext context) {
               fontSize: 16,
             ),
             overflow: TextOverflow.ellipsis,
-            maxLines: 2,
+            maxLines: 1,
           ),
           const SizedBox(height: 5),
           Text(
@@ -300,7 +300,7 @@ Widget productCardSeller(Product data, BuildContext context) {
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
-              '${data.product_price} ฿',
+              data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
               style: const TextStyle(
                 color: const Color(0XFFE35205),
                 fontSize: 15,

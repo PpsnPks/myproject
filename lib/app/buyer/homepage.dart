@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -209,86 +209,86 @@ class _HomePageState extends State<HomePage> {
                                   )
                                 : const Center(child: Text('ไม่พบสินค้า')),
                         const SizedBox(height: 24),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const Text(
-                                'โพสต์',
-                                style: TextStyle(
-                                  fontSize: 17, // ขนาดฟอนต์
-                                  fontWeight: FontWeight.bold, // หนา
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/allpost',
-                                  );
-                                  print('click card');
-                                },
-                                child: const Text(
-                                  'ทั้งหมด',
-                                  style: TextStyle(
-                                    fontSize: 12, // ขนาดฟอนต์
-                                    fontWeight: FontWeight.bold, // หนา
-                                    color: Color(0xFFFA5A2A),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดตำแหน่งให้ข้อความอยู่ห่างกัน
+                        //     crossAxisAlignment: CrossAxisAlignment.end,
+                        //     children: [
+                        //       const Text(
+                        //         'โพสต์',
+                        //         style: TextStyle(
+                        //           fontSize: 17, // ขนาดฟอนต์
+                        //           fontWeight: FontWeight.bold, // หนา
+                        //         ),
+                        //       ),
+                        //       GestureDetector(
+                        //         onTap: () {
+                        //           Navigator.pushNamed(
+                        //             context,
+                        //             '/allpost',
+                        //           );
+                        //           print('click card');
+                        //         },
+                        //         child: const Text(
+                        //           'ทั้งหมด',
+                        //           style: TextStyle(
+                        //             fontSize: 12, // ขนาดฟอนต์
+                        //             fontWeight: FontWeight.bold, // หนา
+                        //             color: Color(0xFFFA5A2A),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                         const SizedBox(height: 10),
-                        loadingPost
-                            ? const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Center(
-                                          child: SizedBox(
-                                        width: 10.0,
-                                        height: 10.0,
-                                        child: CircularProgressIndicator(
-                                          color: Color(0XFFE35205),
-                                          strokeWidth: 2.0,
-                                        ),
-                                      )),
-                                      SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
-                                      Text(
-                                        'กำลังโหลดโพสต์',
-                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : homePosts.isNotEmpty
-                                ? Column(children: [
-                                    for (int i = 0; i < homePosts.length; i += 1)
-                                      Column(
-                                        children: [
-                                          // Container(
-                                          //   height: 2.0,
-                                          //   width: double.infinity,
-                                          //   color: Colors.grey[400],
-                                          // ),
-                                          postCard(homePosts[i], context),
-                                          Container(
-                                            height: 2.0,
-                                            width: double.infinity,
-                                            color: Colors.grey[400],
-                                          ),
-                                        ],
-                                      )
-                                  ])
-                                : const Center(child: Text('ไม่พบรายการโพสต์')),
+                        // loadingPost
+                        //     ? const Center(
+                        //         child: Padding(
+                        //           padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                        //           child: Row(
+                        //             mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               Center(
+                        //                   child: SizedBox(
+                        //                 width: 10.0,
+                        //                 height: 10.0,
+                        //                 child: CircularProgressIndicator(
+                        //                   color: Color(0XFFE35205),
+                        //                   strokeWidth: 2.0,
+                        //                 ),
+                        //               )),
+                        //               SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                        //               Text(
+                        //                 'กำลังโหลดโพสต์',
+                        //                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       )
+                        //     : homePosts.isNotEmpty
+                        //         ? Column(children: [
+                        //             for (int i = 0; i < homePosts.length; i += 1)
+                        //               Column(
+                        //                 children: [
+                        //                   // Container(
+                        //                   //   height: 2.0,
+                        //                   //   width: double.infinity,
+                        //                   //   color: Colors.grey[400],
+                        //                   // ),
+                        //                   postCard(homePosts[i], context),
+                        //                   Container(
+                        //                     height: 2.0,
+                        //                     width: double.infinity,
+                        //                     color: Colors.grey[400],
+                        //                   ),
+                        //                 ],
+                        //               )
+                        //           ])
+                        //         : const Center(child: Text('ไม่พบรายการโพสต์')),
                       ],
                     ),
                   ),
@@ -304,13 +304,13 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/addpost');
-        },
-        backgroundColor: const Color(0xFFFA5A2A),
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, '/addpost');
+      //   },
+      //   backgroundColor: const Color(0xFFFA5A2A),
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
       bottomNavigationBar: buyerFooter(context, 'home'),
     );
   }
@@ -403,7 +403,7 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 16,
                 ),
                 overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+                maxLines: 1,
               ),
               const SizedBox(height: 5),
               Text(
@@ -419,7 +419,7 @@ class _HomePageState extends State<HomePage> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  '${data.product_price} ฿',
+                  data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
                   style: const TextStyle(
                     color: Color(0XFFE35205),
                     fontSize: 15,
@@ -434,145 +434,145 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget postCard(Post data, BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.pop(context); // ปิด BottomSheet
-          Navigator.pushNamed(
-            context,
-            '/postdetail/${data.id}',
-          );
-        },
-        child: Card(
-          elevation: 0,
-          color: Colors.white,
-          // margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0.0),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(data.profile),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 1),
-                        Text(
-                          data.faculty,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Section: Post Title
-              Padding(
-                padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.detail,
-                      maxLines: 3,
-                      style:
-                          const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      data.tags,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: Color(0xFFFA5A2A),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Section: Image
-              if (data.imageUrl.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
-                        width: 2.0, // กำหนดความหนาของขอบ
-                      ),
-                      borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(22.0),
-                      child: CachedNetworkImage(
-                        imageUrl: data.imageUrl,
-                        placeholder: (context, url) => const SizedBox(
-                          width: double.infinity,
-                          height: 360,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0XFFE35205),
-                              strokeCap: StrokeCap.round,
-                              // strokeWidth: 12.0, // ปรับความหนาของวงกลม
-                            ),
-                          ),
-                        ),
-                        imageBuilder: (context, ImageProvider) {
-                          return Container(
-                            width: double.infinity,
-                            height: 360,
-                            decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
-                          );
-                        },
-                        errorWidget: (context, url, error) => LayoutBuilder(
-                          builder: (context, constraints) {
-                            double size = constraints.maxWidth;
-                            return Container(
-                              width: size,
-                              height: size,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
-                  child: IconButton(
-                      onPressed: () => {},
-                      icon: const Icon(
-                        Icons.chat_outlined,
-                        color: Color(0xFFA5A9B6),
-                      ))),
-            ],
-          ),
-        ));
-  }
+  // Widget postCard(Post data, BuildContext context) {
+  //   return GestureDetector(
+  //       onTap: () {
+  //         Navigator.pop(context); // ปิด BottomSheet
+  //         Navigator.pushNamed(
+  //           context,
+  //           '/postdetail/${data.id}',
+  //         );
+  //       },
+  //       child: Card(
+  //         elevation: 0,
+  //         color: Colors.white,
+  //         // margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(0.0),
+  //         ),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
+  //               child: Row(
+  //                 children: [
+  //                   CircleAvatar(
+  //                     radius: 20,
+  //                     backgroundImage: NetworkImage(data.profile),
+  //                   ),
+  //                   const SizedBox(width: 10),
+  //                   Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         data.name,
+  //                         style: const TextStyle(
+  //                           fontSize: 14,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                       const SizedBox(height: 1),
+  //                       Text(
+  //                         data.faculty,
+  //                         style: const TextStyle(
+  //                           fontSize: 11,
+  //                           color: Colors.grey,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             // Section: Post Title
+  //             Padding(
+  //               padding: const EdgeInsets.only(left: 14.0, bottom: 8.0),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     data.detail,
+  //                     maxLines: 3,
+  //                     style:
+  //                         const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, overflow: TextOverflow.ellipsis),
+  //                   ),
+  //                   const SizedBox(height: 4),
+  //                   Text(
+  //                     data.tags,
+  //                     style: const TextStyle(
+  //                       fontSize: 10,
+  //                       color: Color(0xFFFA5A2A),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             // Section: Image
+  //             if (data.imageUrl.isNotEmpty)
+  //               Padding(
+  //                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
+  //                 child: Container(
+  //                   decoration: BoxDecoration(
+  //                     border: Border.all(
+  //                       color: const Color.fromARGB(255, 224, 228, 244), // กำหนดสีขอบที่ต้องการ
+  //                       width: 2.0, // กำหนดความหนาของขอบ
+  //                     ),
+  //                     borderRadius: BorderRadius.circular(22.0), // ใช้รัศมีเดียวกับ ClipRRect
+  //                   ),
+  //                   child: ClipRRect(
+  //                     borderRadius: BorderRadius.circular(22.0),
+  //                     child: CachedNetworkImage(
+  //                       imageUrl: data.imageUrl,
+  //                       placeholder: (context, url) => const SizedBox(
+  //                         width: double.infinity,
+  //                         height: 360,
+  //                         child: Center(
+  //                           child: CircularProgressIndicator(
+  //                             color: Color(0XFFE35205),
+  //                             strokeCap: StrokeCap.round,
+  //                             // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       imageBuilder: (context, ImageProvider) {
+  //                         return Container(
+  //                           width: double.infinity,
+  //                           height: 360,
+  //                           decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
+  //                         );
+  //                       },
+  //                       errorWidget: (context, url, error) => LayoutBuilder(
+  //                         builder: (context, constraints) {
+  //                           double size = constraints.maxWidth;
+  //                           return Container(
+  //                             width: size,
+  //                             height: size,
+  //                             decoration: const BoxDecoration(
+  //                               image: DecorationImage(
+  //                                 image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+  //                                 fit: BoxFit.fill,
+  //                               ),
+  //                             ),
+  //                           );
+  //                         },
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             Padding(
+  //                 padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+  //                 child: IconButton(
+  //                     onPressed: () => {},
+  //                     icon: const Icon(
+  //                       Icons.chat_outlined,
+  //                       color: Color(0xFFA5A9B6),
+  //                     ))),
+  //           ],
+  //         ),
+  //       ));
+  // }
 
   Widget searchInputField() {
     return Container(

@@ -155,8 +155,9 @@ class PostService {
     if (response.statusCode == 200 && response.body.isNotEmpty) {
       final responseBody = jsonDecode(response.body);
 
-      if (responseBody['data'] != null && responseBody['data']['data'] is List) {
-        List<Post> data = (responseBody['data']['data'] as List)
+      // ตรวจสอบว่าข้อมูลที่ได้เป็น List หรือไม่
+      if (responseBody is List) {
+        List<Post> data = responseBody
             .cast<Map<String, dynamic>>() // ป้องกัน TypeError
             .map((postJson) => Post.fromJson(postJson))
             .toList();
@@ -168,7 +169,7 @@ class PostService {
       } else {
         return {
           "success": false,
-          "message": "No posts found.",
+          "message": "Unexpected response format.",
         };
       }
     } else {

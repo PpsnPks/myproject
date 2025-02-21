@@ -23,7 +23,8 @@ Widget buyerFooter(BuildContext context, String selected) {
       },
       items: [
         _buildNavItem(Icons.home_outlined, 'หน้าหลัก', 'home', selected),
-        _buildNavItem(Icons.favorite_border, 'ชื่นชอบ', 'like', selected),
+        _buildNavItem(Icons.web_asset_rounded, 'โพสต์', 'post', selected),
+        _buildNavItem(Icons.favorite_border, 'ถูกใจ', 'like', selected),
         _buildNavItem(Icons.shopping_cart_outlined, 'รายการ', 'cart-buyer', selected),
         _buildNavItem(Icons.sms_outlined, 'แชท', 'chat', selected),
         _buildNavItem(Icons.person_outline_rounded, 'โปรไฟล์', 'profile', selected),
@@ -37,14 +38,16 @@ int _getSelectedIndex(String selected) {
   switch (selected) {
     case 'home':
       return 0;
-    case 'like':
+    case 'post':
       return 1;
-    case 'cart-buyer':
+    case 'like':
       return 2;
-    case 'chat':
+    case 'cart-buyer':
       return 3;
-    case 'profile':
+    case 'chat':
       return 4;
+    case 'profile':
+      return 5;
     default:
       return 0;
   }
@@ -57,15 +60,18 @@ void _onItemTapped(int index, BuildContext context) {
       Navigator.pushNamed(context, '/home');
       break;
     case 1:
-      Navigator.pushNamed(context, '/like');
+      Navigator.pushNamed(context, '/allpost');
       break;
     case 2:
-      Navigator.pushNamed(context, '/cart-buyer');
+      Navigator.pushNamed(context, '/like');
       break;
     case 3:
-      Navigator.pushNamed(context, '/chat');
+      Navigator.pushNamed(context, '/cart-buyer');
       break;
     case 4:
+      Navigator.pushNamed(context, '/chat');
+      break;
+    case 5:
       Navigator.pushNamed(context, '/profile');
       break;
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:myproject/app/buyer/buyerfooter.dart';
 
 class AllPostPage extends StatefulWidget {
   const AllPostPage({super.key});
@@ -59,7 +60,7 @@ class _AllPostPageState extends State<AllPostPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("โพสต์ทั้งหมด"),
+        title: const Text("โพสต์"),
         centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -318,6 +319,7 @@ class _AllPostPageState extends State<AllPostPage> {
         backgroundColor: const Color(0xFFFA5A2A),
         child: const Icon(Icons.add, color: Colors.white),
       ),
+      bottomNavigationBar: buyerFooter(context, 'post'),
     );
   }
 
