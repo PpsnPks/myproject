@@ -11,12 +11,40 @@ class Chatpage extends StatefulWidget {
 
 class _ChatpageState extends State<Chatpage> {
   late Future<List<ProductChat>> likedProducts;
+  bool isLoading = true;
+  List<Chat> chats = [];
+
+  void getAllChat() async {
+    Map<String, dynamic> response = await Chatservice().getAllChat();
+    print(response['success']);
+    if (response['success'] == true) {
+      List<Chat> data = response['data'];
+      if (data.isEmpty) {
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      } else {
+        setState(() {
+          chats = data;
+          isLoading = false;
+        });
+        return;
+      }
+    }
+    setState(() {
+      isLoading = false;
+    });
+    print('lllllllllll  $response');
+    return;
+  }
 
   @override
   void initState() {
     super.initState();
     // เรียก Chatservice เพื่อดึงข้อมูลสินค้าที่ถูกใจ
-    likedProducts = Chatservice().getLikedProducts();
+    getAllChat();
+    // likedProducts = Chatservice().getLikedProducts();
   }
 
   @override
@@ -27,35 +55,34 @@ class _ChatpageState extends State<Chatpage> {
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: FutureBuilder<List<ProductChat>>(
-        future: likedProducts,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('ไม่มีสินค้าที่ถูกใจ'));
-          } else {
-            final products = snapshot.data!;
-            return ListView.builder(
-              itemCount: products.length,
+      body: isLoading
+          ? const Center(
+              child: SizedBox(
+                width: 300,
+                height: 300,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0XFFE35205),
+                    strokeCap: StrokeCap.round,
+                  ),
+                ),
+              ),
+            )
+          : ListView.builder(
+              itemCount: chats.length,
               itemBuilder: (context, index) {
-                final product = products[index];
+                final chat = chats[index];
                 return NotificationCard(
-                  title: product.title,
-                  time: '17:30 น.', // ใส่เวลาที่ต้องการ
-                  imageUrl: product.imageUrl,
-                  detail: product.detail,
+                  title: chat.name,
+                  time: chat.time, // ใส่เวลาที่ต้องการ
+                  imageUrl: chat.pic,
+                  message: chat.latestMessage,
                   onTap: () {
-                    Navigator.pushNamed(context, '/message');
+                    Navigator.pushNamed(context, '/message/${chat.userId}', arguments: {'name': chat.name});
                   },
                 );
               },
-            );
-          }
-        },
-      ),
+            ),
       bottomNavigationBar: buyerFooter(context, 'chat'),
     );
   }
@@ -65,7 +92,7 @@ class NotificationCard extends StatelessWidget {
   final String title;
   final String time;
   final String imageUrl;
-  final String detail;
+  final String message;
   final VoidCallback onTap;
 
   const NotificationCard({
@@ -73,7 +100,7 @@ class NotificationCard extends StatelessWidget {
     required this.title,
     required this.time,
     required this.imageUrl,
-    required this.detail,
+    required this.message,
     required this.onTap,
   });
 
@@ -119,7 +146,7 @@ class NotificationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      detail,
+                      message,
                       style: const TextStyle(fontSize: 14),
                     ),
                   ],

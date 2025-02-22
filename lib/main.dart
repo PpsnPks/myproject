@@ -62,11 +62,9 @@ void main() {
         );
       } else if (settings.name!.startsWith('/message/')) {
         final recieveId = settings.name!.split('/').last; // ดึง id จาก URL
-        // final product = settings.arguments;
+        final args = settings.arguments as Map<String, String>;
         return SlidePageRoute(
-          page: Messagepage(
-            recieveId: recieveId,
-          ),
+          page: Messagepage(recieveId: recieveId, name: args['name'] ?? 'Chat'),
         );
       }
       return null;

@@ -1,4 +1,6 @@
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/auth_service.dart';
 import 'dart:convert';
@@ -15,6 +17,7 @@ class MessageService {
     required String message,
   }) async {
     try {
+      await initializeDateFormatting("th", null);
       final response = await http.post(
         Uri.parse(baseUrl),
         headers: {
@@ -39,9 +42,10 @@ class MessageService {
 
   Future<List<OldMessage>> getoldMessage(String receiveId) async {
     try {
+      await initializeDateFormatting("th", null);
       String? accessToken = await AuthService().getAccessToken();
       String senderId = await Securestorage().readSecureData('userId');
-      String url = "${Environment.baseUrl}/chat/fetch/$receiveId/$senderId";
+      String url = "${Environment.baseUrl}/chat/fetch/$senderId/$receiveId";
 
       if (accessToken == null) {
         throw Exception('กรุณาเข้าสู่ระบบก่อนทำรายการ');
@@ -56,7 +60,10 @@ class MessageService {
       final response = await http.get(Uri.parse(url), headers: headers);
 
       if (response.statusCode == 200) {
-        var decodedResponse = jsonDecode(response.body);
+        print('before jsonDecode');
+        print(response.body);
+        var decodedResponse = jsonDecode(response.body) ?? response.body;
+        print('after jsonDecode');
         if (decodedResponse != null) {
           List<OldMessage> data = (decodedResponse as List).map((postJson) => OldMessage.fromJson(postJson)).toList();
           return data;
@@ -73,6 +80,7 @@ class MessageService {
 
   Future<NewMessage> sendChat(String receiveId, String message) async {
     try {
+      await initializeDateFormatting("th", null);
       String? accessToken = await AuthService().getAccessToken();
       String senderId = await Securestorage().readSecureData('userId');
       String url = "${Environment.baseUrl}/chat";
@@ -111,36 +119,43 @@ class MessageService {
 
 class PusherService {
   late PusherChannelsFlutter pusher;
-  Function(String)? onNewMessage;
+  Function(dynamic)? onNewMessage;
 
-  Future<void> initPusher(String userId) async {
+  Future<void> initPusher(String receiveId, Function() addMessage) async {
+    await initializeDateFormatting("th", null);
     pusher = PusherChannelsFlutter();
 
     try {
+      String senderId = await Securestorage().readSecureData('userId');
       await pusher.init(
         apiKey: "e5bdc31db695b897c05a",
         cluster: "ap1",
         onEvent: (event) {
-          print("Received event: ${event.eventName}, data: ${event.data}");
-          if (onNewMessage != null) {
-            onNewMessage!(event.data);
-            print('22222222222222222222222');
-          }
-
+          print("pusher Received event: ${event.eventName}, data: ${event.data}");
           if (event.eventName == "ChatMessageSent") {
-            print('ok');
+            addMessage();
+          } else if (event.eventName == "ChatMessageRead") {
+            addMessage();
           }
         },
       );
+      int send = int.parse(senderId);
+      int receive = int.parse(receiveId);
 
-      String channelName = "Chat";
+      String channelName = "chat.${send < receive ? send : receiveId}.${send > receive ? send : receive}";
+
       // String channelName = "private-chat-$userId";
-      await pusher.subscribe(channelName: channelName);
-      // await pusher.bind("ChatMessageSent", (event) {
-      //   print("New message: ${event.data}");
-      // });
+      await pusher.subscribe(channelName: channelName).then((_) {
+        print("✅ Pusher Subscribed to $channelName");
+      }).catchError((error) {
+        print("❌ Pusher Failed to subscribe: $error");
+      });
 
-      await pusher.connect();
+      await pusher.connect().then((_) {
+        print("✅ Pusher Connected");
+      }).catchError((error) {
+        print("❌ Pusher Connection Failed: $error");
+      });
     } catch (e) {
       print("Pusher error: $e");
     }
@@ -154,6 +169,9 @@ class OldMessage {
   final String message;
   final String image;
   final String statusread;
+  final String timeStamp;
+  final String thaiDate;
+  final String time;
 
   OldMessage({
     required this.id,
@@ -162,9 +180,33 @@ class OldMessage {
     required this.message,
     required this.image,
     required this.statusread,
+    required this.timeStamp,
+    required this.thaiDate,
+    required this.time,
   });
 
   factory OldMessage.fromJson(Map<String, dynamic> data) {
+    print('1');
+    DateTime dateTime = DateTime.parse(data['created_at']).toLocal(); // แปลงเป็นเวลาท้องถิ่น
+    print('2');
+    DateTime now = DateTime.now().add(const Duration(seconds: 3)); // เวลาปัจจุบัน
+    print('3');
+    DateTime sevenDaysAgo = now.subtract(const Duration(days: 7)); // เวลาย้อนหลัง 7 วัน
+    print('4');
+
+    String thaiDate;
+    if (dateTime.isAfter(sevenDaysAgo) && dateTime.isBefore(now)) {
+      print('Yes! 7 day');
+      print(data);
+      // ถ้าอยู่ใน 7 วันล่าสุด ให้แสดงเป็นชื่อวัน
+      thaiDate = DateFormat("EEEE", "th").format(dateTime);
+    } else {
+      print('No! 7 day');
+      // ถ้าไม่อยู่ในช่วง ให้แสดงเป็นวันที่แบบเต็ม
+      int buddhistYear = dateTime.year + 543; // แปลง ค.ศ. เป็น พ.ศ.
+      thaiDate = DateFormat("dd MMMM yyyy", "th").format(dateTime).replaceAll(dateTime.year.toString(), buddhistYear.toString());
+    }
+    String formattedTime = DateFormat("HH:mm").format(dateTime);
     return OldMessage(
       id: data['id'].toString(),
       senderId: data['sender_id'].toString(),
@@ -172,6 +214,9 @@ class OldMessage {
       message: data['message'].toString(),
       image: data['image'].toString(),
       statusread: data['statusread'].toString(),
+      timeStamp: data['created_at'].toString(),
+      thaiDate: thaiDate,
+      time: formattedTime,
     );
   }
 }
@@ -181,23 +226,49 @@ class NewMessage {
   final String senderId; // sender_id
   final String receiverId; // receiver_id
   final String message;
-  final String create;
+  final String statusread;
+  final String timeStamp;
+  final String thaiDate;
+  final String time;
 
   NewMessage({
     required this.id,
     required this.senderId, //sender_id
     required this.receiverId, //receiver_id
     required this.message,
-    required this.create,
+    required this.statusread,
+    required this.timeStamp,
+    required this.thaiDate,
+    required this.time,
   });
 
   factory NewMessage.fromJson(Map<String, dynamic> data) {
+    print('aa $data');
+    DateTime dateTime = DateTime.parse(data['created_at']).toLocal(); // แปลงเป็นเวลาท้องถิ่น
+    DateTime now = DateTime.now().add(const Duration(seconds: 3)); // เวลาปัจจุบัน
+    DateTime sevenDaysAgo = now.subtract(const Duration(days: 7)); // เวลาย้อนหลัง 7 วัน
+
+    String thaiDate;
+    if (dateTime.isAfter(sevenDaysAgo) && dateTime.isBefore(now)) {
+      // ถ้าอยู่ใน 7 วันล่าสุด ให้แสดงเป็นชื่อวัน
+      thaiDate = DateFormat("EEEE", "th").format(dateTime);
+    } else {
+      // ถ้าไม่อยู่ในช่วง ให้แสดงเป็นวันที่แบบเต็ม
+      int buddhistYear = dateTime.year + 543; // แปลง ค.ศ. เป็น พ.ศ.
+      thaiDate = DateFormat("dd MMMM yyyy", "th").format(dateTime).replaceAll(dateTime.year.toString(), buddhistYear.toString());
+    }
+    String formattedTime = DateFormat("HH:mm").format(dateTime);
+
+    // final messageTime = DateFormat('HH:mm').format(DateTime.now());
     return NewMessage(
       id: data['id'].toString(),
       senderId: data['sender_id'].toString(),
       receiverId: data['receiver_id'].toString(),
-      message: data['message'],
-      create: data['created_at'],
+      message: data['message'] + '11',
+      statusread: data['statusread'].toString(),
+      timeStamp: data['created_at'],
+      thaiDate: thaiDate,
+      time: formattedTime,
     );
   }
 }
