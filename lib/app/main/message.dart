@@ -3,12 +3,10 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:myproject/Service/chatservice.dart';
 import 'package:myproject/Service/messageservice.dart';
 import 'package:myproject/Service/productdetailservice.dart';
-import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 class Messagepage extends StatefulWidget {
   final String receiverId;
@@ -183,14 +181,6 @@ class _MessagepageState extends State<Messagepage> {
                             : oldMessage[oldMessage.length - 2 - index];
                         tempShowDate = message.thaiDate;
                         print('$index aaa ${message.message} ${message.thaiDate} $index ddd = $dateText $showDate $tempShowDate');
-
-                        // if (message.message.startsWith('ProductId : ')) {
-                        //   String b = message.message.replaceFirst('ProductId : ', ''); // ตัด "qqqq : " ออก
-                        //   print("ข้อความที่เหลือ: $b");
-                        //   var product = getProduct(b);
-                        //   print(product);
-                        //   return buildProductCard(product);
-                        // } else
                         if (message.message.startsWith('\$\$Product : ')) {
                           String b = message.message.replaceFirst('\$\$Product : ', ''); // ตัด "qqqq : " ออก
                           print("ข้อความที่เหลือ: $b");
@@ -350,7 +340,7 @@ class _MessagepageState extends State<Messagepage> {
   Widget buildProductCard(dynamic product) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/productdetail/${product.id}');
+        Navigator.pushNamed(context, '/productdetail/${product['id']}');
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),

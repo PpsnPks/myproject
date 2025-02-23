@@ -227,7 +227,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           child: ElevatedButton(
                             onPressed: () async {
                               String temp =
-                                  '\$\$Product : {"imageUrl" : "${data.imageUrl[0].replaceFirst(Environment.imgUrl, '')}", "name" : "${data.name}", "condition" : "${data.condition}", "price": "${data.price}"}';
+                                  '\$\$Product : {"id" : "${data.id}", "imageUrl" : "${data.imageUrl[0].replaceFirst(Environment.imgUrl, '')}", "name" : "${data.name}", "condition" : "${data.condition}", "price": "${data.price}"}';
                               await sendProductToMessage(data.sellerId, temp);
                               Navigator.pushNamed(context, '/message/${data.sellerId}', arguments: {'name': data.sellerName});
                             },
