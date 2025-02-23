@@ -73,43 +73,59 @@ class UserService {
   }
 
   Future<Map<dynamic, dynamic>> getUserById(int id) async {
-    try {
-      // Header
-      AuthService authService = AuthService();
-      String? accessToken = await authService.getAccessToken();
-      Map<String, String> headers = {
-        'Authorization': 'Bearer $accessToken',
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      };
+  try {
+    // Header
+    AuthService authService = AuthService();
+    String? accessToken = await authService.getAccessToken();
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $accessToken',
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    };
 
-      // POST Request
-      final response = await http.get(
-        Uri.parse('$registerUrl/$id'),
-        headers: headers,
-      );
+    // GET Request
+    final response = await http.get(
+      Uri.parse('$registerUrl/$id'),
+      headers: headers,
+    );
 
-      // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        print(data);
-        data['pic'] = '${Environment.imgUrl}/${data['pic']}';
+    // ตรวจสอบสถานะของ Response
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print(data);
+
+      // ตรวจสอบว่า key "customer" มีอยู่จริงและไม่ใช่ null
+      if (data.containsKey('customer') && data['customer'] != null) {
+        var customer = data['customer'];
+
+        // ตรวจสอบว่ามี key "pic" หรือไม่ก่อนใช้งาน
+        if (customer.containsKey('pic') && customer['pic'] != null) {
+          customer['pic'] = '${Environment.imgUrl}/${customer['pic']}';
+        }
+
         return {
           "success": true,
-          "data": data, // รับข้อมูลจาก API
+          "data": customer, // ส่งเฉพาะข้อมูลของลูกค้ากลับไป
         };
       } else {
-        final errorData = jsonDecode(response.body);
         return {
           "success": false,
-          "message": errorData['message'] ?? "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
+          "message": "ไม่พบข้อมูลลูกค้า",
         };
       }
-    } catch (e) {
+    } else {
+      final errorData = jsonDecode(response.body);
       return {
         "success": false,
-        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: $e",
+        "message": errorData['message'] ?? "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
       };
     }
+  } catch (e) {
+    return {
+      "success": false,
+      "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: $e",
+    };
   }
+}
+
 }

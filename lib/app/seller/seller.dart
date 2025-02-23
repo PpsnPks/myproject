@@ -170,11 +170,13 @@ Widget editButton(BuildContext context, Product product) {
                   ),
                   ListTile(
                     leading: const Icon(Icons.delete, color: Colors.red),
-                    title: const Text('ลบ'),
+                    title: const Text(
+                      'ลบ',
+                      style: TextStyle(color: Colors.red), // กำหนดสีแดงให้ข้อความ
+                    ),
                     onTap: () {
                       Navigator.pop(context); // ปิด BottomSheet
-                      // เรียกฟังก์ชันสำหรับลบสินค้า
-                      _confirmDelete(context, product);
+                      _confirmDelete(context, product); // เรียกฟังก์ชันสำหรับลบสินค้า
                     },
                   ),
                 ],

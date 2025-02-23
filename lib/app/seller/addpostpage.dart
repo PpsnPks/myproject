@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/Service/postservice.dart'; // เพิ่มการนำเข้า
 import 'package:myproject/Service/uploadimgservice.dart';
 import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/Service/dropdownservice.dart';
 // import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/seller/sellerfooter.dart'; // นำเข้าฟุตเตอร์
 import 'package:image_picker/image_picker.dart';
@@ -24,7 +25,9 @@ class _AddPostPageState extends State<AddPostPage> {
   final TextEditingController _priceController = TextEditingController();
 
   final List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
-  int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
+  int currentIndex = 0;
+  String? product_cate; 
+   List category = [];// ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
   final PageController _pageController = PageController(); // ตัวควบคุม PageView
 
   List<XFile> pickedFiles = [];
@@ -82,6 +85,20 @@ class _AddPostPageState extends State<AddPostPage> {
     } else {
       print(result['message']);
     }
+  }
+
+  getDropdown() async {
+    var datacategory = await Dropdownservice().getCategory();
+    print('category $datacategory');
+
+    setState(() {
+      category = datacategory;
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    getDropdown();
   }
 
   @override
@@ -204,16 +221,37 @@ class _AddPostPageState extends State<AddPostPage> {
                   validator: validateDetail,
                 ),
                 const SizedBox(height: 8),
-                TextFormField(
-                  controller: _categoryController,
+                DropdownButtonFormField<String>(
+                  items: [
+                    for (var item in category)
+                      DropdownMenuItem<String>(
+                        value: item['category_name'], // ใช้การเข้าถึงข้อมูลแบบ Map
+                        child: Text(item['category_name']), // แสดง category_name
+                      ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      product_cate = value;
+                      _categoryController.text = value!;
+                    });
+                  },
+                  value: product_cate,
+                  hint: const Text('หมวดหมู่'),
                   decoration: InputDecoration(
-                    labelText: 'หมวดหมู่',
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),

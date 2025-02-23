@@ -29,46 +29,45 @@ class _ProfilePageState extends State<ProfilePage> {
   String department = '';
   String classyear = '';
   String address = '';
+
   Future<void> getDataUser() async {
-    // showDialog(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder: (context) {
-    //     return const Center(
-    //       child: SizedBox(
-    //         height: 90.0, // กำหนดความสูง
-    //         width: 90.0, // กำหนดความกว้าง
-    //         child: CircularProgressIndicator(
-    //           color: Color(0XFFE35205),
-    //           strokeWidth: 12.0, // ปรับความหนาของวงกลม
-    //           strokeCap: StrokeCap.round,
-    //         ),
-    //       ),
-    //     );
-    //   },
-    // );
-    final id = await Securestorage().readSecureData('userId');
-    final response = await UserService().getUserById(int.parse(id));
-    if (response['success']) {
-      final userData = response['data'];
+  final id = await Securestorage().readSecureData('userId');
+  final response = await UserService().getUserById(int.parse(id));
+
+  if (response['success']) {
+    final customer = response['data'];
+
+    if (customer != null) {
       setState(() {
-        pic = userData['pic'];
-        var phoneNumber = userData['mobile'];
-        var email = userData['email'];
-        hidePhone = '${phoneNumber.substring(0, 3)}-***-${phoneNumber.substring(6)}';
-        hideEmail = '${email.substring(0, 3)}***${email.substring(6)}';
-        studentID = '${email.substring(0, 8)}';
-        name = userData['name'];
-        faculty = userData['faculty'];
-        department = userData['department'];
-        classyear = userData['classyear'];
-        address = userData['address'];
+        pic = customer['pic'] ?? ''; // ถ้า pic เป็น null ให้ใช้ค่าเริ่มต้น
+        var phoneNumber = customer['mobile'] ?? '0000000000';
+        var email = customer['email'] ?? 'unknown@example.com';
+
+        // เช็คความยาวของเบอร์โทรและอีเมลก่อน substring
+        if (phoneNumber.length >= 10) {
+          hidePhone = '${phoneNumber.substring(0, 3)}-***-${phoneNumber.substring(6)}';
+        } else {
+          hidePhone = phoneNumber; // กรณีเบอร์ไม่ครบ 10 ตัว
+        }
+
+        if (email.length >= 8) {
+          hideEmail = '${email.substring(0, 3)}***${email.substring(6)}';
+        } else {
+          hideEmail = email; // กรณีอีเมลไม่ครบ 8 ตัว
+        }
+
+        studentID = email.length >= 8 ? '${email.substring(0, 8)}' : email;
+        name = customer['name'] ?? 'ไม่ระบุชื่อ';
+        faculty = customer['faculty'] ?? 'ไม่ระบุคณะ';
+        department = customer['department'] ?? 'ไม่ระบุภาควิชา';
+        classyear = customer['classyear'] ?? 'ไม่ระบุชั้นปี';
+        address = customer['address'] ?? 'ไม่ระบุที่อยู่';
       });
     }
-    // if (mounted) {
-    //     Navigator.pop(context);
-    //   }
   }
+}
+
+
 
   bool loadingPost = false;
   List<Post> homePosts = [];
@@ -217,8 +216,9 @@ Future<void> initData() async {
                         },
                       ),
                       ListTile(
-                        leading: const Icon(Icons.exit_to_app_outlined),
-                        title: const Text('ออกจากระบบ'),
+                        leading: const Icon(Icons.exit_to_app_outlined, color: Colors.red),
+                        title: const Text('ออกจากระบบ',
+                          style: TextStyle(color: Colors.red),),
                         onTap: () {
                           // Handle logout action
                           Navigator.pop(context); // Close the bottom sheet
