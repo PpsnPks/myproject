@@ -11,9 +11,9 @@ import 'package:myproject/Service/productdetailservice.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 class Messagepage extends StatefulWidget {
-  final String recieveId;
+  final String receiverId;
   final String name;
-  const Messagepage({super.key, required this.recieveId, required this.name});
+  const Messagepage({super.key, required this.receiverId, required this.name});
 
   @override
   State<Messagepage> createState() => _MessagepageState();
@@ -39,13 +39,13 @@ class _MessagepageState extends State<Messagepage> {
     setState(() {
       isLoading = true;
     });
-    oldMessage = await MessageService().getoldMessage(widget.recieveId);
+    oldMessage = await MessageService().getoldMessage(widget.receiverId);
     setState(() {
       isLoading = false;
     });
     for (OldMessage item in oldMessage) {
       print(
-          '${item.message}, sendid: ${item.senderId}, recieveid: ${item.receiverId}, statusread: ${item.statusread}, timeStamp: ${item.timeStamp}, date: ${item.thaiDate}, time: ${item.time}');
+          '${item.message}, sendid: ${item.senderId}, receiverId: ${item.receiverId}, statusread: ${item.statusread}, timeStamp: ${item.timeStamp}, date: ${item.thaiDate}, time: ${item.time}');
     }
   }
 
@@ -54,7 +54,7 @@ class _MessagepageState extends State<Messagepage> {
   final FocusNode _focusNode = FocusNode(); // FocusNode ใช้จัดการการโฟกัส
   void addMessage() async {
     print('qqqqqqqqqqqqqqqqqqqqqqqqqqqq');
-    var response = await MessageService().getoldMessage(widget.recieveId);
+    var response = await MessageService().getoldMessage(widget.receiverId);
     print('ssssssssssssssssssssssssssss');
     if (isSending) {
       setState(() {
@@ -100,7 +100,7 @@ class _MessagepageState extends State<Messagepage> {
       });
     });
     if (mess.isNotEmpty) {
-      newMessage = await MessageService().sendChat(widget.recieveId, mess);
+      newMessage = await MessageService().sendChat(widget.receiverId, mess);
       print(newMessage.message);
       // อัปเดต UI ก่อนส่งข้อมูล
       // setState(() {
@@ -133,7 +133,7 @@ class _MessagepageState extends State<Messagepage> {
     // TODO: implement initState
     super.initState();
 
-    PusherService().initPusher(widget.recieveId, addMessage);
+    PusherService().initPusher(widget.receiverId, addMessage);
     getOldMessage();
   }
 
@@ -191,11 +191,14 @@ class _MessagepageState extends State<Messagepage> {
                         //   print(product);
                         //   return buildProductCard(product);
                         // } else
-                        if (message.message.startsWith('Product : ')) {
-                          String b = message.message.replaceFirst('Product : ', ''); // ตัด "qqqq : " ออก
+                        if (message.message.startsWith('\$\$Product : ')) {
+                          String b = message.message.replaceFirst('\$\$Product : ', ''); // ตัด "qqqq : " ออก
                           print("ข้อความที่เหลือ: $b");
 
-                          return buildProductCard(jsonDecode(b));
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(jsonDecode(b))),
+                          );
                         }
                         return Column(
                           children: [
@@ -226,10 +229,12 @@ class _MessagepageState extends State<Messagepage> {
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Row(
-                                  mainAxisAlignment: message.senderId == widget.recieveId ? MainAxisAlignment.start : MainAxisAlignment.end,
+                                  mainAxisAlignment: (message.senderId == widget.receiverId && message.senderId != message.receiverId)
+                                      ? MainAxisAlignment.start
+                                      : MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    if (message.senderId != widget.recieveId)
+                                    if (message.senderId != widget.receiverId || message.senderId == message.receiverId)
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 3.0),
                                         child: Column(
@@ -258,7 +263,9 @@ class _MessagepageState extends State<Messagepage> {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             //DFE2EC
-                                            color: message.senderId == widget.recieveId ? const Color(0xFFDFE2EC) : const Color(0xFFE35205),
+                                            color: (message.senderId == widget.receiverId && message.senderId != message.receiverId)
+                                                ? const Color(0xFFDFE2EC)
+                                                : const Color(0xFFE35205),
                                             borderRadius: BorderRadius.circular(15),
                                           ),
                                           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -267,12 +274,14 @@ class _MessagepageState extends State<Messagepage> {
                                             softWrap: true,
                                             overflow: TextOverflow.visible,
                                             style: TextStyle(
-                                              color: message.senderId == widget.recieveId ? Colors.black : Colors.white,
+                                              color: (message.senderId == widget.receiverId && message.senderId != message.receiverId)
+                                                  ? Colors.black
+                                                  : Colors.white,
                                               fontSize: 16,
                                             ),
                                           ),
                                         )),
-                                    if (message.senderId == widget.recieveId)
+                                    if (message.senderId == widget.receiverId && message.senderId != message.receiverId)
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 3.0),
                                         child: Column(
@@ -416,6 +425,9 @@ class _MessagepageState extends State<Messagepage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    const SizedBox(
+                      height: 4,
+                    ),
                     Text(
                       product['name'],
                       style: const TextStyle(
@@ -423,7 +435,7 @@ class _MessagepageState extends State<Messagepage> {
                         fontSize: 16,
                       ),
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
+                      maxLines: 1,
                     ),
                     Text(
                       'จำนวน: ${product['stock']}\nสภาพสินค้า : ${product['condition']}\nถึงวันที่: ${product['timeForSell']}',

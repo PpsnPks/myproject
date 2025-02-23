@@ -245,8 +245,11 @@ class NewMessage {
   factory NewMessage.fromJson(Map<String, dynamic> data) {
     print('aa $data');
     DateTime dateTime = DateTime.parse(data['created_at']).toLocal(); // แปลงเป็นเวลาท้องถิ่น
+    print('1');
     DateTime now = DateTime.now().add(const Duration(seconds: 3)); // เวลาปัจจุบัน
+    print('2');
     DateTime sevenDaysAgo = now.subtract(const Duration(days: 7)); // เวลาย้อนหลัง 7 วัน
+    print('3 ${data['message']}');
 
     String thaiDate;
     if (dateTime.isAfter(sevenDaysAgo) && dateTime.isBefore(now)) {
@@ -258,13 +261,14 @@ class NewMessage {
       thaiDate = DateFormat("dd MMMM yyyy", "th").format(dateTime).replaceAll(dateTime.year.toString(), buddhistYear.toString());
     }
     String formattedTime = DateFormat("HH:mm").format(dateTime);
+    print('4 $thaiDate $formattedTime');
 
     // final messageTime = DateFormat('HH:mm').format(DateTime.now());
     return NewMessage(
       id: data['id'].toString(),
       senderId: data['sender_id'].toString(),
       receiverId: data['receiver_id'].toString(),
-      message: data['message'] + '11',
+      message: data['message'],
       statusread: data['statusread'].toString(),
       timeStamp: data['created_at'],
       thaiDate: thaiDate,

@@ -63,10 +63,10 @@ void main() {
           ),
         );
       } else if (settings.name!.startsWith('/message/')) {
-        final recieveId = settings.name!.split('/').last; // ดึง id จาก URL
+        final receiverId = settings.name!.split('/').last; // ดึง id จาก URL
         final args = settings.arguments as Map<String, String>;
         return SlidePageRoute(
-          page: Messagepage(recieveId: recieveId, name: args['name'] ?? 'Chat'),
+          page: Messagepage(receiverId: receiverId, name: args['name'] ?? 'Chat'),
         );
       }
       return null;
@@ -104,8 +104,10 @@ void main() {
       '/infoprofile': (context) => const InfoProfile(),
       '/viewprofile': (context) => const ViewProfilePage(),
       '/allpost': (context) => const AllPostPage(),
-      '/categoryform' : (context) => const CategoryFormPage(),
-      '/tagform' : (context) => const TagFormPage(selectedCategories: [],),
+      '/categoryform': (context) => const CategoryFormPage(),
+      '/tagform': (context) => const TagFormPage(
+            selectedCategories: [],
+          ),
     },
   ));
 }

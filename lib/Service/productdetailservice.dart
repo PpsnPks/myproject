@@ -124,6 +124,7 @@ class ProductDetail {
   final String sellerPic;
   final String sellerName;
   final String sellerFaculty;
+  final String sellerId;
   final String createdAt;
   final int stock;
   final bool isLiked;
@@ -143,6 +144,7 @@ class ProductDetail {
     required this.sellerPic,
     required this.sellerName,
     required this.sellerFaculty,
+    required this.sellerId,
     required this.createdAt,
     required this.stock,
     required this.isLiked,
@@ -164,6 +166,7 @@ class ProductDetail {
       sellerPic: "${Environment.imgUrl}/${data['product']['seller']['pic']}",
       sellerName: data['product']['seller']?['name'] ?? 'ไม่ระบุ',
       sellerFaculty: data['product']['seller']?['faculty'] ?? 'ไม่ระบุ',
+      sellerId: data['product']['seller']!['user_id'].toString(),
       createdAt: data['product']['created_at'] ?? '',
       stock: data['product']['product_qty'] ?? 1,
       isLiked: data['is_liked'],
