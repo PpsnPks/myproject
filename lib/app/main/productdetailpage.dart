@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/Service/messageservice.dart';
 import 'package:myproject/Service/productdetailservice.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:myproject/environment.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,6 +45,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       data = response;
       isLoading = false;
     });
+  }
+
+  sendProductToMessage(String recieveId, String mess) async {
+    await MessageService().sendChat(recieveId, mess);
   }
 
   @override
@@ -219,8 +225,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/chat', arguments: {'sellerId': data.sellerName});
+                            onPressed: () async {
+                              String temp =
+                                  '\$\$Product : {"id" : "${data.id}", "imageUrl" : "${data.imageUrl[0].replaceFirst(Environment.imgUrl, '')}", "name" : "${data.name}", "condition" : "${data.condition}", "price": "${data.price}"}';
+                              await sendProductToMessage(data.sellerId, temp);
+                              Navigator.pushNamed(context, '/message/${data.sellerId}', arguments: {'name': data.sellerName});
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 15),

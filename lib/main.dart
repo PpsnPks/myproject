@@ -65,6 +65,12 @@ void main() {
             postId: id,
           ),
         );
+      } else if (settings.name!.startsWith('/message/')) {
+        final receiverId = settings.name!.split('/').last; // ดึง id จาก URL
+        final args = settings.arguments as Map<String, String>;
+        return SlidePageRoute(
+          page: Messagepage(receiverId: receiverId, name: args['name'] ?? 'Chat'),
+        );
       }
       return null;
     },
@@ -91,7 +97,6 @@ void main() {
       '/others': (context) => const CategoryPage('อื่นๆ'),
       '/noti': (context) => const NotiPage(),
       '/chat': (context) => const Chatpage(),
-      '/message': (context) => const Messagepage(),
       '/profile': (context) => const ProfilePage(),
       // '/confirm-seller': (context) => const ConfirmSeller(),
       '/login': (context) => const LoginPage(),
@@ -102,11 +107,13 @@ void main() {
       '/infoprofile': (context) => const InfoProfile(),
       '/viewprofile': (context) => const ViewProfilePage(),
       '/allpost': (context) => const AllPostPage(),
-      '/categoryform' : (context) => const CategoryFormPage(),
-      '/tagform' : (context) => const TagFormPage(selectedCategories: [],),
-      '/info1' : (context) => const Info1Page(),
-      '/info2' : (context) => const Info2Page(),
-      '/info3' : (context) => const Info3Page(),
+      '/categoryform': (context) => const CategoryFormPage(),
+      '/tagform': (context) => const TagFormPage(
+            selectedCategories: [],
+          ),
+      '/info1': (context) => const Info1Page(),
+      '/info2': (context) => const Info2Page(),
+      '/info3': (context) => const Info3Page(),
     },
   ));
 }
