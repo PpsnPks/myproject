@@ -204,7 +204,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'buy');
                         setState(() {
                           isBuyerSelected = true;
                           isSellerSelected = false;
@@ -230,7 +231,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'sell');
                         setState(() {
                           isBuyerSelected = false;
                           isSellerSelected = true;
