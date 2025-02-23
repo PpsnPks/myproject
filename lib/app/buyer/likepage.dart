@@ -12,7 +12,7 @@ class LikePage extends StatefulWidget {
 
 class _LikePageState extends State<LikePage> {
   late Future<String> userIdFuture;
-  List<ProductLike> like = [];
+  List<Product> like = [];
   bool isLoading = false;
 
   @override
@@ -32,12 +32,12 @@ void fetchLikedProducts() async {
 
     if (response['success'] && response['data'] is List) {
       setState(() {
-        like = List<ProductLike>.from(
+        like = List<Product>.from(
           (response['data'] as List).map((item) {
-            return item is ProductLike
+            return item is Product
                 ? item
-                : ProductLike.fromJson(item);
-          }).whereType<ProductLike>(),
+                : Product.fromJson(item);
+          }).whereType<Product>(),
         );
       });
     } else {
@@ -125,8 +125,8 @@ void fetchLikedProducts() async {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CachedNetworkImage(
-                                  imageUrl: product.productImages.isNotEmpty
-                                      ? product.productImages[0]
+                                  imageUrl: product.product_images.isNotEmpty
+                                      ? product.product_images[0]
                                       : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
                                   placeholder: (context, url) =>
                                       LayoutBuilder(
@@ -186,7 +186,7 @@ void fetchLikedProducts() async {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      product.productName,
+                                      product.product_name,
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
@@ -195,7 +195,7 @@ void fetchLikedProducts() async {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      product.productPrice == '0.00' ? 'ฟรี' : '${product.productPrice} ฿',
+                                      product.product_price == '0.00' ? 'ฟรี' : '${product.product_price} ฿',
                                       style: const TextStyle(
                                           color: Color(0XFFE35205),
                                           fontSize: 18,
@@ -203,7 +203,7 @@ void fetchLikedProducts() async {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      product.productDescription,
+                                      product.product_description,
                                       style: const TextStyle(
                                           color: Colors.grey, fontSize: 13),
                                       maxLines: 2,
