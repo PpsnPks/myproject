@@ -102,7 +102,7 @@ class _SellerPageState extends State<SellerPage> {
                                 padding: const EdgeInsets.all(4.0),
                                 child: Stack(
                                   children: [
-                                    productCardSeller(products[i]),
+                                    productCardSeller(products[i],context),
                                     editButton(context, products[i]),
                                   ],
                                 ),
@@ -118,7 +118,7 @@ class _SellerPageState extends State<SellerPage> {
                                 padding: const EdgeInsets.all(4.0),
                                 child: Stack(
                                   children: [
-                                    productCardSeller(products[i]),
+                                    productCardSeller(products[i],context),
                                     editButton(context, products[i]),
                                   ],
                                 ),
@@ -134,7 +134,7 @@ class _SellerPageState extends State<SellerPage> {
         onPressed: () {
           Navigator.pushNamed(context, '/addproduct');
         },
-        backgroundColor: const Color(0xFFFA5A2A),
+        backgroundColor: const Color(0XFFE35205),
         child: const Icon(Icons.add, color: Colors.white),
       ),
       bottomNavigationBar: sellerFooter(context, 'seller'),
@@ -187,7 +187,7 @@ Widget editButton(BuildContext context, Product product) {
         width: 30,
         height: 30,
         decoration: const BoxDecoration(
-          color: Color(0xFFFA5A2A),
+          color: Color(0XFFE35205),
           shape: BoxShape.circle,
         ),
         child: const Icon(
@@ -200,8 +200,16 @@ Widget editButton(BuildContext context, Product product) {
   );
 }
 
-Widget productCardSeller(Product data) {
-  return Card(
+Widget productCardSeller(Product data, BuildContext context) {
+  return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/productdetail/${data.id}',
+        );
+        print('click card');
+      },
+      child: Card(
     color: const Color(0xFFFFFFFF),
     shape: RoundedRectangleBorder(
       side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
@@ -294,7 +302,7 @@ Widget productCardSeller(Product data) {
             child: Text(
               '${data.product_price} ฿',
               style: const TextStyle(
-                color: Colors.orange,
+                color: const Color(0XFFE35205),
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -303,6 +311,7 @@ Widget productCardSeller(Product data) {
         ],
       ),
     ),
+  )
   );
 }
 

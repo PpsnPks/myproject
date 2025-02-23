@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:myproject/Service/postservice.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:myproject/Service/formservice.dart';
@@ -68,6 +70,38 @@ class _ProfilePageState extends State<ProfilePage> {
     //   }
   }
 
+  bool loadingPost = false;
+  List<Post> homePosts = [];
+
+  void getPost(int userId) async {
+  try {
+    setState(() {
+      loadingPost = true;
+    });
+
+    // เรียก API โดยส่ง userId ที่สามารถปรับเปลี่ยนได้
+    final response = await PostService().getPostUser(userId); // ส่ง userId ที่รับมา
+
+    if (response['success']) {
+      setState(() {
+        loadingPost = false;
+        homePosts = response['data']; // ดึงข้อมูลโพสต์มาเก็บใน homePosts
+      });
+    } else {
+      setState(() {
+        loadingPost = false;
+      });
+      throw Exception('Failed to load posts');
+    }
+  } catch (e) {
+    setState(() {
+      loadingPost = false;
+    });
+    print("Error loading posts: $e");
+    return; // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
+  }
+}
+
   void getRole() async {
     role = await Securestorage().readSecureData('role');
     if (role == 'buy') {
@@ -84,18 +118,27 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
-  void initState() {
-    super.initState(); // กำหนดค่าเริ่มต้นให้ userData เป็น Future ที่ว่าง
-    getRole();
-    getDataUser();
-  }
+void initState() {
+  super.initState();
+  initData();
+}
 
-  // รายการสินค้า (คนซื้อ)
-  final List<Map<String, String>> buyerItems = [
-    {'image': 'assets/images/old_book.jpg', 'title': 'สินค้า A'},
-    {'image': 'assets/images/old_fan.png', 'title': 'สินค้า B'},
-    {'image': 'assets/images/tuyen.png', 'title': 'สินค้า C'},
-  ];
+Future<void> initData() async {
+  try {
+    // ดึงค่า userId จาก SecureStorage
+    final id = await Securestorage().readSecureData('userId');
+    
+    if (id != null) {
+      getPost(int.parse(id));  // ส่ง userId ไปใน getPost
+      getRole();
+      getDataUser();
+    } else {
+      print('User ID not found');
+    }
+  } catch (e) {
+    print("Error initializing data: $e");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -314,55 +357,87 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Buyer Grid View
   Widget buildBuyerGridView() {
-    if (buyerItems.isEmpty) {
-      return const Center(
-        child: Text(
-          'ยังไม่มีรายการสินค้า',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-        ),
-      );
-    }
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: GridView.builder(
-        itemCount: buyerItems.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          childAspectRatio: 0.8,
-        ),
-        itemBuilder: (context, index) {
-          final item = buyerItems[index];
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Image.asset(
-                    item['image']!,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    item['title']!,
-                    style: const TextStyle(fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+  if (homePosts.isEmpty) {
+    return const Center(
+      child: Text(
+        'ยังไม่มีโพสต์',
+        style: TextStyle(fontSize: 16, color: Colors.grey),
       ),
     );
   }
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: GridView.builder(
+      itemCount: homePosts.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 0.8,
+      ),
+      itemBuilder: (context, index) {
+        final post = homePosts[index]; // ดึงโพสต์จาก homePosts
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: CachedNetworkImage(
+                        imageUrl: post.imageUrl,
+                        placeholder: (context, url) => const SizedBox(
+                          width: double.infinity,
+                          height: 360,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0XFFE35205),
+                              strokeCap: StrokeCap.round,
+                              // strokeWidth: 12.0, // ปรับความหนาของวงกลม
+                            ),
+                          ),
+                        ),
+                        imageBuilder: (context, ImageProvider) {
+                          return Container(
+                            width: double.infinity,
+                            height: 360,
+                            decoration: BoxDecoration(image: DecorationImage(image: ImageProvider, fit: BoxFit.fill)),
+                          );
+                        },
+                        errorWidget: (context, url, error) => LayoutBuilder(
+                          builder: (context, constraints) {
+                            double size = constraints.maxWidth;
+                            return Container(
+                              width: size,
+                              height: size,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  post.detail, // แสดงชื่อโพสต์
+                  style: const TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  );
+}
 
   // Buyer History View
   Widget buildBuyerHistoryView() {

@@ -35,7 +35,7 @@ class LoginService {
       print("Response body: ${response.body}");
 
       // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 404) {
         // แปลง JSON เป็น Map
         var data = jsonDecode(response.body);
         String accessToken = data['token'];
@@ -45,13 +45,13 @@ class LoginService {
         await authService.saveAccessToken(accessToken);
         // เก็บ data
         String token = data['token'];
-        String userId = data['user_id'].toString();
         Securestorage().writeSecureData('token', token);
+        String userId = data['user_id'].toString();
         Securestorage().writeSecureData('userId', userId);
 
         // final test = await Securestorage().readSecureData('token');
         // print('okk === $test');
-        if (data['user_data'] == []) {
+        if (data['user_data'].isEmpty) {
           return {"success": true, "data": jsonDecode(response.body), "first": true};
         } else {
           return {"success": true, "data": jsonDecode(response.body), "first": false};

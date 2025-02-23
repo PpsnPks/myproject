@@ -21,18 +21,43 @@ class Dropdownservice {
       // Get Request
       final response = await http.get(Uri.parse(url), headers: headers);
 
-      // ตรวจสอบสถานะของ Response
       if (response.statusCode == 200) {
-        print('44444 ${response.statusCode}');
         List data = jsonDecode(response.body)['data']['data'];
-        print('44444 $data');
         return data;
       } else {
-        print('44444 ${response.statusCode}');
+        print('Error: ${response.statusCode} - ${response.body}');
         return [];
       }
     } catch (e) {
+      print('Exception: $e');
       return [];
     }
   }
+
+  Future<List<dynamic>> getTag(List<int> categoryIds) async {
+  if (categoryIds.isEmpty) {
+    print("❌ Error: categoryIds is empty!");
+    return [];
+  }
+
+  final String url = "${Environment.baseUrl}/tagsbycategories/${categoryIds.join(',')}";
+  print("🔍 Requesting: $url");
+
+  try {
+    final response = await http.get(Uri.parse(url));
+
+    print("🛠 Response Status: ${response.statusCode}");
+    print("🛠 Response Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as List<dynamic>;
+    } else {
+      return [];
+    }
+  } catch (e) {
+    print("❌ Exception: $e");
+    return [];
+  }
+}
+
 }

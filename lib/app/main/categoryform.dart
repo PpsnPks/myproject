@@ -1,0 +1,130 @@
+import 'package:flutter/material.dart';
+import 'package:myproject/Service/dropdownservice.dart';
+
+class CategoryFormPage extends StatefulWidget {
+  const CategoryFormPage({super.key});
+
+  @override
+  _CategoryFormPageState createState() => _CategoryFormPageState();
+}
+
+class _CategoryFormPageState extends State<CategoryFormPage> {
+  List<dynamic> categories = [];
+  List<Map<String, dynamic>> selectedCategories = [];  // เปลี่ยนเป็น List<Map> เพื่อเก็บ id และ name
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategories();
+  }
+
+  Future<void> fetchCategories() async {
+    Dropdownservice dropdownService = Dropdownservice();
+    List<dynamic> data = await dropdownService.getCategory();
+    setState(() {
+      categories = data;
+    });
+  }
+
+  void toggleSelection(Map<String, dynamic> category) {
+    setState(() {
+      if (selectedCategories.any((selected) => selected['id'] == category['id'])) {
+        selectedCategories.removeWhere((selected) => selected['id'] == category['id']);
+      } else {
+        if (selectedCategories.length < 2) {
+          selectedCategories.add(category);
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text(''),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "หมวดหมู่สินค้าที่คุณสนใจ",
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            categories.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: categories.map<Widget>((category) {
+                      String name = category['category_name']?.toString() ?? 'ไม่ระบุ';
+                      bool isSelected = selectedCategories.any((selected) => selected['id'] == category['id']);
+                      return GestureDetector(
+                        onTap: () => toggleSelection(category),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isSelected ? const Color(0XFFE35205) : Colors.grey,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            name,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: isSelected ? const Color(0XFFE35205) : Colors.black,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: selectedCategories.isNotEmpty
+                    ? () {
+                        // ล็อกข้อมูลที่เลือกก่อนจะส่งไป
+                        List<dynamic> selectedCategoryIds = selectedCategories.map((category) => category['id']).toList();
+                        print("หมวดหมู่ที่เลือก (ID): $selectedCategoryIds"); // ✅ ล็อก id ที่เลือก
+
+                        Navigator.pushNamed(
+                          context,
+                          '/tagform',
+                          arguments: selectedCategoryIds, // ส่ง id ไปหน้า /tagform
+                        );
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0XFFE35205),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: const Text(
+                  'ถัดไป',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
