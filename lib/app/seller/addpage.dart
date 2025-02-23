@@ -138,8 +138,8 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   void initState() {
     super.initState();
-    _productTypeController.text = 'sell'; // หรือค่าเริ่มต้นที่เหมาะสม
     getDropdown();
+    _productTypeController.text = 'sell'; // หรือค่าเริ่มต้นที่เหมาะสม
   }
 
   String? validateName(String? value) {
