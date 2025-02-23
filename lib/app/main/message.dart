@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:myproject/Service/chatservice.dart';
 import 'package:myproject/Service/messageservice.dart';
+import 'package:myproject/Service/productdetailservice.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 class Messagepage extends StatefulWidget {
@@ -31,7 +33,6 @@ class _MessagepageState extends State<Messagepage> {
   late NewMessage newMessage;
   bool isLoading = true;
   bool showDate = false;
-
   bool isSending = false;
 
   void getOldMessage() async {
@@ -118,6 +119,15 @@ class _MessagepageState extends State<Messagepage> {
     }
   }
 
+  dynamic getProduct(String id) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    var response = await ProductService().getProductById(id);
+    return response;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -177,8 +187,16 @@ class _MessagepageState extends State<Messagepage> {
                         // if (message.message.startsWith('ProductId : ')) {
                         //   String b = message.message.replaceFirst('ProductId : ', ''); // ตัด "qqqq : " ออก
                         //   print("ข้อความที่เหลือ: $b");
-                        // }
-                        // print('bbb ${old.message} ${old.thaiDate} temp = $tempShowDate');
+                        //   var product = getProduct(b);
+                        //   print(product);
+                        //   return buildProductCard(product);
+                        // } else
+                        if (message.message.startsWith('Product : ')) {
+                          String b = message.message.replaceFirst('Product : ', ''); // ตัด "qqqq : " ออก
+                          print("ข้อความที่เหลือ: $b");
+
+                          return buildProductCard(jsonDecode(b));
+                        }
                         return Column(
                           children: [
                             if ((oldMessage.length - 2 - (index)) == -1 ||
@@ -319,71 +337,195 @@ class _MessagepageState extends State<Messagepage> {
       ),
     );
   }
+
+  Widget buildProductCard(dynamic product) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/productdetail/${product.id}');
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+        decoration: BoxDecoration(
+          color: Colors.white, // Background color
+          border: Border.all(color: Colors.grey.shade300, width: 2), // Gray border
+          borderRadius: BorderRadius.circular(12), // Rounded corners
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: product['imageUrl'].isNotEmpty
+                      ? product['imageUrl'][0]
+                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                  placeholder: (context, url) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxHeight;
+                      return SizedBox(
+                        width: size,
+                        height: size, // ให้สูงเท่ากับกว้าง
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0XFFE35205),
+                            strokeCap: StrokeCap.round,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  imageBuilder: (context, ImageProvider) {
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        double size = constraints.maxHeight; // ใช้ maxWidth เป็นขนาดของ width และ height
+                        return Container(
+                          width: size,
+                          height: size, // ให้ height เท่ากับ width
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: ImageProvider,
+                              fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  errorWidget: (context, url, error) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxHeight;
+                      return Container(
+                        width: size,
+                        height: size,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Flexible(
+                fit: FlexFit.loose,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      product['name'],
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    Text(
+                      'จำนวน: ${product['stock']}\nสภาพสินค้า : ${product['condition']}\nถึงวันที่: ${product['timeForSell']}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFA5A9B6),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        '${product['price']} ฿',
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // child: Text(
+                //   product.product_description,
+                //   style: const TextStyle(color: Colors.grey, fontSize: 10),
+                //   overflow: TextOverflow.ellipsis,
+                //   maxLines: 3,
+                // ),
+              ),
+              // const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 // if (index < messages.length) {
-                //   message = messages[messages.length - 1 - (index)]; //new
-                //   if (index == 0) {
-                //     dateText = message['thaiDate'];
-                //   } else if (dateText != message['thaiDate']) {
-                //     showDate = true;
-                //     tempShowDate = dateText;
-                //     dateText = message['thaiDate'];
-                //   } else {
-                //     showDate = false;
-                //   }
-                //   return showDate
-                //       ? Row(
-                //           mainAxisAlignment: MainAxisAlignment.center,
-                //           crossAxisAlignment: CrossAxisAlignment.end,
-                //           children: [
-                //             Container(
-                //               decoration: BoxDecoration(
-                //                 color: const Color(0xFFDFE2EC),
-                //                 borderRadius: BorderRadius.circular(15),
-                //               ),
-                //               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                //               child: Text(
-                //                 tempShowDate,
-                //                 style: const TextStyle(
-                //                   color: Colors.white,
-                //                   fontSize: 16,
-                //                 ),
-                //               ),
-                //             ),
-                //           ],
-                //         )
-                //       : null;
-                // } else {
-                //   message = oldMessage[oldMessage.length - 1 - (index - messages.length)];
-                //   if (index == 0) {
-                //     dateText = message.thaiDate;
-                //   } else if (dateText != message.thaiDate) {
-                //     showDate = true;
-                //     tempShowDate = dateText;
-                //     dateText = message.thaiDate;
-                //   } else {
-                //     showDate = false;
-                //   }
-                //   return showDate
-                //       ? Row(
-                //           mainAxisAlignment: MainAxisAlignment.center,
-                //           crossAxisAlignment: CrossAxisAlignment.end,
-                //           children: [
-                //             Container(
-                //               decoration: BoxDecoration(
-                //                 color: const Color(0xFFDFE2EC),
-                //                 borderRadius: BorderRadius.circular(15),
-                //               ),
-                //               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                //               child: Text(
-                //                 tempShowDate,
-                //                 style: const TextStyle(
-                //                   color: Colors.white,
-                //                   fontSize: 16,
-                //                 ),
-                //               ),
-                //             ),
-                //           ],
-                //         )
-                //       : null;
-                // }
+//   message = messages[messages.length - 1 - (index)]; //new
+//   if (index == 0) {
+//     dateText = message['thaiDate'];
+//   } else if (dateText != message['thaiDate']) {
+//     showDate = true;
+//     tempShowDate = dateText;
+//     dateText = message['thaiDate'];
+//   } else {
+//     showDate = false;
+//   }
+//   return showDate
+//       ? Row(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           crossAxisAlignment: CrossAxisAlignment.end,
+//           children: [
+//             Container(
+//               decoration: BoxDecoration(
+//                 color: const Color(0xFFDFE2EC),
+//                 borderRadius: BorderRadius.circular(15),
+//               ),
+//               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+//               child: Text(
+//                 tempShowDate,
+//                 style: const TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 16,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         )
+//       : null;
+// } else {
+//   message = oldMessage[oldMessage.length - 1 - (index - messages.length)];
+//   if (index == 0) {
+//     dateText = message.thaiDate;
+//   } else if (dateText != message.thaiDate) {
+//     showDate = true;
+//     tempShowDate = dateText;
+//     dateText = message.thaiDate;
+//   } else {
+//     showDate = false;
+//   }
+//   return showDate
+//       ? Row(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           crossAxisAlignment: CrossAxisAlignment.end,
+//           children: [
+//             Container(
+//               decoration: BoxDecoration(
+//                 color: const Color(0xFFDFE2EC),
+//                 borderRadius: BorderRadius.circular(15),
+//               ),
+//               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+//               child: Text(
+//                 tempShowDate,
+//                 style: const TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 16,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         )
+//       : null;
+// }
