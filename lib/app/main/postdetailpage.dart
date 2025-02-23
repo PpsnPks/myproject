@@ -52,21 +52,26 @@ class _PostDetailPageState extends State<PostDetailPage> {
               children: [
                 // Product Images
                 if (post.postImage.isNotEmpty)
-                  SizedBox(
-                    height: 200,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12), // ปรับให้กรอบมีมุมมน
+                  child: SizedBox(
+                    height: 300,
                     child: PageView.builder(
-                      itemCount: 1,  // Assuming there's only one image per post
+                      itemCount: 1, // Assuming there's only one image per post
                       itemBuilder: (context, index) {
                         return Image.network(
                           post.postImage,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                          fit: BoxFit.cover, // ทำให้รูปเต็มกรอบ
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                          ),
                         );
                       },
                     ),
                   ),
+                ),
                 const SizedBox(height: 10),
-
                 // Product Name
                 Text(post.detail, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),

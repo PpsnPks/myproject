@@ -150,7 +150,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('฿${data.price}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold)),
+                        Text(
+                          data.price == '0.00' ? 'ฟรี' : '฿${data.price}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         IconButton(
                           icon: Icon(
                             isLiked ? Icons.favorite : Icons.favorite_border,

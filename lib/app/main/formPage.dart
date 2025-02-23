@@ -81,7 +81,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('บันทึกข้อมูลสำเร็จ: ${result["data"]}')),
         );
-        Navigator.pushReplacementNamed(context, '/role');
+        Navigator.pushReplacementNamed(context, '/categoryform');
       } else {
         print('เกิดข้อผิดพลาด: ${result["message"]}');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -132,7 +132,14 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: Stepper(
+      body: Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(primary: Color(0XFFE35205)),
+          // sliderTheme: StepperThemeData(
+          //   connectorColor: MaterialStateProperty.all(Color(0XFFE35205)),
+          // ),
+        ),
+      child:Stepper(
         currentStep: currentStep,
         onStepContinue: _nextStep,
         onStepCancel: _previousStep,
@@ -146,6 +153,10 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                   OutlinedButton(
                     onPressed: details.onStepCancel,
                     child: const Text('ย้อนกลับ'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0XFFE35205),
+                      side: const BorderSide(color: Color(0XFFE35205)),
+                    ),
                   ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -157,6 +168,15 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
                   child: Text(currentStep == 2 ? 'เริ่มต้นใช้งาน' : 'ถัดไป'),
                 ),
               ],
+            ),
+          );
+        },
+        stepIconBuilder: (stepIndex, stepState) {
+          return CircleAvatar(
+            backgroundColor: const Color(0XFFE35205), // เปลี่ยนสีพื้นหลังของตัวเลข
+            child: Text(
+              '${stepIndex + 1}',
+              style: const TextStyle(color: Colors.white), // เปลี่ยนสีตัวเลขเป็นสีขาว
             ),
           );
         },
@@ -302,6 +322,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
             isActive: currentStep >= 2,
           ),
         ],
+      ),
       ),
     );
   }

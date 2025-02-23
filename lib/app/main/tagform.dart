@@ -87,7 +87,11 @@ class _TagFormPageState extends State<TagFormPage> {
             ),
             const SizedBox(height: 10),
             tags.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0XFFE35205),
+                    strokeWidth: 2.0,
+                  ))
                 : Wrap(
                     spacing: 8,
                     runSpacing: 8,

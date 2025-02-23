@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/likeservice.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
-import 'package:myproject/service/likeservice.dart';
 
 class LikePage extends StatefulWidget {
   const LikePage({super.key});
@@ -27,9 +26,10 @@ class _LikePageState extends State<LikePage> {
       isLoading = true;
     });
     Map<String, dynamic> response = await LikeService().getLikedProducts();
-    if (response['success']) {
+    print(response); // ตรวจสอบ response ที่ได้รับ
+    if (response['success'] && response['data'] is List) {
       setState(() {
-        like = response['data'];
+        like = List<ProductLike>.from(response['data'].map((item) => ProductLike.fromJson(item)));
         isLoading = false;
       });
     } else {
@@ -52,7 +52,7 @@ class _LikePageState extends State<LikePage> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Center(
@@ -64,7 +64,7 @@ class _LikePageState extends State<LikePage> {
                         strokeWidth: 2.0,
                       ),
                     )),
-                    SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                    SizedBox(width: 10),
                     Text(
                       'กำลังโหลดสินค้า',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
@@ -104,7 +104,7 @@ class _LikePageState extends State<LikePage> {
                                     double size = constraints.maxHeight;
                                     return SizedBox(
                                       width: size,
-                                      height: size, // ให้สูงเท่ากับกว้าง
+                                      height: size,
                                       child: const Center(
                                         child: CircularProgressIndicator(
                                           color: Color(0XFFE35205),
@@ -117,14 +117,14 @@ class _LikePageState extends State<LikePage> {
                                 imageBuilder: (context, ImageProvider) {
                                   return LayoutBuilder(
                                     builder: (context, constraints) {
-                                      double size = constraints.maxHeight; // ใช้ maxWidth เป็นขนาดของ width และ height
+                                      double size = constraints.maxHeight;
                                       return Container(
                                         width: size,
-                                        height: size, // ให้ height เท่ากับ width
+                                        height: size,
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
                                             image: ImageProvider,
-                                            fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                                            fit: BoxFit.fill,
                                           ),
                                         ),
                                       );
@@ -139,7 +139,7 @@ class _LikePageState extends State<LikePage> {
                                       height: size,
                                       decoration: const BoxDecoration(
                                         image: DecorationImage(
-                                          image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                          image: AssetImage("assets/images/notfound.png"),
                                           fit: BoxFit.fill,
                                         ),
                                       ),

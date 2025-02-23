@@ -63,7 +63,11 @@ class _CategoryFormPageState extends State<CategoryFormPage> {
             ),
             const SizedBox(height: 10),
             categories.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0XFFE35205),
+                    strokeWidth: 2.0,
+                  ))
                 : Wrap(
                     spacing: 8,
                     runSpacing: 8,

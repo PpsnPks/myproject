@@ -312,13 +312,13 @@ class _PostPageState extends State<PostPage> {
           return null;
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/addpost');
-        },
-        backgroundColor: const Color(0xFFFA5A2A),
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, '/addpost');
+      //   },
+      //   backgroundColor: const Color(0xFFFA5A2A),
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
       bottomNavigationBar: sellerFooter(context, 'post'),
     );
   }

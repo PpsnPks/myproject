@@ -4,6 +4,9 @@ import 'package:myproject/app/buyer/cartbpage.dart';
 import 'package:myproject/app/main/categoryform.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
 import 'package:myproject/app/main/formPage.dart';
+import 'package:myproject/app/main/info1.dart';
+import 'package:myproject/app/main/info2.dart';
+import 'package:myproject/app/main/info3.dart';
 import 'package:myproject/app/main/infoprofile.dart';
 import 'package:myproject/app/main/login.dart';
 import 'package:myproject/app/main/message.dart';
@@ -108,6 +111,9 @@ void main() {
       '/tagform': (context) => const TagFormPage(
             selectedCategories: [],
           ),
+      '/info1': (context) => const Info1Page(),
+      '/info2': (context) => const Info2Page(),
+      '/info3': (context) => const Info3Page(),
     },
   ));
 }
