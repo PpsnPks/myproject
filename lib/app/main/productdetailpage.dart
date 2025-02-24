@@ -190,9 +190,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     Text('โพสต์โดย', style: const TextStyle(fontWeight: FontWeight.bold)),
                     Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(data.sellerPic),
-                          radius: 20,
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/viewprofile',
+                              arguments: {'userId': data.sellerId}, // ส่ง userId ไปด้วย
+                            );
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(data.sellerPic),
+                            radius: 20,
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Column(
