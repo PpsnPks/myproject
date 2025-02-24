@@ -67,7 +67,7 @@ class _ChatpageState extends State<Chatpage> {
                 ),
               ),
             )
-          : chats.length == 0
+          : chats.isEmpty
               ? const Center(
                   child: Text(
                     'ยังไม่มีประวัติการแชท',
@@ -86,10 +86,14 @@ class _ChatpageState extends State<Chatpage> {
                       unread: chat.unread.toString(),
                       message: chat.latestMessage.startsWith('\$\$Product : ')
                           ? '[ สินค้า : ${jsonDecode(chat.latestMessage.replaceFirst('\$\$Product : ', ''))['name']} ]' //'สินค้า : ${jsonDecode(chat.latestMessage.replaceFirst('\$\$Product : ', ''))['name']}'
-                          : chat.latestMessage,
-                      type: chat.latestMessage.startsWith('\$\$Product : ') ? 'product' : 'message',
+                          : chat.latestMessage.startsWith('\$\$Image : ')
+                              ? '[ รูปภาพ ]'
+                              : chat.latestMessage,
+                      type: chat.latestMessage.startsWith('\$\$Product : ') || chat.latestMessage.startsWith('\$\$Image : ')
+                          ? 'product'
+                          : 'message',
                       onTap: () {
-                        Navigator.pushNamed(context, '/message/${chat.userId}', arguments: {'name': chat.name});
+                        Navigator.pushReplacementNamed(context, '/message/${chat.userId}', arguments: {'name': chat.name});
                       },
                     );
                   },

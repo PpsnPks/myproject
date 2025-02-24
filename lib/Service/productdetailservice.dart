@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/auth_service.dart';
 import 'package:myproject/environment.dart';
@@ -105,6 +106,74 @@ class ProductService {
       }
     } catch (e) {
       throw Exception("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e");
+    }
+  }
+
+  Future<bool> putDeal(String dealId, String buyerId, String productId, int qty) async {
+    final url = Uri.parse('${Environment.baseUrl}/deals/$dealId');
+    try {
+      String? accessToken = await AuthService().getAccessToken();
+      String userId = await Securestorage().readSecureData('userId');
+      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      Map<String, dynamic> body = {
+        "buyer_id": int.tryParse(userId),
+        "product_id": int.tryParse(productId),
+        "qty": 1,
+        "deal_date": formattedDate,
+        "status": "success"
+      };
+      final response = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: json.encode(body),
+      );
+      if (response.statusCode == 200) {
+        print('aaa');
+        return true;
+      } else {
+        throw Exception('Failed to create Deal: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error create Deal: $e');
+    }
+  }
+
+  Future<bool> createDeal(String productId) async {
+    final url = Uri.parse('${Environment.baseUrl}/deals');
+    try {
+      String? accessToken = await AuthService().getAccessToken();
+      String userId = await Securestorage().readSecureData('userId');
+      // String formattedDate = '2026-12-12';
+      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      Map<String, dynamic> body = {
+        "buyer_id": int.tryParse(userId),
+        "product_id": int.tryParse(productId),
+        "bill": null,
+        "qty": 1,
+        "deal_date": formattedDate,
+        "status": "waiting"
+      };
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: json.encode(body),
+      );
+      if (response.statusCode == 201) {
+        print('aaa');
+        return true;
+      } else {
+        throw Exception('Failed to create Deal: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error create Deal: $e');
     }
   }
 }

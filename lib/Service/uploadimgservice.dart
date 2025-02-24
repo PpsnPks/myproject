@@ -75,17 +75,19 @@ class UploadImgService {
           var data = jsonDecode(response.body);
           imgPath = data['image_path'];
         } else {
-          return {
-            "success": false,
-            "message": "อัปโหลดรูปภาพล้มเหลว ${response.statusCode}",
-          };
+          throw Exception('อัปโหลดรูปภาพล้มเหลว ${response.statusCode}');
+          // return {
+          //   "success": false,
+          //   "message": "",
+          // };
           // print('Failed to upload. Status code: ${response.statusCode}');
         }
       } catch (e) {
-        return {
-          "success": false,
-          "message": "ไม่สามารถอัปโหลดรูปภาพ",
-        };
+        throw Exception('ม่สามารถอัปโหลดรูปภาพ $e');
+        // return {
+        //   "success": false,
+        //   "message": "ไม่สามารถอัปโหลดรูปภาพ",
+        // };
         // print('Error occurred during upload: $e');
       }
       return {
@@ -94,10 +96,11 @@ class UploadImgService {
       };
     } catch (e) {
       // กรณีเกิดข้อผิดพลาดทั่วไป
-      return {
-        "success": false,
-        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
-      };
+      throw Exception('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ $e');
+      // return {
+      //   "success": false,
+      //   "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
+      // };
     }
   }
 }

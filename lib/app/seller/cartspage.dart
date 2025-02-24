@@ -4,7 +4,8 @@ import 'package:myproject/Service/addservice.dart';
 import 'package:myproject/app/seller/sellerfooter.dart';
 
 class CartSPage extends StatefulWidget {
-  const CartSPage({super.key});
+  final int tab;
+  const CartSPage({super.key, required this.tab});
 
   @override
   State<CartSPage> createState() => _CartPageState();
@@ -52,7 +53,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
   void initState() {
     super.initState();
     loadall();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.tab);
   }
 
   // Helper method to filter products by step
@@ -124,7 +125,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                               for (int i = 0; i < pendingApproval.length; i += 1)
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
-                                  child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(pendingApproval[i])),
+                                  child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(pendingApproval[i], 1)),
                                 )
                             ],
                           )
@@ -175,7 +176,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                               for (int i = 0; i < pendingCollection.length; i += 1)
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
-                                  child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(pendingCollection[i])),
+                                  child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(pendingCollection[i], 2)),
                                 )
                             ],
                           )
@@ -205,10 +206,16 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
   // }
 
   // Helper method to build individual product cards
-  Widget buildProductCard(Deal deal) {
+  Widget buildProductCard(Deal deal, int tab) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/confirm-seller', arguments: deal.deal_id);
+        if (tab == 1) {
+          String temp =
+              '{"deal_id" : "${deal.deal_id}", "product_images" : "${deal.product_images[0]}", "product_name" : "${deal.product_name}", "product_condition" : "${deal.product_condition}", "stock": "${deal.product_qty}", "timeForSell": "${deal.product_date_exp}", "price": "${deal.product_price}", "seller_name": "${deal.seller_name}", "seller_faculty": "${deal.seller_faculty}", "seller_pic": "${deal.seller_pic}", "buyer_user_id": "${deal.buyer_user_id}", "product_id": "${deal.product_id}"}';
+          Navigator.pushReplacementNamed(context, '/confirm', arguments: {
+            'data': temp,
+          });
+        }
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
@@ -329,14 +336,15 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                   ],
                 ),
               ),
-              const SizedBox(
-                width: 30,
-                child: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: Color(0xFFA5A9B6),
-                  size: 24,
-                ),
-              )
+              if (tab == 1)
+                const SizedBox(
+                  width: 30,
+                  child: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Color(0xFFA5A9B6),
+                    size: 24,
+                  ),
+                )
             ],
           ),
         ),

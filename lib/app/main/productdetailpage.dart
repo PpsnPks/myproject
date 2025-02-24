@@ -3,6 +3,7 @@ import 'package:myproject/Service/messageservice.dart';
 import 'package:myproject/Service/productdetailservice.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/environment.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,8 +24,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   bool isLoading = true;
   late ProductDetail data;
 
-  // จำลอง userId สำหรับตัวอย่างนี้
-  final String userId = "";
+  String userId = "";
 
   void toggleLike() async {
     isLiked = !isLiked;
@@ -39,6 +39,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     setState(() {
       isLoading = true;
     });
+    userId = await Securestorage().readSecureData('userId');
     ProductDetail response = await ProductService().getProductById(widget.productId);
     setState(() {
       isLiked = response.isLiked;
@@ -49,6 +50,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   sendProductToMessage(String recieveId, String mess) async {
     await MessageService().sendChat(recieveId, mess);
+  }
+
+  createDeal(String productId) async {
+    bool response = await ProductService().createDeal(productId);
+    if (response) {
+      Navigator.pushNamed(context, '/message/${data.sellerId}', arguments: {'name': data.sellerName});
+    }
   }
 
   @override
@@ -221,26 +229,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     //   ),
                     //   child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
                     // ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              String temp =
-                                  '\$\$Product : {"id" : "${data.id}", "imageUrl" : "${data.imageUrl[0].replaceFirst(Environment.imgUrl, '')}", "name" : "${data.name}", "condition" : "${data.condition}", "price": "${data.price}"}';
-                              await sendProductToMessage(data.sellerId, temp);
-                              Navigator.pushNamed(context, '/message/${data.sellerId}', arguments: {'name': data.sellerName});
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              backgroundColor: const Color(0XFFE35205),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    if (userId != data.sellerId)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                String temp =
+                                    '\$\$Product : {"id" : "${data.id}", "imageUrl" : "${data.imageUrl[0].replaceFirst(Environment.imgUrl, '')}", "name" : "${data.name}", "condition" : "${data.condition}", "stock": "${data.stock}", "timeForSell": "${data.timeForSell}", "price": "${data.price}"}';
+                                await createDeal(data.id);
+                                await sendProductToMessage(data.sellerId, temp);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                backgroundColor: const Color(0XFFE35205),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              ),
+                              child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
                             ),
-                            child: const Text('แชท', style: TextStyle(fontSize: 18, color: Colors.white)),
                           ),
-                        ),
-                      ],
-                    )
+                        ],
+                      )
                   ],
                 ),
               )

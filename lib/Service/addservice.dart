@@ -514,7 +514,10 @@ class CartService {
         print('qqq1 $decodedResponse');
         if (decodedResponse != null) {
           print('qqq2.1');
-          List<Product> data = (decodedResponse as List).map((postJson) => Product.fromJson(postJson['product'])).toList();
+          List<Product> data = (decodedResponse as List)
+              .where((postJson) => postJson['status'] == 'success')
+              .map((postJson) => Product.fromJson(postJson['product']))
+              .toList();
           List<Seller> dataS = (decodedResponse).map((postJson) => Seller.fromJson(postJson['product']['seller'])).toList();
           return {"success": true, "data": data, "dataS": dataS};
         } else {
