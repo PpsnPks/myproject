@@ -27,6 +27,9 @@ class _AddProductPageState extends State<AddProductPage> {
   String? selectedUsagePeriod; // สำหรับ ระยะเวลาการใช้งาน
   String? selectedPickupLocation;
   String? selectedPickupCategory;
+  List category = [];
+  List<dynamic> tagList = []; // เก็บแท็กที่ได้จาก API
+  String? selectedTag;
 
   List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
@@ -44,8 +47,6 @@ class _AddProductPageState extends State<AddProductPage> {
   final TextEditingController _productDefectController = TextEditingController();
   final TextEditingController _productYearsController = TextEditingController();
   final TextEditingController _tagController = TextEditingController(); // ตัวควบคุม PageView
-
-  List category = [];
 
   resetData() {
     _productNameController.clear();
@@ -405,18 +406,29 @@ class _AddProductPageState extends State<AddProductPage> {
                   items: [
                     for (var item in category)
                       DropdownMenuItem<String>(
-                        value: item['category_name'], // ใช้การเข้าถึงข้อมูลแบบ Map
-                        child: Text(item['category_name']), // แสดง category_name
+                        value: item['id']?.toString() ?? "", // ป้องกัน null
+                        child: Text(item['category_name'] ?? "ไม่ระบุ"), // แสดงค่าเริ่มต้นหากเป็น null
                       ),
                   ],
-                  onChanged: (value) {
+                  onChanged: (value) async {
+                    if (value == null || value.isEmpty) return; // ป้องกันการตั้งค่าเป็น null
+
                     setState(() {
                       product_cate = value;
-                      _productCategoryController.text = value!;
+                      _productCategoryController.text = value;
+                      selectedTag = null; // รีเซ็ต tag ทุกครั้งที่เปลี่ยน category
+                      tagList = []; // รีเซ็ต dropdown tag
+                    });
+
+                    // 📌 เรียก API ดึงแท็กของหมวดหมู่ที่เลือก
+                    List<dynamic> tags = await Dropdownservice().getTag([int.parse(value)]);
+
+                    setState(() {
+                      tagList = tags;
                     });
                   },
-                  value: product_cate,
-                  hint: const Text('หมวดหมู่สินค้า'),
+                  value: product_cate?.isNotEmpty == true ? product_cate : null, // ป้องกันค่า null
+                  hint: const Text('หมวดหมู่'),
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -426,17 +438,41 @@ class _AddProductPageState extends State<AddProductPage> {
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  ),
+                  validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกหมวดหมู่" : null,
+                ),
+                const SizedBox(height: 8),
+                DropdownButtonFormField<String>(
+                  items: [
+                    for (var tag in tagList)
+                      DropdownMenuItem<String>(
+                        value: tag['id']?.toString() ?? "", // ป้องกัน null
+                        child: Text(tag['name'] ?? "ไม่มีชื่อแท็ก"),
+                      ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null || value.isEmpty) return; // ป้องกัน null
+
+                    setState(() {
+                      selectedTag = value;
+                      _tagController.text = value;
+                    });
+                  },
+                  value: selectedTag?.isNotEmpty == true ? selectedTag : null, // ป้องกันค่า null
+                  hint: const Text('แท็ก'),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
-                  validator: validateCategory,
+                  validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
                 ),
                 const SizedBox(height: 8),
                 Row(
