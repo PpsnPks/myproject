@@ -28,26 +28,28 @@ void fetchLikedProducts() async {
 
   try {
     Map<String, dynamic> response = await LikeService().getLikedProducts();
-    print(response);
+    print("Response: $response");
 
-    if (response['success'] && response['data'] is List) {
+    if (response['success'] == true && response['data'] is List) {
+      var dataList = response['data'] as List;
+
       setState(() {
-        like = List<Product>.from(
-          (response['data'] as List).map((item) {
-            return item is Product
-                ? item
-                : Product.fromJson(item);
-          }).whereType<Product>(),
-        );
+        like = dataList.every((item) => item is Product)
+            ? List<Product>.from(dataList) // ถ้าเป็น Product อยู่แล้ว
+            : dataList.map((item) => Product.fromJson(item as Map<String, dynamic>)).toList();
       });
+
+      print("Loaded Products: ${like.length}");
+      print(response['data']);
     } else {
-      // Show error message
+      print("Error: Invalid response format");
       setState(() {
         like = [];
       });
     }
   } catch (e) {
     print("Error fetching liked products: $e");
+  } finally {
     setState(() {
       isLoading = false;
     });
@@ -102,135 +104,109 @@ void fetchLikedProducts() async {
                 ),
               )
             : ListView.builder(
-                itemCount: like.length,
-                itemBuilder: (context, index) {
-                  final product = like[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/productdetail');
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 7.0),
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.blue, width: 2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Stack(
-                        children: [
-                          Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: CachedNetworkImage(
-                                  imageUrl: product.product_images.isNotEmpty
-                                      ? product.product_images[0]
-                                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                                  placeholder: (context, url) =>
-                                      LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      double size = constraints.maxHeight;
-                                      return SizedBox(
-                                        width: size,
-                                        height: size,
-                                        child: const Center(
-                                          child: CircularProgressIndicator(
-                                            color: Color(0XFFE35205),
-                                            strokeCap: StrokeCap.round,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  imageBuilder: (context, ImageProvider) {
-                                    return LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        double size = constraints.maxHeight;
-                                        return Container(
-                                          width: size,
-                                          height: size,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: ImageProvider,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  errorWidget: (context, url, error) =>
-                                      LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      double size = constraints.maxHeight;
-                                      return Container(
-                                        width: size,
-                                        height: size,
-                                        decoration: const BoxDecoration(
-                                          image: DecorationImage(
-                                            image: AssetImage(
-                                                "assets/images/notfound.png"),
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.product_name,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      product.product_price == '0.00' ? 'ฟรี' : '${product.product_price} ฿',
-                                      style: const TextStyle(
-                                          color: Color(0XFFE35205),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      product.product_description,
-                                      style: const TextStyle(
-                                          color: Colors.grey, fontSize: 13),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: IconButton(
-                              icon: const Icon(Icons.favorite, color: Colors.orange),
-                              onPressed: () async {
-                                await LikeService().unlikeProduct(product.id);
-                                fetchLikedProducts();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+              itemCount: like.length,
+              itemBuilder: (context, index) {
+                final product = like[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/productdetail/${product.id}',
+                 // ✅ ส่งข้อมูล product ไปที่หน้ารายละเอียด
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 7.0),
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Color(0xFFDFE2EC), width: 2),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  );
-                },
-              ),
+                    child: Stack(
+                      children: [
+                        Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: CachedNetworkImage(
+                                imageUrl: (product.product_images.isNotEmpty && product.product_images[0] != "")
+                                    ? product.product_images[0]
+                                    : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                                placeholder: (context, url) => SizedBox(
+                                  width: 80, // ✅ กำหนดขนาดรูป
+                                  height: 80, // ✅ กำหนดขนาดรูป
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Color(0XFFE35205),
+                                      strokeCap: StrokeCap.round,
+                                    ),
+                                  ),
+                                ),
+                                imageBuilder: (context, imageProvider) => Container(
+                                  width: 80, // ✅ กำหนดขนาดรูป
+                                  height: 80, // ✅ กำหนดขนาดรูป
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover, // ✅ ปรับให้รูปพอดี
+                                    ),
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Container(
+                                  width: 80, // ✅ กำหนดขนาดรูป
+                                  height: 80, // ✅ กำหนดขนาดรูป
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage("assets/images/notfound.png"),
+                                      fit: BoxFit.cover, // ✅ ปรับให้รูปพอดี
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.product_name,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold, fontSize: 16),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    (product.product_price == 0.0) // ✅ เช็กเป็น `double` แทน String
+                                        ? 'ฟรี'
+                                        : '${product.product_price} ฿',
+                                    style: const TextStyle(
+                                        color: Color(0XFFE35205),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    product.product_description,
+                                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+
     bottomNavigationBar: buyerFooter(context, 'like'),
   );
 }
