@@ -40,7 +40,7 @@ void main() {
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    title: "KMITL APP",
+    title: "KMITL Exchange",
     home: const LoginPage(),
     onGenerateRoute: (settings) {
       if (settings.name!.startsWith('/editproduct/')) {

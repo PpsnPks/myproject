@@ -34,9 +34,9 @@ class LikeService {
       }
 
       if (responseBody is List) {
-        List<ProductLike> data = responseBody.map((likeJson) {
+        List<Product> data = responseBody.map((likeJson) {
           // แปลงข้อมูลจาก likeJson ที่เป็น Product
-          return ProductLike.fromJson(likeJson['product']);
+          return Product.fromJson(likeJson['product']);
         }).toList();
 
         return {"success": true, "data": data};
@@ -59,7 +59,7 @@ class LikeService {
 
 
 
-  Future<bool> likeProduct(ProductLike product) async {
+  Future<bool> likeProduct(Product product) async {
     final url = Uri.parse('${Environment.baseUrl}/likes');
     try {
       String userId = Securestorage().readSecureData('userId');
@@ -98,56 +98,80 @@ class LikeService {
   }
 }
 
-class ProductLike {
+class Product {
   final String id;
-  final String productName;
-  final List<String> productImages;
-  final String productPrice;
-  final String productDescription;
-  final String productCategory;
-  final String productType;
-  final String sellerId;
-  final String dateExp;
-  final String productLocation;
-  final String productCondition;
-  final String productDefect;
-  final String productYears;
-  final List<String> tags;
+  final String product_name;
+  final List<dynamic> product_images;
+  final String product_qty;
+  final String product_price;
+  final String product_description;
+  final String product_category;
+  final String product_type;
+  final String seller_id;
+  final String date_exp;
+  final String product_location;
+  final String product_condition;
+  final String product_defect;
+  final String product_years;
+  final String tag;
 
-  ProductLike({
+  Product({
     required this.id,
-    required this.productName,
-    required this.productImages,
-    required this.productPrice,
-    required this.productDescription,
-    required this.productCategory,
-    required this.productType,
-    required this.sellerId,
-    required this.dateExp,
-    required this.productLocation,
-    required this.productCondition,
-    required this.productDefect,
-    required this.productYears,
-    required this.tags,
+    required this.product_name,
+    required this.product_images,
+    required this.product_qty,
+    required this.product_price,
+    required this.product_description,
+    required this.product_category,
+    required this.product_type,
+    required this.seller_id,
+    required this.date_exp,
+    required this.product_location,
+    required this.product_condition,
+    required this.product_defect,
+    required this.product_years,
+    required this.tag,
   });
 
-  factory ProductLike.fromJson(Map<String, dynamic> data) {
-  return ProductLike(
-    id: data['id']?.toString() ?? "", // ใช้ "" หาก id เป็น null
-    productName: data['product_name'] ?? "", // ใช้ "" หาก product_name เป็น null
-    productImages: List<String>.from(data['product_images'] ?? []), // ใช้ [] หาก product_images เป็น null
-    productPrice: data['product_price'] ?? "", // ใช้ "" หาก product_price เป็น null
-    productDescription: data['product_description'] ?? "", // ใช้ "" หาก product_description เป็น null
-    productCategory: data['product_category'] ?? "", // ใช้ "" หาก product_category เป็น null
-    productType: data['product_type'] ?? "", // ใช้ "" หาก product_type เป็น null
-    sellerId: data['seller_id'] ?? "", // ใช้ "" หาก seller_id เป็น null
-    dateExp: data['date_exp'] ?? "", // ใช้ "" หาก date_exp เป็น null
-    productLocation: data['product_location'] ?? "", // ใช้ "" หาก product_location เป็น null
-    productCondition: data['product_condition'] ?? "", // ใช้ "" หาก product_condition เป็น null
-    productDefect: data['product_defect'] ?? "", // ใช้ "" หาก product_defect เป็น null
-    productYears: data['product_years'] ?? "", // ใช้ "" หาก product_years เป็น null
-    tags: List<String>.from(data['tags'] ?? []), // ใช้ [] หาก tags เป็น null
-  );
-}
+  @override
+  String toString() {
+    return 'Product('
+        'id: $id, '
+        'product_name: $product_name, '
+        'product_images: $product_images, ' //${product_images.join(", ")}
+        'product_qty: $product_qty, '
+        'product_price: $product_price, '
+        'product_description: $product_description, '
+        'product_category: $product_category, '
+        'product_type: $product_type, '
+        'seller_id: $seller_id, '
+        'date_exp: $date_exp, '
+        'product_location: $product_location, '
+        'product_condition: $product_condition, '
+        'product_defect: $product_defect, '
+        'product_years: $product_years, '
+        'tags: $tag'
+        ')';
+  }
 
+  factory Product.fromJson(Map<String, dynamic> data) {
+    print('qqq2 $data');
+    return Product(
+      id: data['id']?.toString() ?? "",
+      product_name: data['product_name'] ?? "",
+      product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
+      product_qty: data['product_qty'].toString(),
+      product_price: data['product_price'] ?? "",
+      product_description: data['product_description'] ?? "",
+      product_category: data['product_category'] ?? "",
+      product_type: data['product_type'] ?? "",
+      seller_id: data['seller_id'].toString(),
+      date_exp: data['date_exp'] ?? "",
+      product_location: data['product_location'] ?? "",
+      product_condition: data['product_condition'] ?? "",
+      product_defect: data['product_defect'] ?? "",
+      product_years: data['product_years'] ?? "",
+      tag: data['tag'] ?? "",
+    );
+  }
 }

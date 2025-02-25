@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postdetailservice.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class PostDetailPage extends StatefulWidget {
   final String postId;
@@ -88,9 +85,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 Text('โพสต์โดย',style: const TextStyle(fontWeight: FontWeight.bold)),
                 Row(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(post.profilePic),
-                      radius: 20,
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/viewprofile',
+                          arguments: {'userId': post.userId}, // ส่ง userId ไปด้วย
+                        );
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(post.profilePic),
+                        radius: 20,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Column(
@@ -103,9 +109,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ],
                 ),
                 const SizedBox(height: 10),
-
-                // Stock & Buttons
-                // You can add stock info or other relevant fields as necessary
                 const SizedBox(height: 20),
                 Row(
                   children: [

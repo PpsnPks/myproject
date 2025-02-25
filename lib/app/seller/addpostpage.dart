@@ -26,8 +26,10 @@ class _AddPostPageState extends State<AddPostPage> {
 
   final List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0;
-  String? product_cate; 
-   List category = [];// ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
+  List category = [];
+  List<dynamic> tagList = []; // เก็บแท็กที่ได้จาก API
+  String? selectedTag; // เก็บค่า tag ที่เลือก
+  String? product_cate; // เก็บค่า category ที่เลือก
   final PageController _pageController = PageController(); // ตัวควบคุม PageView
 
   List<XFile> pickedFiles = [];
@@ -88,13 +90,47 @@ class _AddPostPageState extends State<AddPostPage> {
   }
 
   getDropdown() async {
-    var datacategory = await Dropdownservice().getCategory();
-    print('category $datacategory');
+    try {
+      List<dynamic> datacategory = await Dropdownservice().getCategory();
 
-    setState(() {
-      category = datacategory;
-    });
+      if (datacategory.isEmpty) {
+        print("⚠️ ไม่มีหมวดหมู่ที่ได้จาก API");
+      } else {
+        print("📌 หมวดหมู่ที่ได้: $datacategory");
+      }
+
+      setState(() {
+        category = datacategory;
+      });
+    } catch (e) {
+      print("❌ Error: $e");
+    }
   }
+
+  getTag(List<int> categoryIds) async {
+    if (categoryIds.isEmpty) {
+      print("⚠️ ต้องเลือกหมวดหมู่ก่อน!");
+      return;
+    }
+
+    try {
+      List<dynamic> tags = await Dropdownservice().getTag(categoryIds);
+
+      if (tags.isEmpty) {
+        print("⚠️ ไม่มีแท็กที่ได้จาก API");
+      } else {
+        print("📌 แท็กที่ได้: $tags");
+      }
+
+      setState(() {
+        tagList = tags; // อัปเดต state สำหรับ dropdown ของแท็ก
+      });
+    } catch (e) {
+      print("❌ Error: $e");
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -225,17 +261,28 @@ class _AddPostPageState extends State<AddPostPage> {
                   items: [
                     for (var item in category)
                       DropdownMenuItem<String>(
-                        value: item['category_name'], // ใช้การเข้าถึงข้อมูลแบบ Map
-                        child: Text(item['category_name']), // แสดง category_name
+                        value: item['id']?.toString() ?? "", // ป้องกัน null
+                        child: Text(item['category_name'] ?? "ไม่ระบุ"), // แสดงค่าเริ่มต้นหากเป็น null
                       ),
                   ],
-                  onChanged: (value) {
+                  onChanged: (value) async {
+                    if (value == null || value.isEmpty) return; // ป้องกันการตั้งค่าเป็น null
+
                     setState(() {
                       product_cate = value;
-                      _categoryController.text = value!;
+                      _categoryController.text = value;
+                      selectedTag = null; // รีเซ็ต tag ทุกครั้งที่เปลี่ยน category
+                      tagList = []; // รีเซ็ต dropdown tag
+                    });
+
+                    // 📌 เรียก API ดึงแท็กของหมวดหมู่ที่เลือก
+                    List<dynamic> tags = await Dropdownservice().getTag([int.parse(value)]);
+
+                    setState(() {
+                      tagList = tags;
                     });
                   },
-                  value: product_cate,
+                  value: product_cate?.isNotEmpty == true ? product_cate : null, // ป้องกันค่า null
                   hint: const Text('หมวดหมู่'),
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -246,23 +293,30 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
-                      borderRadius: BorderRadius.circular(12),
-                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
-                  validator: validateCategory,
+                  validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกหมวดหมู่" : null,
                 ),
                 const SizedBox(height: 8),
-                TextFormField(
-                  controller: _tagController,
+                DropdownButtonFormField<String>(
+                  items: [
+                    for (var tag in tagList)
+                      DropdownMenuItem<String>(
+                        value: tag['id']?.toString() ?? "", // ป้องกัน null
+                        child: Text(tag['name'] ?? "ไม่มีชื่อแท็ก"),
+                      ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null || value.isEmpty) return; // ป้องกัน null
+
+                    setState(() {
+                      selectedTag = value;
+                      _tagController.text = value;
+                    });
+                  },
+                  value: selectedTag?.isNotEmpty == true ? selectedTag : null, // ป้องกันค่า null
+                  hint: const Text('แท็ก'),
                   decoration: InputDecoration(
-                    labelText: 'แท็ก',
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
@@ -273,7 +327,7 @@ class _AddPostPageState extends State<AddPostPage> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
-                  validator: validateTag,
+                  validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
                 ),
                 const SizedBox(height: 8),
                 TextFormField(

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/messageservice.dart';
 import 'package:myproject/Service/productdetailservice.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/environment.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myproject/app/main/secureStorage.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String productId;
@@ -198,9 +194,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     Text('โพสต์โดย', style: const TextStyle(fontWeight: FontWeight.bold)),
                     Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(data.sellerPic),
-                          radius: 20,
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/viewprofile',
+                              arguments: {'userId': data.sellerId}, // ส่ง userId ไปด้วย
+                            );
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(data.sellerPic),
+                            radius: 20,
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Column(

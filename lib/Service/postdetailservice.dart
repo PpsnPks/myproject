@@ -46,6 +46,7 @@ class Post {
   final String postImage;
   final String category;
   final String price;
+  final int userId;
 
   Post({
     required this.profilePic,
@@ -56,6 +57,7 @@ class Post {
     required this.postImage,
     required this.category,
     required this.price,
+    required this.userId,
   });
 
   factory Post.fromJson(Map<String, dynamic> data) {
@@ -68,6 +70,8 @@ class Post {
       postImage: '${Environment.imgUrl}/${data['image']}',
       category: data['category'] ?? '',
       price: data['price'] ?? '',
+      userId: data['user']['id'] ?? '',
     );
   }
+
 }
