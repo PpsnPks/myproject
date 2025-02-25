@@ -83,16 +83,18 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
           ),
           Positioned(
             top: 30,
-            right: 30,
-            child: GestureDetector(
-              onTap: () {
+            right: 10,
+            child: IconButton(
+              onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Icon(
+              icon: const Icon(
                 Icons.close,
                 color: Colors.white,
-                size: 30,
               ),
+              iconSize: 32, // ลดขนาดไอคอนให้พอดีกับ Container
+              padding: EdgeInsets.zero, // ลบ Padding ออกเพื่อให้อยู่ตรงกลางจริง ๆ
+              constraints: const BoxConstraints(),
             ),
           ),
           // Positioned(top: 40, right: 30, child: Text(widget.image, style: const TextStyle(color: Colors.white))),

@@ -296,7 +296,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                       maxLines: 1,
                     ),
                     Text(
-                      '${deal.product_price} ฿',
+                      deal.product_price == '0' || deal.product_price == '0.00' ? 'ฟรี' : '${deal.product_price} ฿',
                       style: const TextStyle(color: Color(0XFFE35205), fontSize: 18, fontWeight: FontWeight.w500, height: 1.0),
                     ),
                     SizedBox(

@@ -16,7 +16,7 @@ class ConfirmSellerPage extends StatefulWidget {
 }
 
 class _ConfirmState extends State<ConfirmSellerPage> {
-  late Future<List<ProductLike>> likedProducts;
+  // late Future<List<ProductLike>> likedProducts;
   final userId = Securestorage().readSecureData('userId');
   bool isLoading = false;
   // String b =

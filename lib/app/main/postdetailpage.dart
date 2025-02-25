@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/postdetailservice.dart';
 
@@ -42,75 +43,140 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
           final post = snapshot.data!;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Product Images
-                if (post.postImage.isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12), // ปรับให้กรอบมีมุมมน
-                  child: SizedBox(
-                    height: 300,
-                    child: PageView.builder(
-                      itemCount: 1, // Assuming there's only one image per post
-                      itemBuilder: (context, index) {
-                        return Image.network(
-                          post.postImage,
-                          fit: BoxFit.cover, // ทำให้รูปเต็มกรอบ
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            color: Colors.grey[300],
-                            child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Product Images
+                          if (post.postImage.isNotEmpty)
+                            GestureDetector(
+                              onTap: () => {
+                                Navigator.pushNamed(context, '/fullimage', arguments: {'image': post.postImage})
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12), // ปรับให้กรอบมีมุมมน
+                                child: SizedBox(
+                                  height: 300,
+                                  child: PageView.builder(
+                                    itemCount: 1, // Assuming there's only one image per post
+                                    itemBuilder: (context, index) {
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: CachedNetworkImage(
+                                          imageUrl: post.postImage.isNotEmpty
+                                              ? post.postImage
+                                              : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                                          placeholder: (context, url) => LayoutBuilder(
+                                            builder: (context, constraints) {
+                                              double size = constraints.maxWidth;
+                                              return SizedBox(
+                                                width: size,
+                                                height: size, // ให้สูงเท่ากับกว้าง
+                                                child: const Center(
+                                                  child: CircularProgressIndicator(
+                                                    color: Color(0XFFE35205),
+                                                    strokeCap: StrokeCap.round,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          imageBuilder: (context, ImageProvider) {
+                                            return LayoutBuilder(
+                                              builder: (context, constraints) {
+                                                double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                                                return Container(
+                                                  width: size,
+                                                  height: size, // ให้ height เท่ากับ width
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: ImageProvider,
+                                                      fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                          errorWidget: (context, url, error) => LayoutBuilder(
+                                            builder: (context, constraints) {
+                                              double size = constraints.maxWidth;
+                                              return Container(
+                                                width: size,
+                                                height: size,
+                                                decoration: const BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 10),
+                          // Product Name
+                          Text(post.detail, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 10),
+
+                          // Product Price
+                          Text('฿${post.price}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 10),
+
+                          // Product Details
+                          _buildDetailText('หมวดหมู่', post.category),
+                          const SizedBox(height: 10),
+
+                          // Seller Info
+                          const Text('โพสต์โดย', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/viewprofile',
+                                    arguments: {'userId': post.userId}, // ส่ง userId ไปด้วย
+                                  );
+                                },
+                                child: CircleAvatar(
+                                  backgroundImage: NetworkImage(post.profilePic),
+                                  radius: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(post.faculty),
+                                ],
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
+                          const SizedBox(height: 10),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                // Product Name
-                Text(post.detail, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-
-                // Product Price
-                Text('฿${post.price}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-
-                // Product Details
-                _buildDetailText('หมวดหมู่', post.category),
-                const SizedBox(height: 10),
-
-                // Seller Info
-                Text('โพสต์โดย',style: const TextStyle(fontWeight: FontWeight.bold)),
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/viewprofile',
-                          arguments: {'userId': post.userId}, // ส่ง userId ไปด้วย
-                        );
-                      },
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(post.profilePic),
-                        radius: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        Text('${post.faculty}'),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                const SizedBox(height: 20),
-                Row(
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
@@ -126,9 +192,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       ),
                     ),
                   ],
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           );
         },
       ),
@@ -147,4 +213,3 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 }
-

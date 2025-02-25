@@ -32,11 +32,11 @@ class LoginService {
       );
 
       // พิมพ์ response.body เพื่อดูข้อมูลที่ได้รับจาก API
-      print("Response body: ${response.body}");
-
+      print("aa Response body: ${response.statusCode}} ${response.body}");
       // ตรวจสอบสถานะของ Response
-      if (response.statusCode == 200 || response.statusCode == 404) {
+      if (response.statusCode == 200) {
         // แปลง JSON เป็น Map
+
         var data = jsonDecode(response.body);
         String accessToken = data['token'];
 

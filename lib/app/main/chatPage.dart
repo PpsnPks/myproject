@@ -182,7 +182,7 @@ class NotificationCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: ImageProvider,
-                                fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                                fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
                               ),
                             ),
                           );
@@ -198,7 +198,7 @@ class NotificationCard extends StatelessWidget {
                           decoration: const BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         );

@@ -55,6 +55,7 @@ class _MessagepageState extends State<Messagepage> {
   String _dots = "";
   final FocusNode _focusNode = FocusNode(); // FocusNode ใช้จัดการการโฟกัส
   void addMessage() async {
+    if (!mounted) return;
     print('qqqqqqqqqqqqqqqqqqqqqqqqqqqq');
     var response = await MessageService().getoldMessage(widget.receiverId);
     print('ssssssssssssssssssssssssssss');
@@ -141,8 +142,9 @@ class _MessagepageState extends State<Messagepage> {
 
   @override
   void dispose() {
-    super.dispose();
+    PusherService().disconnectPusher(widget.receiverId);
     _focusNode.dispose();
+    super.dispose();
   }
 
   @override

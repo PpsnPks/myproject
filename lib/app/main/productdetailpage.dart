@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/messageservice.dart';
 import 'package:myproject/Service/productdetailservice.dart';
@@ -96,11 +97,66 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             child: PageView.builder(
                               itemCount: data.imageUrl.length,
                               itemBuilder: (context, index) {
-                                return Image.network(
-                                  data.imageUrl[index],
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: CachedNetworkImage(
+                                    imageUrl: data.imageUrl[index].isNotEmpty
+                                        ? data.imageUrl[index]
+                                        : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                                    placeholder: (context, url) => LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        double size = constraints.maxWidth;
+                                        return SizedBox(
+                                          width: size,
+                                          height: size, // ให้สูงเท่ากับกว้าง
+                                          child: const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Color(0XFFE35205),
+                                              strokeCap: StrokeCap.round,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    imageBuilder: (context, ImageProvider) {
+                                      return LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                                          return Container(
+                                            width: size,
+                                            height: size, // ให้ height เท่ากับ width
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: ImageProvider,
+                                                fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    errorWidget: (context, url, error) => LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        double size = constraints.maxWidth;
+                                        return Container(
+                                          width: size,
+                                          height: size,
+                                          decoration: const BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 );
+                                // Image.network(
+                                //   data.imageUrl[index],
+                                //   fit: BoxFit.cover,
+                                //   errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                                // );
                               },
                               onPageChanged: (index) {
                                 setState(() {
