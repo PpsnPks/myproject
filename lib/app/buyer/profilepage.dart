@@ -31,75 +31,73 @@ class _ProfilePageState extends State<ProfilePage> {
   String address = '';
 
   Future<void> getDataUser() async {
-  final id = await Securestorage().readSecureData('userId');
-  final response = await UserService().getUserById(int.parse(id));
+    final id = await Securestorage().readSecureData('userId');
+    final response = await UserService().getUserById(int.parse(id));
 
-  if (response['success']) {
-    final customer = response['data'];
+    if (response['success']) {
+      final customer = response['data'];
 
-    if (customer != null) {
-      setState(() {
-        pic = customer['pic'] ?? ''; // ถ้า pic เป็น null ให้ใช้ค่าเริ่มต้น
-        var phoneNumber = customer['mobile'] ?? '0000000000';
-        var email = customer['email'] ?? 'unknown@example.com';
+      if (customer != null) {
+        setState(() {
+          pic = customer['pic'] ?? ''; // ถ้า pic เป็น null ให้ใช้ค่าเริ่มต้น
+          var phoneNumber = customer['mobile'] ?? '0000000000';
+          var email = customer['email'] ?? 'unknown@example.com';
 
-        // เช็คความยาวของเบอร์โทรและอีเมลก่อน substring
-        if (phoneNumber.length >= 10) {
-          hidePhone = '${phoneNumber.substring(0, 3)}-***-${phoneNumber.substring(6)}';
-        } else {
-          hidePhone = phoneNumber; // กรณีเบอร์ไม่ครบ 10 ตัว
-        }
+          // เช็คความยาวของเบอร์โทรและอีเมลก่อน substring
+          if (phoneNumber.length >= 10) {
+            hidePhone = '${phoneNumber.substring(0, 3)}-***-${phoneNumber.substring(6)}';
+          } else {
+            hidePhone = phoneNumber; // กรณีเบอร์ไม่ครบ 10 ตัว
+          }
 
-        if (email.length >= 8) {
-          hideEmail = '${email.substring(0, 3)}***${email.substring(6)}';
-        } else {
-          hideEmail = email; // กรณีอีเมลไม่ครบ 8 ตัว
-        }
+          if (email.length >= 8) {
+            hideEmail = '${email.substring(0, 3)}***${email.substring(6)}';
+          } else {
+            hideEmail = email; // กรณีอีเมลไม่ครบ 8 ตัว
+          }
 
-        studentID = email.length >= 8 ? '${email.substring(0, 8)}' : email;
-        name = customer['name'] ?? 'ไม่ระบุชื่อ';
-        faculty = customer['faculty'] ?? 'ไม่ระบุคณะ';
-        department = customer['department'] ?? 'ไม่ระบุภาควิชา';
-        classyear = customer['classyear'] ?? 'ไม่ระบุชั้นปี';
-        address = customer['address'] ?? 'ไม่ระบุที่อยู่';
-      });
+          studentID = email.length >= 8 ? '${email.substring(0, 8)}' : email;
+          name = customer['name'] ?? 'ไม่ระบุชื่อ';
+          faculty = customer['faculty'] ?? 'ไม่ระบุคณะ';
+          department = customer['department'] ?? 'ไม่ระบุภาควิชา';
+          classyear = customer['classyear'] ?? 'ไม่ระบุชั้นปี';
+          address = customer['address'] ?? 'ไม่ระบุที่อยู่';
+        });
+      }
     }
   }
-}
-
-
 
   bool loadingPost = false;
   List<Post> homePosts = [];
 
   void getPost(int userId) async {
-  try {
-    setState(() {
-      loadingPost = true;
-    });
+    try {
+      setState(() {
+        loadingPost = true;
+      });
 
-    // เรียก API โดยส่ง userId ที่สามารถปรับเปลี่ยนได้
-    final response = await PostService().getPostUser(userId); // ส่ง userId ที่รับมา
+      // เรียก API โดยส่ง userId ที่สามารถปรับเปลี่ยนได้
+      final response = await PostService().getPostUser(userId); // ส่ง userId ที่รับมา
 
-    if (response['success']) {
+      if (response['success']) {
+        setState(() {
+          loadingPost = false;
+          homePosts = response['data']; // ดึงข้อมูลโพสต์มาเก็บใน homePosts
+        });
+      } else {
+        setState(() {
+          loadingPost = false;
+        });
+        throw Exception('Failed to load posts');
+      }
+    } catch (e) {
       setState(() {
         loadingPost = false;
-        homePosts = response['data']; // ดึงข้อมูลโพสต์มาเก็บใน homePosts
       });
-    } else {
-      setState(() {
-        loadingPost = false;
-      });
-      throw Exception('Failed to load posts');
+      print("Error loading posts: $e");
+      return; // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
     }
-  } catch (e) {
-    setState(() {
-      loadingPost = false;
-    });
-    print("Error loading posts: $e");
-    return; // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
   }
-}
 
   void getRole() async {
     role = await Securestorage().readSecureData('role');
@@ -117,31 +115,32 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
-void initState() {
-  super.initState();
-  initData();
-}
-
-Future<void> initData() async {
-  try {
-    // ดึงค่า userId จาก SecureStorage
-    final id = await Securestorage().readSecureData('userId');
-    
-    if (id != null) {
-      getPost(int.parse(id));  // ส่ง userId ไปใน getPost
-      getRole();
-      getDataUser();
-    } else {
-      print('User ID not found');
-    }
-  } catch (e) {
-    print("Error initializing data: $e");
+  void initState() {
+    super.initState();
+    initData();
   }
-}
+
+  Future<void> initData() async {
+    try {
+      // ดึงค่า userId จาก SecureStorage
+      final id = await Securestorage().readSecureData('userId');
+
+      if (id != null) {
+        getPost(int.parse(id)); // ส่ง userId ไปใน getPost
+        getRole();
+        getDataUser();
+      } else {
+        print('User ID not found');
+      }
+    } catch (e) {
+      print("Error initializing data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("โปรไฟล์"),
         centerTitle: true,
@@ -176,49 +175,48 @@ Future<void> initData() async {
                           showModalBottomSheet(
                             context: context,
                             builder: (BuildContext context) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                    leading: const Icon(Icons.info_outline_rounded),
-                                    title: const Text('การใช้งาน'),
-                                    onTap: () {
-                                      // Handle personal info action
-                                      Navigator.pop(context); // Close the bottom sheet
-                                      Navigator.pushNamed(context, '');
-                                      // Navigate to personal information page if needed
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: const Icon(Icons.info_outline_rounded),
-                                    title: const Text('การใช้งาน'),
-                                    onTap: () {
-                                      // Handle personal info action
-                                      Navigator.pop(context); // Close the bottom sheet
-                                      Navigator.pushNamed(context, '');
-                                      // Navigate to personal information page if needed
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: const Icon(Icons.info_outline_rounded),
-                                    title: const Text('การใช้งาน'),
-                                    onTap: () {
-                                      // Handle personal info action
-                                      Navigator.pop(context); // Close the bottom sheet
-                                      Navigator.pushNamed(context, '');
-                                      // Navigate to personal information page if needed
-                                    },
-                                  ),
-                                ]
-                              );
+                              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                                ListTile(
+                                  leading: const Icon(Icons.info_outline_rounded),
+                                  title: const Text('การใช้งาน'),
+                                  onTap: () {
+                                    // Handle personal info action
+                                    Navigator.pop(context); // Close the bottom sheet
+                                    Navigator.pushNamed(context, '');
+                                    // Navigate to personal information page if needed
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.info_outline_rounded),
+                                  title: const Text('การใช้งาน'),
+                                  onTap: () {
+                                    // Handle personal info action
+                                    Navigator.pop(context); // Close the bottom sheet
+                                    Navigator.pushNamed(context, '');
+                                    // Navigate to personal information page if needed
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.info_outline_rounded),
+                                  title: const Text('การใช้งาน'),
+                                  onTap: () {
+                                    // Handle personal info action
+                                    Navigator.pop(context); // Close the bottom sheet
+                                    Navigator.pushNamed(context, '');
+                                    // Navigate to personal information page if needed
+                                  },
+                                ),
+                              ]);
                             },
                           );
                         },
                       ),
                       ListTile(
                         leading: const Icon(Icons.exit_to_app_outlined, color: Colors.red),
-                        title: const Text('ออกจากระบบ',
-                          style: TextStyle(color: Colors.red),),
+                        title: const Text(
+                          'ออกจากระบบ',
+                          style: TextStyle(color: Colors.red),
+                        ),
                         onTap: () {
                           // Handle logout action
                           Navigator.pop(context); // Close the bottom sheet
@@ -403,99 +401,99 @@ Future<void> initData() async {
 
   // Buyer Grid View
   Widget buildBuyerGridView() {
-  if (homePosts.isEmpty) {
-    return const Center(
-      child: Text(
-        'ยังไม่มีโพสต์',
-        style: TextStyle(fontSize: 16, color: Colors.grey),
-      ),
-    );
-  }
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: GridView.builder(
-      itemCount: homePosts.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 0.8,
-      ),
-      itemBuilder: (context, index) {
-        final post = homePosts[index]; // ดึงโพสต์จาก homePosts
-        return InkWell(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              '/postdetail/${post.id}',
-            );
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: CachedNetworkImage(
-                    imageUrl: post.imageUrl,
-                    placeholder: (context, url) => const SizedBox(
-                      width: double.infinity,
-                      height: 64,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0XFFE35205),
-                          strokeCap: StrokeCap.round,
-                        ),
-                      ),
-                    ),
-                    imageBuilder: (context, ImageProvider) {
-                      return Container(
+    if (homePosts.isEmpty) {
+      return const Center(
+        child: Text(
+          'ยังไม่มีโพสต์',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: GridView.builder(
+        itemCount: homePosts.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 0.8,
+        ),
+        itemBuilder: (context, index) {
+          final post = homePosts[index]; // ดึงโพสต์จาก homePosts
+          return InkWell(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/postdetail/${post.id}',
+              );
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: CachedNetworkImage(
+                      imageUrl: post.imageUrl,
+                      placeholder: (context, url) => const SizedBox(
                         width: double.infinity,
                         height: 64,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(image: ImageProvider, fit: BoxFit.fill),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0XFFE35205),
+                            strokeCap: StrokeCap.round,
+                          ),
                         ),
-                      );
-                    },
-                    errorWidget: (context, url, error) => LayoutBuilder(
-                      builder: (context, constraints) {
-                        double size = constraints.maxWidth;
+                      ),
+                      imageBuilder: (context, ImageProvider) {
                         return Container(
-                          width: size,
-                          height: size,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/notfound.png"),
-                              fit: BoxFit.fill,
-                            ),
+                          width: double.infinity,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(image: ImageProvider, fit: BoxFit.fill),
                           ),
                         );
                       },
+                      errorWidget: (context, url, error) => LayoutBuilder(
+                        builder: (context, constraints) {
+                          double size = constraints.maxWidth;
+                          return Container(
+                            width: size,
+                            height: size,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/notfound.png"),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    post.detail, // แสดงชื่อโพสต์
-                    style: const TextStyle(fontSize: 14),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      post.detail, // แสดงชื่อโพสต์
+                      style: const TextStyle(fontSize: 14),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    ),
-  );
-}
+          );
+        },
+      ),
+    );
+  }
 
   // Buyer History View
   Widget buildBuyerHistoryView() {

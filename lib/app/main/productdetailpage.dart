@@ -65,6 +65,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text("รายละเอียดสินค้า"),
           centerTitle: true,
@@ -128,7 +129,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             decoration: BoxDecoration(
                                               image: DecorationImage(
                                                 image: ImageProvider,
-                                                fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                                                fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
                                               ),
                                             ),
                                           );
@@ -144,7 +145,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           decoration: const BoxDecoration(
                                             image: DecorationImage(
                                               image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                         );

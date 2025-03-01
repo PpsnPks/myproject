@@ -59,6 +59,7 @@ class _LikePageState extends State<LikePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("ถูกใจ"),
         centerTitle: true,
@@ -113,6 +114,7 @@ class _LikePageState extends State<LikePage> {
                         );
                       },
                       child: Container(
+                        height: 130,
                         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 7.0),
                         padding: const EdgeInsets.all(10.0),
                         decoration: BoxDecoration(
@@ -124,42 +126,97 @@ class _LikePageState extends State<LikePage> {
                           children: [
                             Row(
                               children: [
+                                // ClipRRect(
+                                //   borderRadius: BorderRadius.circular(12),
+                                //   child: CachedNetworkImage(
+                                //     imageUrl: (product.product_images.isNotEmpty && product.product_images[0] != "")
+                                //         ? product.product_images[0]
+                                //         : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                                //     placeholder: (context, url) => const SizedBox(
+                                //       width: 80, // ✅ กำหนดขนาดรูป
+                                //       height: 80, // ✅ กำหนดขนาดรูป
+                                //       child: Center(
+                                //         child: CircularProgressIndicator(
+                                //           color: Color(0XFFE35205),
+                                //           strokeCap: StrokeCap.round,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     imageBuilder: (context, imageProvider) => Container(
+                                //       width: 80, // ✅ กำหนดขนาดรูป
+                                //       height: 80, // ✅ กำหนดขนาดรูป
+                                //       decoration: BoxDecoration(
+                                //         borderRadius: BorderRadius.circular(8),
+                                //         image: DecorationImage(
+                                //           image: imageProvider,
+                                //           fit: BoxFit.cover, // ✅ ปรับให้รูปพอดี
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     errorWidget: (context, url, error) => Container(
+                                //       width: 80, // ✅ กำหนดขนาดรูป
+                                //       height: 80, // ✅ กำหนดขนาดรูป
+                                //       decoration: const BoxDecoration(
+                                //         image: DecorationImage(
+                                //           image: AssetImage("assets/images/notfound.png"),
+                                //           fit: BoxFit.cover, // ✅ ปรับให้รูปพอดี
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(8),
                                   child: CachedNetworkImage(
-                                    imageUrl: (product.product_images.isNotEmpty && product.product_images[0] != "")
+                                    imageUrl: product.product_images.isNotEmpty
                                         ? product.product_images[0]
                                         : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                                    placeholder: (context, url) => const SizedBox(
-                                      width: 80, // ✅ กำหนดขนาดรูป
-                                      height: 80, // ✅ กำหนดขนาดรูป
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: Color(0XFFE35205),
-                                          strokeCap: StrokeCap.round,
-                                        ),
-                                      ),
+                                    placeholder: (context, url) => LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        double size = constraints.maxHeight;
+                                        return SizedBox(
+                                          width: size,
+                                          height: size, // ให้สูงเท่ากับกว้าง
+                                          child: const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Color(0XFFE35205),
+                                              strokeCap: StrokeCap.round,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                    imageBuilder: (context, imageProvider) => Container(
-                                      width: 80, // ✅ กำหนดขนาดรูป
-                                      height: 80, // ✅ กำหนดขนาดรูป
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover, // ✅ ปรับให้รูปพอดี
-                                        ),
-                                      ),
-                                    ),
-                                    errorWidget: (context, url, error) => Container(
-                                      width: 80, // ✅ กำหนดขนาดรูป
-                                      height: 80, // ✅ กำหนดขนาดรูป
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage("assets/images/notfound.png"),
-                                          fit: BoxFit.cover, // ✅ ปรับให้รูปพอดี
-                                        ),
-                                      ),
+                                    imageBuilder: (context, ImageProvider) {
+                                      return LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          double size = constraints.maxHeight; // ใช้ maxWidth เป็นขนาดของ width และ height
+                                          return Container(
+                                            width: size,
+                                            height: size, // ให้ height เท่ากับ width
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: ImageProvider,
+                                                fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    errorWidget: (context, url, error) => LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        double size = constraints.maxHeight;
+                                        return Container(
+                                          width: size,
+                                          height: size,
+                                          decoration: const BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),

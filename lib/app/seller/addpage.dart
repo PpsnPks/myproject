@@ -223,6 +223,7 @@ class _AddProductPageState extends State<AddProductPage> {
         title: const Text("เพิ่ม"),
         centerTitle: true,
         backgroundColor: Colors.white,
+        elevation: 0, // ปิดเงา
       ),
       body: SingleChildScrollView(
         child: Padding(

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
+import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:myproject/service/Chatservice.dart';
 
 class Chatpage extends StatefulWidget {
@@ -15,6 +17,11 @@ class _ChatpageState extends State<Chatpage> {
   late Future<List<ProductChat>> likedProducts;
   bool isLoading = true;
   List<Chat> chats = [];
+  String role = '';
+
+  void getRole() async {
+    role = await Securestorage().readSecureData('role');
+  }
 
   void getAllChat() async {
     Map<String, dynamic> response = await Chatservice().getAllChat();
@@ -43,9 +50,11 @@ class _ChatpageState extends State<Chatpage> {
 
   @override
   void initState() {
+    getRole();
+    getAllChat();
+
     super.initState();
     // เรียก Chatservice เพื่อดึงข้อมูลสินค้าที่ถูกใจ
-    getAllChat();
     // likedProducts = Chatservice().getLikedProducts();
   }
 
@@ -98,7 +107,12 @@ class _ChatpageState extends State<Chatpage> {
                     );
                   },
                 ),
-      bottomNavigationBar: buyerFooter(context, 'chat'),
+      bottomNavigationBar: role == 'buy'
+          ? buyerFooter(context, 'chat')
+          : role == 'sell'
+              ? sellerFooter(context, 'chat')
+              : null,
+      // bottomNavigationBar: buyerFooter(context, 'chat'),
     );
   }
 }

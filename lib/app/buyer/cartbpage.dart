@@ -61,6 +61,7 @@ class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         title: const Text("รายการ"),
         centerTitle: true,

@@ -11,6 +11,7 @@ import 'package:myproject/app/main/info3.dart';
 import 'package:myproject/app/main/infoprofile.dart';
 import 'package:myproject/app/main/login.dart';
 import 'package:myproject/app/main/message.dart';
+import 'package:myproject/app/main/newpassword.dart';
 import 'package:myproject/app/main/postdetailpage.dart';
 import 'package:myproject/app/main/productdetailpage.dart';
 import 'package:myproject/app/main/register.dart';
@@ -82,6 +83,11 @@ void main() {
         final args = settings.arguments as Map<String, String>;
         return SlidePageRoute(
           page: ConfirmSellerPage(data: args['data'] ?? ''),
+        );
+      } else if (settings.name!.startsWith('/newpassword')) {
+        final args = settings.arguments as Map<String, String>;
+        return SlidePageRoute(
+          page: NewPasswordPage(data: args['data'] ?? ''),
         );
       }
       return null;
