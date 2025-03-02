@@ -1,37 +1,24 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import 'package:myproject/environment.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class NewPasswordPage extends StatefulWidget {
+  final String data;
+  const NewPasswordPage({super.key, required this.data});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<NewPasswordPage> createState() => _NewPasswordPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _NewPasswordPageState extends State<NewPasswordPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
   bool _obscureText = true;
   bool _obscureText2 = true;
-
-  String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'กรุณากรอกอีเมล';
-    }
-    final emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    final kmitlRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@kmitl\.ac\.th$');
-    if (!emailRegExp.hasMatch(value)) {
-      return 'รูปแบบอีเมลไม่ถูกต้อง';
-    } else if (!kmitlRegExp.hasMatch(value)) {
-      return 'กรุณาลงทะเบียนด้วยอีเมลของสถาบัน';
-    }
-    return null;
-  }
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
@@ -59,13 +46,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  String? validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'กรุณากรอกชื่อผู้ใช้';
-    }
-    return null;
-  }
-
   Future<void> registerUser() async {
     showDialog(
       context: context,
@@ -84,13 +64,10 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       },
     );
-    if (_emailController.text.isNotEmpty &&
-        _nameController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty &&
-        _confirmPasswordController.text.isNotEmpty) {
+    if (_otpController.text.isNotEmpty && _passwordController.text.isNotEmpty && _confirmPasswordController.text.isNotEmpty) {
       Map<String, dynamic> userData = {
-        'name': _nameController.text,
-        'email': _emailController.text,
+        "email": widget.data,
+        'reset_code': _otpController.text,
         'password': _passwordController.text,
         'password_confirmation': _confirmPasswordController.text,
       };
@@ -112,20 +89,20 @@ class _RegisterPageState extends State<RegisterPage> {
           print(userId); // ดึงค่า user_id จากการตอบสนอง
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ลงทะเบียนสำเร็จ')),
+            const SnackBar(content: Text('เปลี่ยนรหัสผ่านสำเร็จ')),
           );
           print('Navigating to OTP page');
           Navigator.pushReplacementNamed(
             context,
-            '/otp',
-            arguments: {
-              'email': _emailController.text,
-              'user_id': userId, // ส่งค่า user_id ไปยังหน้า OTP
-            },
+            '/login',
+            // arguments: {
+            //   'email': widget.data,
+            //   'user_id': userId, // ส่งค่า user_id ไปยังหน้า OTP
+            // },
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('การลงทะเบียนล้มเหลว')),
+            const SnackBar(content: Text('การเปลี่ยนรหัสผ่านล้มเหลว')),
           );
         }
       } catch (error) {
@@ -162,35 +139,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   const Text(
-                    'ลงทะเบียน',
+                    'รหัสผ่านใหม่',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 40),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'ชื่อ',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    validator: validateName,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'อีเมล',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    validator: validateEmail,
-                  ),
-                  const SizedBox(height: 20),
                   TextFormField(
                     obscureText: _obscureText,
                     controller: _passwordController,
@@ -234,6 +189,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     validator: validateConfirmPassword,
                   ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _otpController,
+                    decoration: InputDecoration(
+                      labelText: 'OTP',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    validator: (value) => (value == null || value.isEmpty) ? "กรุณากรอกรหัส OTP" : null,
+                  ),
                   const SizedBox(height: 30),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -245,11 +211,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
-                        registerUser();
+                        // เปลี่ยนรหัสผ่าน registerUser();
                       }
                     },
                     child: const Text(
-                      'ลงทะเบียน',
+                      'สร้างรหัสผ่านใหม่',
                       style: TextStyle(fontSize: 18, color: Color(0XFFFFFFFF)),
                     ),
                   ),

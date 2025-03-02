@@ -139,190 +139,193 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
           //   connectorColor: MaterialStateProperty.all(Color(0XFFE35205)),
           // ),
         ),
-      child:Stepper(
-        currentStep: currentStep,
-        onStepContinue: _nextStep,
-        onStepCancel: _previousStep,
-        controlsBuilder: (context, details) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: Row(
-              mainAxisAlignment: currentStep == 2 ? MainAxisAlignment.center : MainAxisAlignment.end,
-              children: [
-                if (currentStep > 0)
-                  OutlinedButton(
-                    onPressed: details.onStepCancel,
-                    child: const Text('ย้อนกลับ'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0XFFE35205),
-                      side: const BorderSide(color: Color(0XFFE35205)),
+        child: Stepper(
+          currentStep: currentStep,
+          onStepContinue: _nextStep,
+          onStepCancel: _previousStep,
+          controlsBuilder: (context, details) {
+            return Padding(
+              padding: currentStep == 2 ? const EdgeInsets.only(top: 20.0, right: 48.0) : const EdgeInsets.only(top: 20.0), //
+              child: Row(
+                mainAxisAlignment: currentStep == 2 ? MainAxisAlignment.center : MainAxisAlignment.end,
+                children: [
+                  if (currentStep > 0)
+                    OutlinedButton(
+                      onPressed: details.onStepCancel,
+                      child: const Text('ย้อนกลับ'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0XFFE35205),
+                        side: const BorderSide(color: Color(0XFFE35205)),
+                      ),
+                    ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: details.onStepContinue,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0XFFE35205),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text(currentStep == 2 ? 'เริ่มต้นใช้งาน' : 'ถัดไป'),
+                  ),
+                ],
+              ),
+            );
+          },
+          stepIconBuilder: (stepIndex, stepState) {
+            return CircleAvatar(
+              backgroundColor: const Color(0XFFE35205), // เปลี่ยนสีพื้นหลังของตัวเลข
+              child: Text(
+                '${stepIndex + 1}',
+                style: const TextStyle(color: Colors.white), // เปลี่ยนสีตัวเลขเป็นสีขาว
+              ),
+            );
+          },
+          steps: [
+            Step(
+              title: const Text('ข้อมูลติดต่อ'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('กรุณากรอกข้อมูลติดต่อ'),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: 'เบอร์โทรศัพท์*',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
                   ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: details.onStepContinue,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0XFFE35205),
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Text(currentStep == 2 ? 'เริ่มต้นใช้งาน' : 'ถัดไป'),
-                ),
-              ],
-            ),
-          );
-        },
-        stepIconBuilder: (stepIndex, stepState) {
-          return CircleAvatar(
-            backgroundColor: const Color(0XFFE35205), // เปลี่ยนสีพื้นหลังของตัวเลข
-            child: Text(
-              '${stepIndex + 1}',
-              style: const TextStyle(color: Colors.white), // เปลี่ยนสีตัวเลขเป็นสีขาว
-            ),
-          );
-        },
-        steps: [
-          Step(
-            title: const Text('ข้อมูลติดต่อ'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('กรุณากรอกข้อมูลติดต่อ'),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    labelText: 'เบอร์โทรศัพท์*',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'อีเมล',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'อีเมล',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                ],
+              ),
+              isActive: currentStep >= 0,
+            ),
+            Step(
+              title: const Text('ข้อมูลส่วนตัว'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('กรุณากรอกข้อมูลส่วนตัว'),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: firstNameController,
+                    decoration: InputDecoration(
+                      labelText: 'ชื่อ*',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            isActive: currentStep >= 0,
-          ),
-          Step(
-            title: const Text('ข้อมูลส่วนตัว'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('กรุณากรอกข้อมูลส่วนตัว'),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: firstNameController,
-                  decoration: InputDecoration(
-                    labelText: 'ชื่อ*',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: lastNameController,
+                    decoration: InputDecoration(
+                      labelText: 'นามสกุล*',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: lastNameController,
-                  decoration: InputDecoration(
-                    labelText: 'นามสกุล*',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    value: selectedFaculty,
+                    items: faculties.map((faculty) => DropdownMenuItem(value: faculty, child: Text(faculty))).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedFaculty = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'คณะ',
+                      border: OutlineInputBorder(),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                DropdownButtonFormField<String>(
-                  value: selectedFaculty,
-                  items: faculties.map((faculty) => DropdownMenuItem(value: faculty, child: Text(faculty))).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedFaculty = value;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'คณะ',
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    value: selectedDepartment,
+                    items: departments.map((department) => DropdownMenuItem(value: department, child: Text(department))).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDepartment = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'ภาควิชา',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                DropdownButtonFormField<String>(
-                  value: selectedDepartment,
-                  items: departments.map((department) => DropdownMenuItem(value: department, child: Text(department))).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDepartment = value;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'ภาควิชา',
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    value: selectedYear,
+                    items: years.map((year) => DropdownMenuItem(value: year, child: Text(year))).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedYear = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'ชั้นปี',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                DropdownButtonFormField<String>(
-                  value: selectedYear,
-                  items: years.map((year) => DropdownMenuItem(value: year, child: Text(year))).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedYear = value;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'ชั้นปี',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ],
+                ],
+              ),
+              isActive: currentStep >= 1,
             ),
-            isActive: currentStep >= 1,
-          ),
-          Step(
-            title: const Text('โปรไฟล์'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('กรุณาอัปโหลดรูปโปรไฟล์'),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: _base64Image == null
-                      ? Container(
-                          height: 150,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.add_a_photo,
-                            color: Colors.grey,
-                            size: 50,
-                          ),
-                        )
-                      : ClipOval(
-                          child: Image.memory(
-                            base64Decode(_base64Image!),
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+            Step(
+              title: const Text('โปรไฟล์'),
+              content: Padding(
+                padding: const EdgeInsets.only(right: 48.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('กรุณาอัปโหลดรูปโปรไฟล์'),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: _base64Image == null
+                          ? Container(
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.add_a_photo,
+                                color: Colors.grey,
+                                size: 50,
+                              ),
+                            )
+                          : ClipOval(
+                              child: Image.memory(
+                                base64Decode(_base64Image!),
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+              isActive: currentStep >= 2,
             ),
-            isActive: currentStep >= 2,
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }

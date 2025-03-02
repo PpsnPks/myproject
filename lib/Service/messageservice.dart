@@ -120,7 +120,6 @@ class MessageService {
 class PusherService {
   late PusherChannelsFlutter pusher;
   Function(dynamic)? onNewMessage;
-
   Future<void> initPusher(String receiveId, Function() addMessage) async {
     await initializeDateFormatting("th", null);
     pusher = PusherChannelsFlutter();
@@ -158,6 +157,29 @@ class PusherService {
       });
     } catch (e) {
       print("Pusher error: $e");
+    }
+  }
+
+  Future<void> disconnectPusher(String receiveId) async {
+    String senderId = await Securestorage().readSecureData('userId');
+    int send = int.parse(senderId);
+    int receive = int.parse(receiveId);
+    String channelName = "chat.${send < receive ? send : receiveId}.${send > receive ? send : receive}";
+    print('channelName: $channelName');
+    try {
+      await pusher.unsubscribe(channelName: channelName).then((_) {
+        print("🚫 Unsubscribed from $channelName");
+      }).catchError((error) {
+        print("❌ Failed to unsubscribe: $error");
+      });
+
+      await pusher.disconnect().then((_) {
+        print("🔌 Pusher Disconnected");
+      }).catchError((error) {
+        print("❌ Disconnection Failed: $error");
+      });
+    } catch (e) {
+      print("🚨 Pusher disconnect error: $e");
     }
   }
 }

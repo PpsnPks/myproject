@@ -297,7 +297,8 @@ class ProductService {
     try {
       // ดึง accessToken จาก AuthService
       String? accessToken = await AuthService().getAccessToken();
-      String url = "${Environment.baseUrl}/products/$id";
+      String userId = await Securestorage().readSecureData('userId');
+      String url = "${Environment.baseUrl}/products/$id/$userId";
 
       if (accessToken == null) {
         return {
@@ -323,7 +324,7 @@ class ProductService {
         print('qqq1 $decodedResponse');
         if (decodedResponse != null) {
           print('qqq2.1');
-          Product data = Product.fromJson(decodedResponse);
+          Product data = Product.fromJson(decodedResponse['product']);
           return {"success": true, "data": data};
         } else {
           print('qqq2.2');
@@ -514,7 +515,10 @@ class CartService {
         print('qqq1 $decodedResponse');
         if (decodedResponse != null) {
           print('qqq2.1');
-          List<Product> data = (decodedResponse as List).map((postJson) => Product.fromJson(postJson['product'])).toList();
+          List<Product> data = (decodedResponse as List)
+              .where((postJson) => postJson['status'] == 'success')
+              .map((postJson) => Product.fromJson(postJson['product']))
+              .toList();
           List<Seller> dataS = (decodedResponse).map((postJson) => Seller.fromJson(postJson['product']['seller'])).toList();
           return {"success": true, "data": data, "dataS": dataS};
         } else {

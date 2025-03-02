@@ -57,22 +57,22 @@ int _getSelectedIndex(String selected) {
 void _onItemTapped(int index, BuildContext context) {
   switch (index) {
     case 0:
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/home');
       break;
     case 1:
-      Navigator.pushNamed(context, '/allpost');
+      Navigator.pushReplacementNamed(context, '/allpost');
       break;
     case 2:
-      Navigator.pushNamed(context, '/like');
+      Navigator.pushReplacementNamed(context, '/like');
       break;
     case 3:
-      Navigator.pushNamed(context, '/cart-buyer');
+      Navigator.pushReplacementNamed(context, '/cart-buyer');
       break;
     case 4:
-      Navigator.pushNamed(context, '/chat');
+      Navigator.pushReplacementNamed(context, '/chat');
       break;
     case 5:
-      Navigator.pushNamed(context, '/profile');
+      Navigator.pushReplacementNamed(context, '/profile');
       break;
   }
 }

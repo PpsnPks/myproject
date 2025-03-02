@@ -4,12 +4,14 @@ import 'package:myproject/app/buyer/cartbpage.dart';
 import 'package:myproject/app/main/categoryform.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
 import 'package:myproject/app/main/formPage.dart';
+import 'package:myproject/app/main/fullimage.dart';
 import 'package:myproject/app/main/info1.dart';
 import 'package:myproject/app/main/info2.dart';
 import 'package:myproject/app/main/info3.dart';
 import 'package:myproject/app/main/infoprofile.dart';
 import 'package:myproject/app/main/login.dart';
 import 'package:myproject/app/main/message.dart';
+import 'package:myproject/app/main/newpassword.dart';
 import 'package:myproject/app/main/postdetailpage.dart';
 import 'package:myproject/app/main/productdetailpage.dart';
 import 'package:myproject/app/main/register.dart';
@@ -23,6 +25,7 @@ import 'package:myproject/app/buyer/homepage.dart';
 import 'package:myproject/app/buyer/likepage.dart';
 import 'package:myproject/app/main/chatPage.dart';
 import 'package:myproject/app/main/role.dart';
+import 'package:myproject/app/seller/confirm.dart';
 // import 'package:myproject/app/seller/confirm.dart';
 import 'package:myproject/app/seller/editpage.dart';
 import 'package:myproject/app/seller/notification.dart';
@@ -71,6 +74,21 @@ void main() {
         return SlidePageRoute(
           page: Messagepage(receiverId: receiverId, name: args['name'] ?? 'Chat'),
         );
+      } else if (settings.name!.startsWith('/fullimage')) {
+        final args = settings.arguments as Map<String, String>;
+        return MaterialPageRoute(
+          builder: (context) => FullScreenImageView(image: args['image'] ?? 'Chat'),
+        );
+      } else if (settings.name!.startsWith('/confirm')) {
+        final args = settings.arguments as Map<String, String>;
+        return SlidePageRoute(
+          page: ConfirmSellerPage(data: args['data'] ?? ''),
+        );
+      } else if (settings.name!.startsWith('/newpassword')) {
+        final args = settings.arguments as Map<String, String>;
+        return SlidePageRoute(
+          page: NewPasswordPage(data: args['data'] ?? ''),
+        );
       }
       return null;
     },
@@ -79,9 +97,9 @@ void main() {
       '/home': (context) => const HomePage(),
       '/like': (context) => const LikePage(),
       '/cart-buyer': (context) => const CartBPage(),
-      '/cart-seller': (context) => const CartSPage(),
+      '/cart-seller/1': (context) => const CartSPage(tab: 0),
+      '/cart-seller/2': (context) => const CartSPage(tab: 1),
       '/post': (context) => const PostPage(),
-      // '/confirm': (context) => const Confirm(),
       '/category': (context) => const CategoryPage('หมวดหมู่'),
       '/role': (context) => const RolePage(),
       '/seller': (context) => const SellerPage(),
@@ -98,7 +116,6 @@ void main() {
       '/noti': (context) => const NotiPage(),
       '/chat': (context) => const Chatpage(),
       '/profile': (context) => const ProfilePage(),
-      // '/confirm-seller': (context) => const ConfirmSeller(),
       '/login': (context) => const LoginPage(),
       '/register': (context) => const RegisterPage(),
       '/forgotpassword': (context) => const ForgotPasswordPage(),
@@ -114,6 +131,7 @@ void main() {
       '/info1': (context) => const Info1Page(),
       '/info2': (context) => const Info2Page(),
       '/info3': (context) => const Info3Page(),
+      // '/confirm': (context) => const ConfirmSellerPage(),
     },
   ));
 }

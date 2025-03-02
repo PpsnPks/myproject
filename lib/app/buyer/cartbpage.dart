@@ -61,6 +61,7 @@ class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         title: const Text("รายการ"),
         centerTitle: true,
@@ -94,9 +95,9 @@ class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixi
           const SizedBox(
             height: 1.0,
           ),
-          SingleChildScrollView(
-            child: isLoading
-                ? const Center(
+          isLoading
+              ? const Expanded(
+                  child: Center(
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
                       child: Row(
@@ -120,19 +121,20 @@ class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixi
                         ],
                       ),
                     ),
-                  )
-                : cartProducts.isNotEmpty
-                    ? Column(
-                        children: [
-                          for (int i = 0; i < cartProducts.length; i += 1)
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(cartProducts[i], cartSeller[i])),
-                            )
-                        ],
-                      )
-                    : const Center(child: Text('ไม่พบสินค้า')),
-          ),
+                  ),
+                )
+              : cartProducts.isEmpty
+                  ? const Expanded(child: Center(child: Text('ไม่พบสินค้า')))
+                  : SingleChildScrollView(
+                      child: Column(
+                      children: [
+                        for (int i = 0; i < cartProducts.length; i += 1)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(cartProducts[i], cartSeller[i])),
+                          )
+                      ],
+                    )),
         ],
       ),
       bottomNavigationBar: buyerFooter(context, 'cart-buyer'),
@@ -224,7 +226,7 @@ class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixi
                       maxLines: 1,
                     ),
                     Text(
-                      '${product.product_price} ฿',
+                      product.product_price == '0' || product.product_price == '0.00' ? 'ฟรี' : '${product.product_price} ฿',
                       style: const TextStyle(color: Color(0XFFE35205), fontSize: 18, fontWeight: FontWeight.w500, height: 1.0),
                     ),
                     SizedBox(

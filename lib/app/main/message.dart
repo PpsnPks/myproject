@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
 // import 'package:myproject/Service/chatservice.dart';
 import 'package:myproject/Service/messageservice.dart';
 import 'package:myproject/Service/productdetailservice.dart';
+import 'package:myproject/Service/uploadimgservice.dart';
+import 'package:myproject/environment.dart';
 
 class Messagepage extends StatefulWidget {
   final String receiverId;
@@ -51,6 +55,7 @@ class _MessagepageState extends State<Messagepage> {
   String _dots = "";
   final FocusNode _focusNode = FocusNode(); // FocusNode ใช้จัดการการโฟกัส
   void addMessage() async {
+    if (!mounted) return;
     print('qqqqqqqqqqqqqqqqqqqqqqqqqqqq');
     var response = await MessageService().getoldMessage(widget.receiverId);
     print('ssssssssssssssssssssssssssss');
@@ -137,8 +142,9 @@ class _MessagepageState extends State<Messagepage> {
 
   @override
   void dispose() {
-    super.dispose();
+    PusherService().disconnectPusher(widget.receiverId);
     _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -146,6 +152,12 @@ class _MessagepageState extends State<Messagepage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/chat');
+          },
+        ),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
@@ -189,6 +201,219 @@ class _MessagepageState extends State<Messagepage> {
                             padding: const EdgeInsets.all(4.0),
                             child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(jsonDecode(b))),
                           );
+                        } else if (message.message.startsWith('\$\$Image : ')) {
+                          String b = message.message.replaceFirst('\$\$Image : ', ''); // ตัด "qqqq : " ออก
+                          print("ข้อความที่เหลือ: $b");
+
+                          return Column(
+                            children: [
+                              if ((oldMessage.length - 2 - (index)) == -1 ||
+                                  ((oldMessage.length - 2 - (index)) >= 0 && message.thaiDate != old.thaiDate))
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(69, 80, 80, 81),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+                                      child: Text(
+                                        tempShowDate,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Row(
+                                    mainAxisAlignment: (message.senderId == widget.receiverId && message.senderId != message.receiverId)
+                                        ? MainAxisAlignment.start
+                                        : MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      if (message.senderId != widget.receiverId || message.senderId == message.receiverId)
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 3.0),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                message.statusread == '1' ? 'อ่านแล้ว' : '',
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                              Text(
+                                                message.time,
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context).size.width * 0.8, // กำหนด maxWidth 80% ของจอ
+                                            maxHeight: MediaQuery.of(context).size.width * 0.8, // กำหนด maxWidth 80% ของจอ
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              //DFE2EC
+                                              color: const Color(0xFFDFE2EC),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                                            child: GestureDetector(
+                                              onTap: () => {
+                                                Navigator.pushNamed(context, '/fullimage', arguments: {'image': '${Environment.imgUrl}/$b'})
+                                              },
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(8),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: b.isNotEmpty
+                                                      ? '${Environment.imgUrl}/$b'
+                                                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                                                  placeholder: (context, url) => LayoutBuilder(
+                                                    builder: (context, constraints) {
+                                                      double size = constraints.maxHeight;
+                                                      return SizedBox(
+                                                        width: size,
+                                                        height: size, // ให้สูงเท่ากับกว้าง
+                                                        child: const Center(
+                                                          child: CircularProgressIndicator(
+                                                            color: Color(0XFFE35205),
+                                                            strokeCap: StrokeCap.round,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                  imageBuilder: (context, ImageProvider) {
+                                                    return LayoutBuilder(
+                                                      builder: (context, constraints) {
+                                                        double size = constraints.maxHeight; // ใช้ maxWidth เป็นขนาดของ width และ height
+                                                        return Container(
+                                                          width: size,
+                                                          height: size, // ให้ height เท่ากับ width
+                                                          decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                              image: ImageProvider,
+                                                              fit: BoxFit.fitHeight, // ปรับขนาดภาพให้เต็ม
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  errorWidget: (context, url, error) => LayoutBuilder(
+                                                    builder: (context, constraints) {
+                                                      double size = constraints.maxHeight;
+                                                      return Container(
+                                                        width: size,
+                                                        height: size,
+                                                        decoration: const BoxDecoration(
+                                                          image: DecorationImage(
+                                                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                                            fit: BoxFit.fitHeight,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )),
+                                      if (message.senderId == widget.receiverId && message.senderId != message.receiverId)
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 3.0),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                message.time,
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                          // SizedBox(
+                          //   height: 50,
+                          //   width: 50,
+                          //   child: ClipRRect(
+                          //     borderRadius: BorderRadius.circular(8),
+                          //     child: CachedNetworkImage(
+                          //       imageUrl: b.isNotEmpty
+                          //           ? '${Environment.imgUrl}/$b'
+                          //           : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                          //       placeholder: (context, url) => LayoutBuilder(
+                          //         builder: (context, constraints) {
+                          //           double size = constraints.maxHeight;
+                          //           return SizedBox(
+                          //             width: size,
+                          //             height: size, // ให้สูงเท่ากับกว้าง
+                          //             child: const Center(
+                          //               child: CircularProgressIndicator(
+                          //                 color: Color(0XFFE35205),
+                          //                 strokeCap: StrokeCap.round,
+                          //               ),
+                          //             ),
+                          //           );
+                          //         },
+                          //       ),
+                          //       imageBuilder: (context, ImageProvider) {
+                          //         return LayoutBuilder(
+                          //           builder: (context, constraints) {
+                          //             double size = constraints.maxHeight; // ใช้ maxWidth เป็นขนาดของ width และ height
+                          //             return Container(
+                          //               width: size,
+                          //               height: size, // ให้ height เท่ากับ width
+                          //               decoration: BoxDecoration(
+                          //                 image: DecorationImage(
+                          //                   image: ImageProvider,
+                          //                   fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                          //                 ),
+                          //               ),
+                          //             );
+                          //           },
+                          //         );
+                          //       },
+                          //       errorWidget: (context, url, error) => LayoutBuilder(
+                          //         builder: (context, constraints) {
+                          //           double size = constraints.maxHeight;
+                          //           return Container(
+                          //             width: size,
+                          //             height: size,
+                          //             decoration: const BoxDecoration(
+                          //               image: DecorationImage(
+                          //                 image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                          //                 fit: BoxFit.fill,
+                          //               ),
+                          //             ),
+                          //           );
+                          //         },
+                          //       ),
+                          //     ),
+                          //   ),
+                          // );
                         }
                         return Column(
                           children: [
@@ -308,7 +533,9 @@ class _MessagepageState extends State<Messagepage> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.photo),
-                    onPressed: () {},
+                    onPressed: () {
+                      _pickimg();
+                    },
                   ),
                   Expanded(
                     child: TextField(
@@ -439,10 +666,10 @@ class _MessagepageState extends State<Messagepage> {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
-                        '${product['price']} ฿',
+                        product['price'] == '0' || product['price'] == '0.00' ? 'ฟรี' : '${product['price']} ฿',
                         style: const TextStyle(
                           color: Colors.orange,
-                          fontSize: 15,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -463,7 +690,29 @@ class _MessagepageState extends State<Messagepage> {
       ),
     );
   }
+
+  final List<Uint8List> _imageBytesList = [];
+  void _pickimg() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery); // เลือกเพียง 1 รูป
+
+    if (pickedFile != null) {
+      var response = await UploadImgService().uploadImg(pickedFile);
+      if (response['success']) {
+        _sendMessage('\$\$Image : ${response['image']}');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('อัปโหลดรูปไม่ได้ โปรดลองอีกครั้ง'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 }
+
+
 // if (index < messages.length) {
 //   message = messages[messages.length - 1 - (index)]; //new
 //   if (index == 0) {

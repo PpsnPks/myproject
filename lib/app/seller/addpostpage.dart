@@ -24,7 +24,7 @@ class _AddPostPageState extends State<AddPostPage> {
   final TextEditingController _tagController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
-  final List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
+  List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
   int currentIndex = 0;
   List category = [];
   List<dynamic> tagList = []; // เก็บแท็กที่ได้จาก API
@@ -32,15 +32,16 @@ class _AddPostPageState extends State<AddPostPage> {
   String? product_cate; // เก็บค่า category ที่เลือก
   final PageController _pageController = PageController(); // ตัวควบคุม PageView
 
-  List<XFile> pickedFiles = [];
+  XFile? pickedFile;
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
-    pickedFiles = await picker.pickMultiImage(); // เลือกหลายภาพได้
-
-    if (_imageBytesList.length + pickedFiles.length > 5) {
+    pickedFile = await picker.pickImage(source: ImageSource.gallery); // เลือกหลายภาพได้
+    List<XFile> pickedFiles = [];
+    pickedFiles.add(pickedFile!);
+    if (_imageBytesList.length > 2) {
       // ถ้าภาพรวมกันแล้วเกิน 5 รูป ให้แสดงข้อความแจ้งเตือน
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 5 รูป')),
+        const SnackBar(content: Text('คุณสามารถเลือกได้สูงสุด 2 รูป')),
       );
     } else {
       // อ่านภาพเป็น bytes และเพิ่มลงในรายการ
@@ -49,16 +50,25 @@ class _AddPostPageState extends State<AddPostPage> {
       );
 
       setState(() {
+        _imageBytesList = [];
         _imageBytesList.addAll(newImageBytes); // เพิ่มภาพที่เลือกใหม่
       });
     }
   }
 
   Future<void> _post() async {
-    Map<String, dynamic> uploadResponse = await UploadImgService().uploadImgs(pickedFiles);
+    Map<String, dynamic> uploadResponse = {};
+    if (pickedFile != null) {
+      uploadResponse = await UploadImgService().uploadImg(pickedFile!);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณาเพิ่มรูปภาพ')),
+      );
+    }
+
     String images_path;
     if (uploadResponse['success']) {
-      images_path = uploadResponse['images'][0];
+      images_path = uploadResponse['image'];
       print('all_url_images = ${uploadResponse['images']}');
     } else {
       print('upload error = ${uploadResponse['message']}');
@@ -129,7 +139,6 @@ class _AddPostPageState extends State<AddPostPage> {
       print("❌ Error: $e");
     }
   }
-
 
   @override
   void initState() {
@@ -242,17 +251,25 @@ class _AddPostPageState extends State<AddPostPage> {
                 TextFormField(
                   controller: _detailController,
                   maxLines: 3,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'รายละเอียดโพสต์',
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
                   validator: validateDetail,
                 ),
@@ -261,7 +278,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   items: [
                     for (var item in category)
                       DropdownMenuItem<String>(
-                        value: item['id']?.toString() ?? "", // ป้องกัน null
+                        value: item['category_name'], // ป้องกัน null
                         child: Text(item['category_name'] ?? "ไม่ระบุ"), // แสดงค่าเริ่มต้นหากเป็น null
                       ),
                   ],
@@ -276,7 +293,8 @@ class _AddPostPageState extends State<AddPostPage> {
                     });
 
                     // 📌 เรียก API ดึงแท็กของหมวดหมู่ที่เลือก
-                    List<dynamic> tags = await Dropdownservice().getTag([int.parse(value)]);
+                    List<dynamic> tags =
+                        await Dropdownservice().getTag([(category.firstWhere((item) => item['category_name'] == value))['id']]);
 
                     setState(() {
                       tagList = tags;
@@ -293,6 +311,14 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
                   validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกหมวดหมู่" : null,
@@ -302,7 +328,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   items: [
                     for (var tag in tagList)
                       DropdownMenuItem<String>(
-                        value: tag['id']?.toString() ?? "", // ป้องกัน null
+                        value: tag['name'], // ป้องกัน null
                         child: Text(tag['name'] ?? "ไม่มีชื่อแท็ก"),
                       ),
                   ],
@@ -325,6 +351,14 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
                   validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
@@ -342,6 +376,14 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   ),
                   validator: validatePrice,
@@ -353,8 +395,9 @@ class _AddPostPageState extends State<AddPostPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        await _post(); // Wait for the action to complete
-                        Navigator.pushNamed(context, '/post'); // Navigate to /seller after completion
+                        if (_formKey.currentState?.validate() ?? false) {
+                          await _post(); // Wait for the action to complete
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFA5A2A),
@@ -379,20 +422,6 @@ class _AddPostPageState extends State<AddPostPage> {
   String? validateDetail(String? value) {
     if (value == null || value.isEmpty) {
       return 'กรุณากรอกรายละเอียดโพสต์';
-    }
-    return null;
-  }
-
-  String? validateCategory(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'กรุณาเลือกหมวดหมู่สินค้า';
-    }
-    return null;
-  }
-
-  String? validateTag(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'กรุณาเลือก Tag สินค้า';
     }
     return null;
   }

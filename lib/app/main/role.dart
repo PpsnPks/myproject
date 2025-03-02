@@ -40,7 +40,7 @@ class RolePage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         await Securestorage().writeSecureData('role', 'buy');
-                        Navigator.of(context).pushNamed('/home');
+                        Navigator.pushNamed(context, '/home');
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
@@ -60,7 +60,8 @@ class RolePage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         await Securestorage().writeSecureData('role', 'sell');
-                        Navigator.of(context).pushNamed('/post');
+
+                        Navigator.pushNamed(context, '/post');
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,

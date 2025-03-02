@@ -17,6 +17,12 @@ class _LoginState extends State<LoginPage> {
   bool _obscureText = true;
   String _errorMessage = "";
 
+  @override
+  void dispose() {
+    FocusScope.of(context).dispose(); // ปิด FocusNode ทิ้งเมื่อ Widget ถูกทำลาย
+    super.dispose();
+  }
+
   void _handleLogin(BuildContext context) async {
     final String email = _emailController.text.trim();
     final String password = _passwordController.text.trim();

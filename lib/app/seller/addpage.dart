@@ -223,6 +223,7 @@ class _AddProductPageState extends State<AddProductPage> {
         title: const Text("เพิ่ม"),
         centerTitle: true,
         backgroundColor: Colors.white,
+        elevation: 0, // ปิดเงา
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -421,7 +422,8 @@ class _AddProductPageState extends State<AddProductPage> {
                     });
 
                     // 📌 เรียก API ดึงแท็กของหมวดหมู่ที่เลือก
-                    List<dynamic> tags = await Dropdownservice().getTag([int.parse(value)]);
+                    List<dynamic> tags =
+                        await Dropdownservice().getTag([(category.firstWhere((item) => item['category_name'] == value))['id']]);
 
                     setState(() {
                       tagList = tags;
@@ -447,7 +449,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   items: [
                     for (var tag in tagList)
                       DropdownMenuItem<String>(
-                        value: tag['id']?.toString() ?? "", // ป้องกัน null
+                        value: tag['name'], // ป้องกัน null
                         child: Text(tag['name'] ?? "ไม่มีชื่อแท็ก"),
                       ),
                   ],

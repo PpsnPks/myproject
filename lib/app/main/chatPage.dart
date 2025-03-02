@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
+import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:myproject/service/Chatservice.dart';
 
 class Chatpage extends StatefulWidget {
@@ -15,6 +17,11 @@ class _ChatpageState extends State<Chatpage> {
   late Future<List<ProductChat>> likedProducts;
   bool isLoading = true;
   List<Chat> chats = [];
+  String role = '';
+
+  void getRole() async {
+    role = await Securestorage().readSecureData('role');
+  }
 
   void getAllChat() async {
     Map<String, dynamic> response = await Chatservice().getAllChat();
@@ -43,9 +50,11 @@ class _ChatpageState extends State<Chatpage> {
 
   @override
   void initState() {
+    getRole();
+    getAllChat();
+
     super.initState();
     // เรียก Chatservice เพื่อดึงข้อมูลสินค้าที่ถูกใจ
-    getAllChat();
     // likedProducts = Chatservice().getLikedProducts();
   }
 
@@ -67,7 +76,7 @@ class _ChatpageState extends State<Chatpage> {
                 ),
               ),
             )
-          : chats.length == 0
+          : chats.isEmpty
               ? const Center(
                   child: Text(
                     'ยังไม่มีประวัติการแชท',
@@ -86,15 +95,24 @@ class _ChatpageState extends State<Chatpage> {
                       unread: chat.unread.toString(),
                       message: chat.latestMessage.startsWith('\$\$Product : ')
                           ? '[ สินค้า : ${jsonDecode(chat.latestMessage.replaceFirst('\$\$Product : ', ''))['name']} ]' //'สินค้า : ${jsonDecode(chat.latestMessage.replaceFirst('\$\$Product : ', ''))['name']}'
-                          : chat.latestMessage,
-                      type: chat.latestMessage.startsWith('\$\$Product : ') ? 'product' : 'message',
+                          : chat.latestMessage.startsWith('\$\$Image : ')
+                              ? '[ รูปภาพ ]'
+                              : chat.latestMessage,
+                      type: chat.latestMessage.startsWith('\$\$Product : ') || chat.latestMessage.startsWith('\$\$Image : ')
+                          ? 'product'
+                          : 'message',
                       onTap: () {
-                        Navigator.pushNamed(context, '/message/${chat.userId}', arguments: {'name': chat.name});
+                        Navigator.pushReplacementNamed(context, '/message/${chat.userId}', arguments: {'name': chat.name});
                       },
                     );
                   },
                 ),
-      bottomNavigationBar: buyerFooter(context, 'chat'),
+      bottomNavigationBar: role == 'buy'
+          ? buyerFooter(context, 'chat')
+          : role == 'sell'
+              ? sellerFooter(context, 'chat')
+              : null,
+      // bottomNavigationBar: buyerFooter(context, 'chat'),
     );
   }
 }
@@ -178,7 +196,7 @@ class NotificationCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: ImageProvider,
-                                fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                                fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
                               ),
                             ),
                           );
@@ -194,7 +212,7 @@ class NotificationCard extends StatelessWidget {
                           decoration: const BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         );
