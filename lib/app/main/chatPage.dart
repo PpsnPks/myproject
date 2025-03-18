@@ -97,8 +97,12 @@ class _ChatpageState extends State<Chatpage> {
                           ? '[ สินค้า : ${jsonDecode(chat.latestMessage.replaceFirst('\$\$Product : ', ''))['name']} ]' //'สินค้า : ${jsonDecode(chat.latestMessage.replaceFirst('\$\$Product : ', ''))['name']}'
                           : chat.latestMessage.startsWith('\$\$Image : ')
                               ? '[ รูปภาพ ]'
-                              : chat.latestMessage,
-                      type: chat.latestMessage.startsWith('\$\$Product : ') || chat.latestMessage.startsWith('\$\$Image : ')
+                              : chat.latestMessage.startsWith('\$\$Location : ')
+                                  ? '[ ส่งตำแหน่ง : ${jsonDecode(chat.latestMessage.replaceFirst('\$\$Location : ', ''))['name']} ]'
+                                  : chat.latestMessage,
+                      type: chat.latestMessage.startsWith('\$\$Product : ') ||
+                              chat.latestMessage.startsWith('\$\$Image : ') ||
+                              chat.latestMessage.startsWith('\$\$Location : ')
                           ? 'product'
                           : 'message',
                       onTap: () {

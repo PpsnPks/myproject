@@ -149,10 +149,68 @@ class _PostPageState extends State<PostPage> {
                             padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
                             child: Row(
                               children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: NetworkImage(post.profile),
+                                SizedBox(
+                                  width: 40,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: CachedNetworkImage(
+                                      imageUrl: post.profile.isNotEmpty
+                                          ? post.profile
+                                          : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                                      placeholder: (context, url) => LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          double size = 10;
+                                          return SizedBox(
+                                            width: size,
+                                            height: size, // ให้สูงเท่ากับกว้าง
+                                            child: const Center(
+                                              child: CircularProgressIndicator(
+                                                color: Color(0XFFE35205),
+                                                strokeCap: StrokeCap.round,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      imageBuilder: (context, ImageProvider) {
+                                        return LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                                            return Container(
+                                              width: size,
+                                              height: size, // ให้ height เท่ากับ width
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: ImageProvider,
+                                                  fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      errorWidget: (context, url, error) => LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          double size = constraints.maxWidth;
+                                          return Container(
+                                            width: size,
+                                            height: size,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                 ),
+                                // CircleAvatar(
+                                //   radius: 20,
+                                //   backgroundImage: NetworkImage(post.profile),
+                                // ),
                                 const SizedBox(width: 10),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

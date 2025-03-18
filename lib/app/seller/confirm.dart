@@ -107,7 +107,7 @@ class _ConfirmState extends State<ConfirmSellerPage> {
                       const SizedBox(
                         height: 15.0,
                       ),
-                      Text('คลัง   :  ${data['stock']}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      Text('คลัง   :  ${data['stock']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                       const SizedBox(
                         height: 15.0,
                       ),
@@ -175,22 +175,22 @@ class _ConfirmState extends State<ConfirmSellerPage> {
                       const SizedBox(
                         height: 15.0,
                       ),
-                      const Text('โพสต์โดย', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('สนใจโดย', style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(
                         height: 6.0,
                       ),
                       Row(
                         children: [
                           CircleAvatar(
-                            backgroundImage: NetworkImage(data['seller_pic']),
+                            backgroundImage: NetworkImage(data['buyer_pic']),
                             radius: 20,
                           ),
                           const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(data['seller_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                              Text(data['seller_faculty']),
+                              Text(data['buyer_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                              Text(data['buyer_faculty']),
                             ],
                           ),
                         ],
@@ -270,7 +270,7 @@ class _ConfirmState extends State<ConfirmSellerPage> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: ImageProvider,
-                              fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                              fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
                             ),
                           ),
                         );
@@ -286,7 +286,7 @@ class _ConfirmState extends State<ConfirmSellerPage> {
                         decoration: const BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       );
@@ -327,7 +327,7 @@ class _ConfirmState extends State<ConfirmSellerPage> {
                       child: Text(
                         data['price'] == '0' || data['price'] == '0.00' ? 'ฟรี' : '${data['price']} ฿',
                         style: const TextStyle(
-                          color: Colors.orange,
+                          color: Color(0XFFE35205),
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

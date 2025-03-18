@@ -2,7 +2,7 @@
     <application
         android:label="KMITL XChange"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
             <!--android:taskAffinity=""-->
         <activity
             android:name=".MainActivity"
@@ -30,6 +30,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="AIzaSyBJTYtsQNBlwjSPghuF6mHVgrkGsiCX8xo"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

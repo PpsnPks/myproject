@@ -839,8 +839,8 @@ class _EditProductPageState extends State<EditProductPage> {
                                 DropdownButtonFormField<String>(
                                   items: const [
                                     DropdownMenuItem(value: 'น้อยกว่า 1 ปี', child: Text('น้อยกว่า 1 ปี')),
-                                    DropdownMenuItem(value: 'มากกว่า 1 ปี', child: Text('มากกว่า 1 ปี')),
-                                    DropdownMenuItem(value: '2-3 ปี', child: Text('2-3 ปี')),
+                                    DropdownMenuItem(value: '1-3 ปี', child: Text('1-3 ปี')),
+                                    DropdownMenuItem(value: '3-5 ปี', child: Text('3-5 ปี')),
                                     DropdownMenuItem(value: 'มากกว่า 5 ปี', child: Text('มากกว่า 5 ปี')),
                                   ],
                                   onChanged: (value) {

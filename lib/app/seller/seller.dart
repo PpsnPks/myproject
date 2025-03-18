@@ -16,6 +16,9 @@ class _SellerPageState extends State<SellerPage> {
   List<Product> products = [];
 
   loadall() async {
+    setState(() {
+      isLoading = true;
+    });
     Map<String, dynamic> response = await ProductService().getProductSeller();
     print(response['success']);
     if (response['success'] == true) {
@@ -64,35 +67,35 @@ class _SellerPageState extends State<SellerPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: isLoading
-            ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                          child: SizedBox(
-                        width: 10.0,
-                        height: 10.0,
-                        child: CircularProgressIndicator(
-                          color: Color(0XFFE35205),
-                          strokeWidth: 2.0,
-                        ),
-                      )),
-                      SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
-                      Text(
-                        'กำลังโหลดสินค้า',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+      body: isLoading
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                        child: SizedBox(
+                      width: 10.0,
+                      height: 10.0,
+                      child: CircularProgressIndicator(
+                        color: Color(0XFFE35205),
+                        strokeWidth: 2.0,
                       ),
-                    ],
-                  ),
+                    )),
+                    SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                    Text(
+                      'กำลังโหลดสินค้า',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                  ],
                 ),
-              )
-            : products.isNotEmpty
-                ? Row(
+              ),
+            )
+          : products.isNotEmpty
+              ? SingleChildScrollView(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
@@ -103,8 +106,8 @@ class _SellerPageState extends State<SellerPage> {
                                 padding: const EdgeInsets.all(4.0),
                                 child: Stack(
                                   children: [
-                                    productCardSeller(products[i], context),
-                                    editButton(context, products[i]),
+                                    productCardSeller(products[i]),
+                                    editButton(products[i]),
                                   ],
                                 ),
                               )
@@ -119,8 +122,8 @@ class _SellerPageState extends State<SellerPage> {
                                 padding: const EdgeInsets.all(4.0),
                                 child: Stack(
                                   children: [
-                                    productCardSeller(products[i], context),
-                                    editButton(context, products[i]),
+                                    productCardSeller(products[i]),
+                                    editButton(products[i]),
                                   ],
                                 ),
                               )
@@ -128,9 +131,9 @@ class _SellerPageState extends State<SellerPage> {
                         ),
                       ),
                     ],
-                  )
-                : const Center(child: Text('ไม่พบสินค้า')),
-      ),
+                  ),
+                )
+              : const Center(child: Text('ไม่พบสินค้า')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/addproduct');
@@ -141,206 +144,237 @@ class _SellerPageState extends State<SellerPage> {
       bottomNavigationBar: sellerFooter(context, 'seller'),
     );
   }
-}
 
-Widget editButton(BuildContext context, Product product) {
-  return Positioned(
-    top: 12,
-    right: 12,
-    child: GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              padding: const EdgeInsets.all(16),
-              height: 150,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.edit, color: Colors.grey),
-                    title: const Text('แก้ไข'),
-                    onTap: () {
-                      Navigator.pop(context); // ปิด BottomSheet
-                      Navigator.pushNamed(
-                        context,
-                        '/editproduct/${product.id}',
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.delete, color: Colors.red),
-                    title: const Text(
-                      'ลบ',
-                      style: TextStyle(color: Colors.red), // กำหนดสีแดงให้ข้อความ
+  Widget editButton(Product product) {
+    return Positioned(
+      top: 12,
+      right: 12,
+      child: GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                height: 150,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.edit, color: Colors.grey),
+                      title: const Text('แก้ไข'),
+                      onTap: () {
+                        Navigator.pop(context); // ปิด BottomSheet
+                        Navigator.pushNamed(
+                          context,
+                          '/editproduct/${product.id}',
+                        );
+                      },
                     ),
-                    onTap: () {
-                      Navigator.pop(context); // ปิด BottomSheet
-                      _confirmDelete(context, product); // เรียกฟังก์ชันสำหรับลบสินค้า
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: const BoxDecoration(
-          color: Color(0XFFE35205),
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 16,
+                    ListTile(
+                      leading: const Icon(Icons.delete, color: Colors.red),
+                      title: const Text(
+                        'ลบ',
+                        style: TextStyle(color: Colors.red), // กำหนดสีแดงให้ข้อความ
+                      ),
+                      onTap: () {
+                        Navigator.pop(context); // ปิด BottomSheet
+                        _confirmDelete(context, product); // เรียกฟังก์ชันสำหรับลบสินค้า
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: Container(
+          width: 30,
+          height: 30,
+          decoration: const BoxDecoration(
+            color: Color(0XFFE35205),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.edit,
+            color: Colors.white,
+            size: 16,
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget productCardSeller(Product data, BuildContext context) {
-  return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          '/productdetail/${data.id}',
-        );
-        print('click card');
-      },
-      child: Card(
-        color: const Color(0xFFFFFFFF),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: data.product_images.isNotEmpty
-                      ? data.product_images[0]
-                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                  placeholder: (context, url) => LayoutBuilder(
-                    builder: (context, constraints) {
-                      double size = constraints.maxWidth;
-                      return SizedBox(
-                        width: size,
-                        height: size, // ให้สูงเท่ากับกว้าง
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0XFFE35205),
-                            strokeCap: StrokeCap.round,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  imageBuilder: (context, ImageProvider) {
-                    return LayoutBuilder(
+  Widget productCardSeller(Product data) {
+    return GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            '/productdetail/${data.id}',
+          );
+          print('click card');
+        },
+        child: Card(
+          color: const Color(0xFFFFFFFF),
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: data.product_images.isNotEmpty
+                        ? data.product_images[0]
+                        : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                    placeholder: (context, url) => LayoutBuilder(
                       builder: (context, constraints) {
-                        double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
-                        return Container(
+                        double size = constraints.maxWidth;
+                        return SizedBox(
                           width: size,
-                          height: size, // ให้ height เท่ากับ width
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: ImageProvider,
-                              fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                          height: size, // ให้สูงเท่ากับกว้าง
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0XFFE35205),
+                              strokeCap: StrokeCap.round,
                             ),
                           ),
                         );
                       },
-                    );
-                  },
-                  errorWidget: (context, url, error) => LayoutBuilder(
-                    builder: (context, constraints) {
-                      double size = constraints.maxWidth;
-                      return Container(
-                        width: size,
-                        height: size,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                            fit: BoxFit.fill,
-                          ),
-                        ),
+                    ),
+                    imageBuilder: (context, ImageProvider) {
+                      return LayoutBuilder(
+                        builder: (context, constraints) {
+                          double size = constraints.maxWidth; // ใช้ maxWidth เป็นขนาดของ width และ height
+                          return Container(
+                            width: size,
+                            height: size, // ให้ height เท่ากับ width
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: ImageProvider,
+                                fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
+                    errorWidget: (context, url, error) => LayoutBuilder(
+                      builder: (context, constraints) {
+                        double size = constraints.maxWidth;
+                        return Container(
+                          width: size,
+                          height: size,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                data.product_name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-              const SizedBox(height: 5),
-              Text(
-                'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFFA5A9B6),
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
-              ),
-              const SizedBox(height: 5),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
+                const SizedBox(height: 10),
+                Text(
+                  data.product_name,
                   style: const TextStyle(
-                    color: const Color(0XFFE35205),
-                    fontSize: 15,
                     fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                const SizedBox(height: 5),
+                data.product_type != 'preorder'
+                    ? Text(
+                        'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFFA5A9B6),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                      )
+                    : Text(
+                        'ค่ามัดจำ: ${data.deposit}\nวันส่งสินค้า : ${data.date_send}\nถึงวันที่: ${data.date_exp}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFFA5A9B6),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                      ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: data.product_type == 'preorder' ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+                    children: [
+                      if (data.product_type == 'preorder')
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              width: 1,
+                              color: const Color(0XFFE35205),
+                            ),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 3.0),
+                          child: const Text(
+                            'พรีออเดอร์',
+                            style: TextStyle(color: Color(0XFFE35205), fontSize: 12, fontWeight: FontWeight.w600, height: 0),
+                          ),
+                        ),
+                      Text(
+                        data.product_price == '0' || data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
+                        style: const TextStyle(
+                          color: Color(0XFFE35205),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ));
-}
+        ));
+  }
 
-void _confirmDelete(BuildContext context, Product product) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('ยืนยันการลบ'),
-        content: const Text('คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?'),
-        actions: [
-          TextButton(
-            child: const Text('ยกเลิก'),
-            onPressed: () {
-              Navigator.pop(context); // ปิด dialog
-            },
-          ),
-          TextButton(
-            child: const Text('ลบ'),
-            onPressed: () {
-              // เรียกใช้ฟังก์ชันลบสินค้าที่นี่
-              ProductService().deleteProductById(product.id);
-              Navigator.pop(context); // ปิด dialog
-            },
-          ),
-        ],
-      );
-    },
-  );
+  void _confirmDelete(BuildContext context, Product product) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('ยืนยันการลบ'),
+          content: const Text('คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?'),
+          actions: [
+            TextButton(
+              child: const Text('ยกเลิก'),
+              onPressed: () {
+                Navigator.pop(context); // ปิด dialog
+              },
+            ),
+            TextButton(
+              child: const Text('ลบ'),
+              onPressed: () {
+                // เรียกใช้ฟังก์ชันลบสินค้าที่นี่
+                ProductService().deleteProductById(product.id);
+                Navigator.pop(context); // ปิด dialog
+                loadall();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

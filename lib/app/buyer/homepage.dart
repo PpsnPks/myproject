@@ -371,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: ImageProvider,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         );
@@ -406,25 +406,55 @@ class _HomePageState extends State<HomePage> {
                 maxLines: 1,
               ),
               const SizedBox(height: 5),
-              Text(
-                'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFFA5A9B6),
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
-              ),
-              const SizedBox(height: 5),
+              data.product_type != 'preorder'
+                  ? Text(
+                      'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFA5A9B6),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    )
+                  : Text(
+                      'ค่ามัดจำ: ${data.deposit}\nวันส่งสินค้า : ${data.date_send}\nถึงวันที่: ${data.date_exp}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFA5A9B6),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    ),
+              const SizedBox(height: 8),
               Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
-                  style: const TextStyle(
-                    color: Color(0XFFE35205),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: data.product_type == 'preorder' ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+                  children: [
+                    if (data.product_type == 'preorder')
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            width: 1,
+                            color: const Color(0XFFE35205),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 3.0),
+                        child: const Text(
+                          'พรีออเดอร์',
+                          style: TextStyle(color: Color(0XFFE35205), fontSize: 12, fontWeight: FontWeight.w600, height: 0),
+                        ),
+                      ),
+                    Text(
+                      data.product_price == '0' || data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
+                      style: const TextStyle(
+                        color: Color(0XFFE35205),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:myproject/auth_service.dart';
 import 'package:myproject/environment.dart';
 
@@ -69,9 +70,8 @@ class Post {
       tag: data['tag'] ?? '',
       postImage: '${Environment.imgUrl}/${data['image']}',
       category: data['category'] ?? '',
-      price: data['price'] ?? '',
+      price: NumberFormat("#,###").format(double.parse(data['price'])),
       userId: data['user']['id'] ?? '',
     );
   }
-
 }

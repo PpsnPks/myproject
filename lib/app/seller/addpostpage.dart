@@ -245,8 +245,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text('* รูปสินค้าควรมีขนาดใหญ่และชัดเจนเพื่อให้ลูกค้ามองเห็นรายละเอียดสินค้าได้',
-                    style: TextStyle(color: Colors.grey)),
+                const Text('* รูปสินค้าควรมีความคมชัดเพื่อให้มองเห็นรายละเอียดได้ชัดเจน', style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _detailController,

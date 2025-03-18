@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert'; // เพิ่มการนำเข้า dart:convert
+import 'package:intl/intl.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/auth_service.dart';
 import 'package:http/http.dart' as http;
@@ -617,6 +618,8 @@ class Product {
   final String product_defect;
   final String product_years;
   final String tag;
+  final String deposit;
+  final String date_send;
 
   Product({
     required this.id,
@@ -634,6 +637,8 @@ class Product {
     required this.product_defect,
     required this.product_years,
     required this.tag,
+    required this.deposit,
+    required this.date_send,
   });
 
   @override
@@ -654,27 +659,42 @@ class Product {
         'product_defect: $product_defect, '
         'product_years: $product_years, '
         'tags: $tag'
+        'deposit: $deposit'
+        'date_send: $date_send'
         ')';
   }
 
   factory Product.fromJson(Map<String, dynamic> data) {
     print('qqq2 $data');
+    String defect = '';
+    String deposit = '';
+    String dateSend = '';
+
+    if (data['product_type'] == 'preorder') {
+      final temp = data['product_defect'].split(', ');
+      deposit = temp[0];
+      dateSend = temp[1];
+    } else {
+      defect = data['product_defect'] ?? '';
+    }
     return Product(
       id: data['id']?.toString() ?? "",
       product_name: data['product_name'] ?? "",
       product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
       product_qty: data['product_qty'].toString(),
-      product_price: data['product_price'] ?? "",
-      product_description: data['product_description'] ?? "",
+      product_price: NumberFormat("#,###").format(double.parse(data['product_price'])),
+      product_description: data['product_description'] ?? "", //data['product_description'],
       product_category: data['product_category'] ?? "",
       product_type: data['product_type'] ?? "",
       seller_id: data['seller_id'].toString(),
       date_exp: data['date_exp'] ?? "",
       product_location: data['product_location'] ?? "",
       product_condition: data['product_condition'] ?? "",
-      product_defect: data['product_defect'] ?? "",
+      product_defect: defect,
       product_years: data['product_years'] ?? "",
       tag: data['tag'] ?? "",
+      deposit: deposit,
+      date_send: dateSend,
     );
   }
 }
@@ -790,7 +810,7 @@ class Deal {
       product_name: data['product']['product_name'] ?? "",
       product_images: (data['product']['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
       product_qty: data['product']['product_qty'].toString(),
-      product_price: data['product']['product_price'] ?? "",
+      product_price: NumberFormat("#,###").format(double.parse(data['product']['product_price'])),
       product_description: data['product']['product_description'] ?? "",
       product_category: data['product']['product_category'] ?? "",
       product_type: data['product']['product_type'] ?? "",
