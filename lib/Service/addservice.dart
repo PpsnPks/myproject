@@ -167,6 +167,116 @@ class ProductService {
     }
   }
 
+  Future<Map<String, dynamic>> getRecommendedProducts() async {
+  const url = "https://recommend-880011621471.asia-southeast1.run.app/recommend";
+  
+  try {
+    // ดึง accessToken และ user_id จาก AuthService
+    AuthService authService = AuthService();
+    String? accessToken = await authService.getAccessToken();
+    String? userId = await authService.getUserId();
+
+    if (accessToken == null || userId == null) {
+      return {
+        "success": false,
+        "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+      };
+    }
+
+    // Header
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $accessToken',
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    };
+
+    // Body
+    Map<String, dynamic> body = {"user_id": userId};
+
+    // ส่ง Request
+    final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
+
+    if (response.statusCode == 200) {
+      var decodedResponse = jsonDecode(response.body);
+
+      if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+        List<Product> data = (decodedResponse['recommendations'] as List)
+            .map((postJson) => Product.fromJson(postJson))
+            .toList();
+
+        return {"success": true, "data": data};
+      } else {
+        return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+      }
+    } else {
+      return {
+        "success": false,
+        "message": 'Error ${response.statusCode} ${response.body}',
+      };
+    }
+  } catch (e) {
+    return {
+      "success": false,
+      "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+    };
+  }
+}
+
+  Future<Map<String, dynamic>> getRecommendedProductsfromPost() async {
+  const url = "https://recommend-product-form-post-880011621471.asia-southeast1.run.app/recommend";
+  
+  try {
+    // ดึง accessToken และ user_id จาก AuthService
+    AuthService authService = AuthService();
+    String? accessToken = await authService.getAccessToken();
+    String? userId = await authService.getUserId();
+
+    if (accessToken == null || userId == null) {
+      return {
+        "success": false,
+        "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+      };
+    }
+
+    // Header
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $accessToken',
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    };
+
+    // Body
+    Map<String, dynamic> body = {"user_id": userId};
+
+    // ส่ง Request
+    final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
+
+    if (response.statusCode == 200) {
+      var decodedResponse = jsonDecode(response.body);
+
+      if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+        List<Product> data = (decodedResponse['recommendations'] as List)
+            .map((postJson) => Product.fromJson(postJson))
+            .toList();
+
+        return {"success": true, "data": data};
+      } else {
+        return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+      }
+    } else {
+      return {
+        "success": false,
+        "message": 'Error ${response.statusCode} ${response.body}',
+      };
+    }
+  } catch (e) {
+    return {
+      "success": false,
+      "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+    };
+  }
+}
+
   Future<Map<String, dynamic>> getProductCategory(int page, int length, String category, String search, String sortPrice, String sortDate,
       String productCondition, String productType) async {
     const url = "${Environment.baseUrl}/getproducts";

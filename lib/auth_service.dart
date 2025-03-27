@@ -9,6 +9,11 @@ class AuthService {
     print("Token saved: $token");  // เพิ่ม log เมื่อบันทึก token
   }
 
+  Future<String?> getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("user_id");
+  }
+
   // ดึง accessToken
   Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
