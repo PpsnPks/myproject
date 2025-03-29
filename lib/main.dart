@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/app/buyer/allpostpage.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
+import 'package:myproject/app/buyer/searchpage.dart';
 import 'package:myproject/app/main/categoryform.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
 import 'package:myproject/app/main/formPage.dart';
@@ -131,6 +132,7 @@ void main() {
       '/info1': (context) => const Info1Page(),
       '/info2': (context) => const Info2Page(),
       '/info3': (context) => const Info3Page(),
+      '/search': (context) => const SearchPage(),
       // '/confirm': (context) => const ConfirmSellerPage(),
     },
   ));

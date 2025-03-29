@@ -602,6 +602,78 @@ class CartService {
   }
 }
 
+class SearchService {
+  Future<Map<String, dynamic>> searchProduct(int page, int length, String category, String search, String sortPrice, String sortDate,
+      String productCondition, String productType) async {
+    const url = "${Environment.baseUrl}/getproducts";
+    try {
+      // ดึง accessToken จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
+
+      if (accessToken == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
+      }
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Body (แปลงข้อมูลให้เป็น JSON string)
+      Map<String, dynamic> body = {
+        "draw": 1,
+        "columns": [],
+        "order": [
+          {"column": 0, "dir": sortDate}
+        ],
+        "start": (page - 1) * length,
+        "length": length,
+        "search": {"value": search, "regex": false},
+        "product_type": productType,
+        "product_category": category, //category
+        "product_condition": productCondition,
+        "price_order": sortPrice, // "asc"  "desc"
+        "status": ""
+      };
+
+      // แปลง Map เป็น JSON string ก่อนส่ง
+      String jsonBody = json.encode(body);
+      // Get Request
+      final response = await http.post(Uri.parse(url), headers: headers, body: jsonBody);
+      print('qqq ${response.statusCode} \n ${response.body}');
+
+      // ตรวจสอบสถานะของ Response
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        print('qqq $decodedResponse');
+        if (decodedResponse != null && decodedResponse['data'] != null) {
+          List<Product> data = (decodedResponse['data']['data'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+
+          return {"success": true, "data": data};
+        } else {
+          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        }
+      } else {
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+      };
+    }
+  }
+}
+
 class Product {
   final String id;
   final String product_name;

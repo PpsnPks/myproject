@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:myproject/Service/loginservice.dart';
 import 'package:myproject/environment.dart';
 
 class NewPasswordPage extends StatefulWidget {
@@ -46,7 +47,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
     return null;
   }
 
-  Future<void> registerUser() async {
+  Future<void> _handleNewpassword() async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -72,47 +73,30 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
         'password_confirmation': _confirmPasswordController.text,
       };
 
-      final Uri url = Uri.parse('${Environment.baseUrl}/auth/register');
-      try {
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(userData),
-        );
-        if (mounted) {
-          Navigator.pop(context);
-        }
-        print('${response.statusCode}');
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          final Map<String, dynamic> responseData = jsonDecode(response.body);
-          final int userId = responseData['user_id'];
-          print(userId); // ดึงค่า user_id จากการตอบสนอง
+      final result = await LoginService().newpassword(userData);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('เปลี่ยนรหัสผ่านสำเร็จ')),
-          );
-          print('Navigating to OTP page');
-          Navigator.pushReplacementNamed(
-            context,
-            '/login',
-            // arguments: {
-            //   'email': widget.data,
-            //   'user_id': userId, // ส่งค่า user_id ไปยังหน้า OTP
-            // },
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('การเปลี่ยนรหัสผ่านล้มเหลว')),
-          );
-        }
-      } catch (error) {
+      if (result['success']) {
+        // เก็บ token หรือทำการ Redirect
         if (mounted) {
           Navigator.pop(context);
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: $error')),
+          const SnackBar(content: Text('เปลี่ยนรหัสผ่านสำเร็จ')),
         );
-        print('เกิดข้อผิดพลาด: $error');
+        Navigator.pushNamed(context, '/login');
+        // Future.delayed(const Duration(seconds: 2), () {
+        // });
+
+        // Navigator.pushNamed(context, '/role'); // แก้ไขตาม route ของคุณ
+      } else {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+        print(result['message']);
+        // แสดงข้อความผิดพลาด
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'])),
+        );
       }
     }
   }
@@ -210,8 +194,10 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       ),
                     ),
                     onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       if (_formKey.currentState?.validate() ?? false) {
-                        // เปลี่ยนรหัสผ่าน registerUser();
+                        // เปลี่ยนรหัสผ่าน Newpassword();
+                        _handleNewpassword();
                       }
                     },
                     child: const Text(

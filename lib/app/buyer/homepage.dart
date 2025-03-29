@@ -609,46 +609,89 @@ class _HomePageState extends State<HomePage> {
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0, bottom: 10),
-        child: TextField(
-          onSubmitted: (value) {
-            setState(() {});
+        child: GestureDetector(
+          onTap: () {
+            // เมื่อกดที่ Text แล้วจะเปลี่ยนหน้า
+            Navigator.pushNamed(context, '/search'); // เปลี่ยน '/newPage' เป็นหน้าใหม่ที่คุณต้องการ
           },
-          decoration: InputDecoration(
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 14.0, right: 8.0), // Adjust the padding value as needed
-                child: SvgPicture.asset(
-                  'assets/icons/search-line.svg',
-                  width: 10.0, // Icon width
-                  height: 10.0, // Icon height
-                ),
-              ), // ไอคอนแว่นขยาย
-              hintText: 'ค้นหาสิ่งที่คุณต้องการ',
-              hintStyle: const TextStyle(
-                color: Color(0xFFA5A9B6), // Set the hintText color
-                fontSize: 16.0,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              border: Border.all(
+                color: Color(0xFFDFE2EC),
+                width: 2.0,
               ),
-              //enabledBorder: const OutlineInputBorder(
-              //  borderSide: BorderSide(width: 2, color: Color(0xFFDFE2EC)), //<-- SEE HERE
-              //),
-              filled: true, // เปิดใช้งานพื้นหลัง
-              fillColor: Colors.white, // กำหนดสีพื้นหลังเป็นสีขาว
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set the border radius
-                borderSide: BorderSide(
-                  width: 2.0, // Set border width
-                  color: Color(0xFFDFE2EC), // Set border color
-                ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: SvgPicture.asset(
+                      'assets/icons/search-line.svg',
+                      width: 28.0,
+                      height: 28.0,
+                    ),
+                  ),
+                  Text(
+                    'ค้นหาสิ่งที่คุณต้องการ',
+                    style: const TextStyle(
+                      color: Color(0xFFA5A9B6),
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ],
               ),
-              focusedBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Same radius for focused border
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Color.fromARGB(255, 174, 180, 192), // Border color when focused
-                ),
-              )),
+            ),
+          ),
         ),
       ),
     );
+    // return Container(
+    //   color: Colors.white,
+    //   child: Padding(
+    //     padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0, bottom: 10),
+    //     child: TextField(
+    //       onSubmitted: (value) {
+    //         setState(() {});
+    //       },
+    //       decoration: InputDecoration(
+    //           prefixIcon: Padding(
+    //             padding: const EdgeInsets.only(left: 14.0, right: 8.0), // Adjust the padding value as needed
+    //             child: SvgPicture.asset(
+    //               'assets/icons/search-line.svg',
+    //               width: 10.0, // Icon width
+    //               height: 10.0, // Icon height
+    //             ),
+    //           ), // ไอคอนแว่นขยาย
+    //           hintText: 'ค้นหาสิ่งที่คุณต้องการ',
+    //           hintStyle: const TextStyle(
+    //             color: Color(0xFFA5A9B6), // Set the hintText color
+    //             fontSize: 16.0,
+    //           ),
+    //           //enabledBorder: const OutlineInputBorder(
+    //           //  borderSide: BorderSide(width: 2, color: Color(0xFFDFE2EC)), //<-- SEE HERE
+    //           //),
+    //           filled: true, // เปิดใช้งานพื้นหลัง
+    //           fillColor: Colors.white, // กำหนดสีพื้นหลังเป็นสีขาว
+    //           enabledBorder: const OutlineInputBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set the border radius
+    //             borderSide: BorderSide(
+    //               width: 2.0, // Set border width
+    //               color: Color(0xFFDFE2EC), // Set border color
+    //             ),
+    //           ),
+    //           focusedBorder: const OutlineInputBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(10.0)), // Same radius for focused border
+    //             borderSide: BorderSide(
+    //               width: 2.0,
+    //               color: Color.fromARGB(255, 174, 180, 192), // Border color when focused
+    //             ),
+    //           )),
+    //     ),
+    //   ),
+    // );
   }
 }
 

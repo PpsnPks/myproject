@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/Service/loginservice.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -23,6 +24,68 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       return 'กรุณาลงทะเบียนด้วยอีเมลของสถาบัน';
     }
     return null;
+  }
+
+  void _handleForgotpassword() async {
+    final String email = _emailController.text.trim();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: SizedBox(
+            height: 90.0, // กำหนดความสูง
+            width: 90.0, // กำหนดความกว้าง
+            child: CircularProgressIndicator(
+              color: Color(0XFFE35205),
+              strokeWidth: 12.0, // ปรับความหนาของวงกลม
+              strokeCap: StrokeCap.round,
+            ),
+          ),
+        );
+      },
+    );
+    if (email.isEmpty) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณากรอกอีเมล')),
+      );
+      return;
+    }
+
+    final result = await LoginService().forgotpassword(email);
+
+    if (result['success']) {
+      // เก็บ token หรือทำการ Redirect
+      if (mounted) {
+        Navigator.pop(context);
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('รหัส OTP ถูกส่งไปยังอีเมล กรุณาตรวจสอบ')),
+      );
+      Navigator.pushNamed(
+        context,
+        '/newpassword',
+        arguments: {
+          'data': _emailController.text,
+        },
+      );
+      // Future.delayed(const Duration(seconds: 2), () {
+      // });
+
+      // Navigator.pushNamed(context, '/role'); // แก้ไขตาม route ของคุณ
+    } else {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+      print(result['message']);
+      // แสดงข้อความผิดพลาด
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'])),
+      );
+    }
   }
 
   @override
@@ -76,19 +139,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   onPressed: () {
                     // Add forgot password functionality
+                    FocusManager.instance.primaryFocus?.unfocus();
                     if (_formKey.currentState?.validate() ?? false) {
                       // เปลี่ยนรหัสผ่าน registerUser();
-                      Navigator.pushReplacementNamed(
-                        context,
-                        '/newpassword',
-                        arguments: {
-                          'data': _emailController.text,
-                        },
-                      );
+                      _handleForgotpassword();
                     }
                   },
                   child: const Text(
-                    'ถัดไปA',
+                    'ถัดไป',
                     style: TextStyle(
                       fontSize: 18,
                       color: Color(0XFFFFFFFF),

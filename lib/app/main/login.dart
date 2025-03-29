@@ -19,7 +19,7 @@ class _LoginState extends State<LoginPage> {
 
   @override
   void dispose() {
-    FocusScope.of(context).dispose(); // ปิด FocusNode ทิ้งเมื่อ Widget ถูกทำลาย
+    FocusManager.instance.primaryFocus?.unfocus(); // ปิด FocusNode ทิ้งเมื่อ Widget ถูกทำลาย
     super.dispose();
   }
 
@@ -181,6 +181,7 @@ class _LoginState extends State<LoginPage> {
                     ),
                   ),
                   onPressed: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
                     _handleLogin(context);
                     // Navigator.pushNamed(context, '/role');
                   },
