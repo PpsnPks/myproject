@@ -26,8 +26,48 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
 
   String? _base64Image;
 
-  final List<String> faculties = ['คณะวิทยาศาสตร์', 'คณะวิศวกรรมศาสตร์'];
-  final List<String> departments = ['คอมพิวเตอร์', 'ไฟฟ้า'];
+  final List<String> faculties = [
+  'คณะวิศวกรรมศาสตร์',
+  'คณะสถาปัตยกรรม ศิลปะและการออกแบบ / คณะสถาปัตยกรรมศาสตร์',
+  'คณะครุศาสตร์อุตสาหกรรมและเทคโนโลยี',
+  'คณะเทคโนโลยีการเกษตร',
+  'คณะวิทยาศาสตร์',
+  'คณะเทคโนโลยีสารสนเทศ',
+  'คณะอุตสาหกรรมอาหาร',
+  'คณะบริหารธุรกิจ',
+  'วิทยาลัยเทคโนโลยีและนวัตกรรมวัสดุ',
+  'วิทยาลัยนวัตกรรมการผลิตขั้นสูง',
+  'วิทยาลัยอุตสาหกรรมการบินนานาชาติ',
+  'คณะศิลปศาสตร์',
+  'คณะแพทยศาสตร์',
+  'วิทยาลัยวิศวกรรมสังคีต',
+  'คณะทันตแพทยศาสตร์',
+  'วิทยาลัยการจัดการนวัตกรรมและอุตสาหกรรม',
+  'วิทยาเขตชุมพรเขตรอุดมศักดิ์',
+  'สถาบันโคเซ็นแห่งสถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง',
+  'นักศึกษาแลกเปลี่ยน',
+  '42 Bangkok',
+];
+  final List<String> departments = [
+    'วิศวกรรมการวัดและควบคุม', 
+    'วิศวกรรมคอมพิวเตอร์',
+    'วิศวกรรมเครื่องกล',
+    'วิศวกรรมเคมี',
+    'วิศวกรรมไฟฟ้า',
+    'วิศวกรรมอุตสาหการ',
+    'วิศวกรรมอาหาร',
+    'วิศวกรรมอิเล็กทรอนิกส์',
+    'วิศวกรรมโทรคมนาคม',
+    'วิศวกรรมโยธา',
+    'วิศวกรรมเกษตร',
+    'Biomedical Engineering',
+    'Computer Engineering',
+    'Mechanical Engineering',
+    'Chemical Engineering',
+    'Civil Engineering',
+    'Industrial Engineering',
+    'Multidisciplinary Engineering'
+    ];
   final List<String> years = ['ปี 1', 'ปี 2', 'ปี 3', 'ปี 4'];
 
   int currentStep = 0;
@@ -44,56 +84,63 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
     }
   }
 
-  // void _navigateToRolePage() async {
-  //   final selectedRole = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => const RolePage()),
-  //   );
-
-  //   if (selectedRole != null) {
-  //     _submitForm(selectedRole);
-  //   }
-  // }
-
   Future<void> _submitForm() async {
-    var response = await UploadImgService().uploadImg(image);
-    var imgPath = '';
-    if (response['success']) {
-      imgPath = response['image'];
-    }
-    if (_validateForm()) {
-      UserService formService = UserService();
-      String role = 'buy';
-      final result = await formService.form(
-        '${firstNameController.text} ${lastNameController.text}',
-        imgPath,
-        emailController.text,
-        phoneController.text,
-        'N/A', // Address field
-        selectedFaculty ?? '',
-        selectedDepartment ?? '',
-        selectedYear ?? '',
-        role,
+  var response = await UploadImgService().uploadImg(image);
+  var imgPath = '';
+  if (response['success']) {
+    imgPath = response['image'];
+  }
+  if (_validateForm()) {
+    UserService formService = UserService();
+    String role = 'buy';
+    String guidetag = '';
+    final result = await formService.form(
+      '${firstNameController.text} ${lastNameController.text}',
+      imgPath,
+      emailController.text,
+      phoneController.text,
+      'N/A', // Address field
+      selectedFaculty ?? '',
+      selectedDepartment ?? '',
+      selectedYear ?? '',
+      role,
+      guidetag,
+    );
+
+    if (result['success'] == true) {
+      print('บันทึกข้อมูลสำเร็จ: ${result["data"]}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('บันทึกข้อมูลสำเร็จ: ${result["data"]}')),
       );
 
-      if (result['success'] == true) {
-        print('บันทึกข้อมูลสำเร็จ: ${result["data"]}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('บันทึกข้อมูลสำเร็จ: ${result["data"]}')),
-        );
-        Navigator.pushReplacementNamed(context, '/categoryform');
-      } else {
-        print('เกิดข้อผิดพลาด: ${result["message"]}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('เกิดข้อผิดพลาด: ${result["message"]}')),
-        );
-      }
+      // 🔹 เปลี่ยนเส้นทางไปที่ tagform พร้อมส่งข้อมูล
+      Navigator.pushNamed(
+        context,
+        '/tagform',
+        arguments: {
+          'name': '${firstNameController.text} ${lastNameController.text}',
+          'imgPath': imgPath,
+          'email': emailController.text,
+          'phone': phoneController.text,
+          'faculty': selectedFaculty ?? '',
+          'department': selectedDepartment ?? '',
+          'year': selectedYear ?? '',
+          'role': role,
+        },
+      );
     } else {
+      print('เกิดข้อผิดพลาด: ${result["message"]}');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบถ้วน')),
+        SnackBar(content: Text('เกิดข้อผิดพลาด: ${result["message"]}')),
       );
     }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบถ้วน')),
+    );
   }
+}
+
 
   bool _validateForm() {
     return phoneController.text.isNotEmpty &&

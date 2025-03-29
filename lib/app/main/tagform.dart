@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/dropdownservice.dart';
+import 'package:myproject/Service/formservice.dart';
 
 class TagFormPage extends StatefulWidget {
   const TagFormPage({super.key, required List selectedCategories});
@@ -88,7 +89,7 @@ class _TagFormPageState extends State<TagFormPage> {
             const SizedBox(height: 10),
             tags.isEmpty
                 ? const Center(
-                  child: CircularProgressIndicator(
+                    child: CircularProgressIndicator(
                     color: Color(0XFFE35205),
                     strokeWidth: 2.0,
                   ))
@@ -103,10 +104,13 @@ class _TagFormPageState extends State<TagFormPage> {
                       return GestureDetector(
                         onTap: () => toggleSelection(tagId),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 16),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: isSelected ? const Color(0XFFE35205) : Colors.grey,
+                              color: isSelected
+                                  ? const Color(0XFFE35205)
+                                  : Colors.grey,
                               width: 2,
                             ),
                             borderRadius: BorderRadius.circular(8),
@@ -115,7 +119,9 @@ class _TagFormPageState extends State<TagFormPage> {
                             tagName,
                             style: TextStyle(
                               fontSize: 16,
-                              color: isSelected ? const Color(0XFFE35205) : Colors.black,
+                              color: isSelected
+                                  ? const Color(0XFFE35205)
+                                  : Colors.black,
                             ),
                           ),
                         ),
@@ -129,6 +135,12 @@ class _TagFormPageState extends State<TagFormPage> {
                 onPressed: selectedTags.isNotEmpty
                     ? () {
                         print("Selected Tags: $selectedTags"); // ✅ Debugging log
+                        
+                        // เก็บค่า selectedTags ไปที่ UserService
+                        UserService userService = UserService();
+                        userService.setGuidetag(selectedTags);
+
+                        // ส่งไปยังหน้าถัดไป
                         Navigator.pushNamed(
                           context,
                           '/role',

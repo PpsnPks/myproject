@@ -15,31 +15,43 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool loadingProduct = false;
-  List<Product> homeProducts = []; // ประกาศตัวแปรให้ถูกต้อง
+  bool showRecommended = true;
+  List<Product> homeProducts = [];
+  List<Product> recommendedProducts = [];
+  List<Product> recommendedProductsformPost = []; // ประกาศตัวแปรให้ถูกต้อง
 
   void getProducts() async {
     try {
       setState(() {
         loadingProduct = true;
       });
-      final response = await ProductService().getProduct(1, 10); // เรียก API
-      if (response['success']) {
+
+      // ดึงสินค้าปกติ
+      final productResponse = await ProductService().getProduct(1, 10);
+
+      // ดึงสินค้าที่แนะนำ
+      final recommendedResponse = await ProductService().getRecommendedProducts();
+      final recommendedfromPostResponse = await ProductService().getRecommendedProductsfromPost();
+
+      if (productResponse['success'] && recommendedResponse['success'] && recommendedfromPostResponse['success']) {
         setState(() {
           loadingProduct = false;
-          homeProducts = response['data'];
+          homeProducts = productResponse['data'];
+          recommendedProducts = recommendedResponse['data'];
+          recommendedProductsformPost = recommendedfromPostResponse['data'];// อัปเดตสินค้าที่แนะนำ
         });
       } else {
         setState(() {
           loadingProduct = false;
         });
-        throw Exception('Failed to load products');
+        throw Exception('Failed to load products or recommended products');
       }
     } catch (e) {
       setState(() {
         loadingProduct = false;
       });
       print("Error loading products: $e");
-      return; // ถ้ามีข้อผิดพลาดให้ส่งกลับเป็นลิสต์ว่าง
+      return;
     }
   }
 
@@ -154,60 +166,79 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(height: 10), // เพิ่มช่องว่างระหว่าง Row กับ FutureBuilder
                         loadingProduct
-                            ? const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Center(
-                                          child: SizedBox(
-                                        width: 10.0,
-                                        height: 10.0,
-                                        child: CircularProgressIndicator(
-                                          color: Color(0XFFE35205),
-                                          strokeWidth: 2.0,
-                                        ),
-                                      )),
-                                      SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
-                                      Text(
-                                        'กำลังโหลดสินค้า',
-                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                          ? const Center(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                        child: SizedBox(
+                                      width: 10.0,
+                                      height: 10.0,
+                                      child: CircularProgressIndicator(
+                                        color: Color(0XFFE35205),
+                                        strokeWidth: 2.0,
                                       ),
-                                    ],
-                                  ),
+                                    )),
+                                    SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                                    Text(
+                                      'กำลังโหลดสินค้า',
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                                    ),
+                                  ],
                                 ),
-                              )
-                            : homeProducts.isNotEmpty
-                                ? Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            for (int i = 0; i < homeProducts.length; i += 2)
-                                              Padding(
+                              ),
+                            )
+                          : recommendedProducts.isNotEmpty // ถ้ามีสินค้าแนะนำ
+                              ? Column(
+                                  children: recommendedProducts
+                                      .map((product) => Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: productCard(product, context),
+                                          ))
+                                      .toList(),
+                                )
+                              : recommendedProductsformPost.isNotEmpty // ถ้าไม่มีสินค้าแนะนำ แต่มีสินค้าแนะนำตามโพสต์
+                                  ? Column(
+                                      children: recommendedProductsformPost
+                                          .map((product) => Padding(
                                                 padding: const EdgeInsets.all(4.0),
-                                                child: productCard(homeProducts[i], context),
-                                              )
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Column(
+                                                child: productCard(product, context),
+                                              ))
+                                          .toList(),
+                                    )
+                                  : homeProducts.isNotEmpty // ถ้าไม่มีสินค้าแนะนำตามโพสต์ ให้แสดงสินค้าทั้งหมด
+                                      ? Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            for (int i = 1; i < homeProducts.length; i += 2)
-                                              Padding(
-                                                padding: const EdgeInsets.all(4.0),
-                                                child: productCard(homeProducts[i], context),
-                                              )
+                                            Expanded(
+                                              child: Column(
+                                                children: [
+                                                  for (int i = 0; i < homeProducts.length; i += 2)
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(4.0),
+                                                      child: productCard(homeProducts[i], context),
+                                                    )
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                children: [
+                                                  for (int i = 1; i < homeProducts.length; i += 2)
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(4.0),
+                                                      child: productCard(homeProducts[i], context),
+                                                    )
+                                                ],
+                                              ),
+                                            ),
                                           ],
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : const Center(child: Text('ไม่พบสินค้า')),
+                                        )
+                                      : const Center(child: Text('ไม่พบสินค้าแนะนำ')),
+
                         const SizedBox(height: 24),
                         // Padding(
                         //   padding: const EdgeInsets.only(left: 16.0, right: 16.0), // กำหนด padding ซ้ายและขวา
