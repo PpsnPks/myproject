@@ -856,6 +856,7 @@ class Product {
     } else {
       defect = data['product_defect'] ?? '';
     }
+    print('data : ${double.parse(data['product_price'])}');
     return Product(
       id: data['id']?.toString() ?? "",
       product_name: data['product_name'] ?? "",

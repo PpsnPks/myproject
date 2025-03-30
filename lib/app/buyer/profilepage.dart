@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String address = '';
 
   Future<void> getDataUser() async {
-    final id = await Securestorage().readSecureData('userId');
+    final id = await Securestorage().readSecureData('userId2');
     final response = await UserService().getUserById(int.parse(id));
 
     if (response['success']) {
@@ -440,7 +440,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ? (isGridSelected ? buildBuyerGridView() : buildBuyerHistoryView(cartBProducts, cartSeller))
                 : buildSellerHistoryView(pendingCollection),
           ),
-
         ],
       ),
       // Footer changes based on role
@@ -671,7 +670,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-   Widget buildProductBCard(Product product, Seller seller) {
+  Widget buildProductBCard(Product product, Seller seller) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/productdetail');

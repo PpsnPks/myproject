@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myproject/Service/dropdownservice.dart';
 
 class CategoryFormPage extends StatefulWidget {
-  const CategoryFormPage({super.key});
+  final Map userData;
+  const CategoryFormPage({super.key, required this.userData});
 
   @override
   _CategoryFormPageState createState() => _CategoryFormPageState();
@@ -15,6 +16,7 @@ class _CategoryFormPageState extends State<CategoryFormPage> {
   @override
   void initState() {
     super.initState();
+    print('data: ${widget.userData}');
     fetchCategories();
   }
 
@@ -108,7 +110,7 @@ class _CategoryFormPageState extends State<CategoryFormPage> {
                     Navigator.pushNamed(
                       context,
                       '/tagform',
-                      arguments: selectedCategoryIds, // ส่ง id ไปหน้า /tagform
+                      arguments: [widget.userData, selectedCategoryIds], // ส่ง id ไปหน้า /tagform
                     );
                   }
                   // ล็อกข้อมูลที่เลือกก่อนจะส่งไป

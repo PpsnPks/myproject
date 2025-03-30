@@ -11,6 +11,7 @@ class LikeService {
       String? accessToken = await AuthService().getAccessToken();
       String userId = await Securestorage().readSecureData('userId');
       String url = "${Environment.baseUrl}/userslikes/$userId";
+      print('like $url');
 
       if (accessToken == null) {
         return {
@@ -60,6 +61,7 @@ class LikeService {
 
   Future<bool> likeProduct(Product product) async {
     final url = Uri.parse('${Environment.baseUrl}/likes');
+
     try {
       String userId = Securestorage().readSecureData('userId');
 
@@ -69,6 +71,7 @@ class LikeService {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(body),
       );
+      print('like $url $body');
       if (response.statusCode == 200) {
         return true;
       } else {
