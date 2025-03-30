@@ -3,6 +3,7 @@ import 'package:myproject/app/main/secureStorage.dart';
 
 class RolePage extends StatelessWidget {
   const RolePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

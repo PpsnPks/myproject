@@ -300,11 +300,11 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
       });
     } else {
       print('before submit form');
-      if (_formKey.currentState?.validate() ?? false) {
+      if (_base64Image != null && _formKey.currentState?.validate() == null) {
         await _submitForm(); // Wait for the action to complete
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('กรุณากรอกข้อมูลให้ครบถ้วน')),
+          const SnackBar(content: Text('กรุณากรอกข้อมูลและเพิ่มรูปโปรไฟล์ให้ครบถ้วน')),
         );
       }
       // Navigate to role selection at the final step
