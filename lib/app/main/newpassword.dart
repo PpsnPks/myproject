@@ -148,6 +148,11 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
+                        // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                      ),
+                      errorMaxLines: 2,
                     ),
                     validator: validatePassword,
                   ),
@@ -170,6 +175,10 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
+                        // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                      ),
                     ),
                     validator: validateConfirmPassword,
                   ),
@@ -180,6 +189,10 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       labelText: 'OTP',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
+                        // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                       ),
                     ),
                     validator: (value) => (value == null || value.isEmpty) ? "กรุณากรอกรหัส OTP" : null,

@@ -7,7 +7,8 @@ import 'package:myproject/app/seller/sellerfooter.dart';
 import 'package:myproject/service/Chatservice.dart';
 
 class Chatpage extends StatefulWidget {
-  const Chatpage({super.key});
+  final String role;
+  const Chatpage({super.key, required this.role});
 
   @override
   State<Chatpage> createState() => _ChatpageState();
@@ -17,11 +18,6 @@ class _ChatpageState extends State<Chatpage> {
   late Future<List<ProductChat>> likedProducts;
   bool isLoading = true;
   List<Chat> chats = [];
-  String role = '';
-
-  void getRole() async {
-    role = await Securestorage().readSecureData('role');
-  }
 
   void getAllChat() async {
     Map<String, dynamic> response = await Chatservice().getAllChat();
@@ -50,7 +46,6 @@ class _ChatpageState extends State<Chatpage> {
 
   @override
   void initState() {
-    getRole();
     getAllChat();
 
     super.initState();
@@ -111,9 +106,9 @@ class _ChatpageState extends State<Chatpage> {
                     );
                   },
                 ),
-      bottomNavigationBar: role == 'buy'
+      bottomNavigationBar: widget.role == 'buy'
           ? buyerFooter(context, 'chat')
-          : role == 'sell'
+          : widget.role == 'sell'
               ? sellerFooter(context, 'chat')
               : null,
       // bottomNavigationBar: buyerFooter(context, 'chat'),

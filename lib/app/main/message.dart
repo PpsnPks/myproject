@@ -11,6 +11,8 @@ import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:myproject/Service/messageservice.dart';
 import 'package:myproject/Service/productdetailservice.dart';
 import 'package:myproject/Service/uploadimgservice.dart';
+import 'package:myproject/app/main/chatPage.dart';
+import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/environment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -162,6 +164,13 @@ class _MessagepageState extends State<Messagepage> {
 
     PusherService().initPusher(widget.receiverId, addMessage);
     getOldMessage();
+    getRole();
+  }
+
+  String role = '';
+
+  getRole() async {
+    role = await Securestorage().readSecureData('role');
   }
 
   @override
@@ -179,7 +188,13 @@ class _MessagepageState extends State<Messagepage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pushReplacementNamed(context, '/chat');
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Chatpage(role: role),
+              ),
+            );
+            // Navigator.pushReplacementNamed(context, '/chat');
           },
         ),
       ),

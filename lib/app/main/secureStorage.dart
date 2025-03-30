@@ -5,7 +5,8 @@ class Securestorage {
 
   writeSecureData(String key, String value) async {
     await storage.write(key: key, value: value);
-    print(storage);
+    final data = await storage.readAll();
+    // print('qqqqqqq1 $data');
   }
 
   readSecureData(String key) async {
@@ -19,5 +20,10 @@ class Securestorage {
 
   deleteAllSecureData() async {
     await storage.deleteAll();
+  }
+
+  printAllSecureData() async {
+    final data = await storage.readAll();
+    print('qqqqqqq2 $data');
   }
 }

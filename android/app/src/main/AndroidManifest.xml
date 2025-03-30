@@ -2,7 +2,8 @@
     <application
         android:label="KMITL XChange"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:enableOnBackInvokedCallback="true">
             <!--android:taskAffinity=""-->
         <activity
             android:name=".MainActivity"

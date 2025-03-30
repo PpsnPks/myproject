@@ -19,7 +19,6 @@ class _SearchPageState extends State<SearchPage> {
   bool hasMore = true;
   bool hasError = false;
   String category = "";
-  String searchText = "";
   String sortPrice = "asc";
   String sortDate = "desc";
   String productCondition = '';
@@ -28,8 +27,8 @@ class _SearchPageState extends State<SearchPage> {
   _loadnew(String text) async {
     List<Product> newProduct = [];
     setState(() {
-      products = [];
       isLoading = true;
+      products = [];
     });
     if (text == '') {
       setState(() {
@@ -39,10 +38,10 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
     Map<String, dynamic> response =
-        await SearchService().searchProduct(page, perPage, category, searchText, sortPrice, sortDate, productCondition, productType);
+        await SearchService().searchProduct(page, perPage, category, text, sortPrice, sortDate, productCondition, productType);
     if (response['success'] == true) {
       newProduct = response['data'];
-      print('$page, $perPage, $category, $searchText, $sortPrice, $sortDate, $productCondition, $productType');
+      print('zzz $page, $perPage, $category, $text, $sortPrice, $sortDate, $productCondition, $productType');
       print("11111111111 $newProduct");
       if (newProduct.isEmpty) {
         setState(() {
@@ -209,6 +208,7 @@ class _SearchPageState extends State<SearchPage> {
           focusNode: _focusNode,
           onChanged: (value) {
             setState(() {
+              print('zzz $value');
               _loadnew(value);
             });
           },

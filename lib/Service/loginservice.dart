@@ -49,6 +49,8 @@ class LoginService {
         Securestorage().writeSecureData('token', token);
         String userId = data['user_id'].toString();
         Securestorage().writeSecureData('userId', userId);
+        Securestorage().writeSecureData('email', email);
+        Securestorage().writeSecureData('password', password);
 
         // final test = await Securestorage().readSecureData('token');
         // print('okk === $test');

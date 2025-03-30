@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/app/main/chatPage.dart';
 
 Widget sellerFooter(BuildContext context, String selected) {
   return Container(
@@ -63,7 +64,12 @@ void _onItemTapped(int index, BuildContext context) {
       Navigator.pushReplacementNamed(context, '/cart-seller/1');
       break;
     case 3:
-      Navigator.pushReplacementNamed(context, '/chat');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Chatpage(role: 'sell'),
+        ),
+      );
       break;
     case 4:
       Navigator.pushReplacementNamed(context, '/profile');

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/loginservice.dart';
+import 'package:myproject/app/main/formPage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -64,7 +65,19 @@ class _LoginState extends State<LoginPage> {
       }
       if (result['first']) {
         print("First Time");
-        Navigator.pushReplacementNamed(context, '/infoform');
+        print(result['data']);
+        print(result['data']['user']['id']);
+        print(result['data']['user']['name']);
+        print(result['data']['user']['email']);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PersonalInfoForm(
+                data:
+                    '{"id" : "${result['data']['user']['id']}", "name" : "${result['data']['user']['name']}", "email" : "${result['data']['user']['email']}"}'),
+          ),
+        );
+        // Navigator.pushReplacementNamed(context, '/infoform');
       } else {
         print("NOt First Time");
         Navigator.pushReplacementNamed(context, '/role');

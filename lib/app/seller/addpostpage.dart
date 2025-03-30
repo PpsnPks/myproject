@@ -269,6 +269,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: validateDetail,
                 ),
@@ -319,6 +323,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกหมวดหมู่" : null,
                 ),
@@ -359,6 +367,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
                 ),
@@ -384,6 +396,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: validatePrice,
                 ),

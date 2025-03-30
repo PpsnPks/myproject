@@ -129,7 +129,7 @@ class _OtpPageState extends State<OtpPage> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: enableButton ? const Color(0XFFE35205) : const Color.fromARGB(122, 227, 83, 5),
+                    backgroundColor: enableButton ? const Color(0XFFE35205) : const Color.fromARGB(255, 237, 187, 161),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
