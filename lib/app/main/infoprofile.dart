@@ -282,34 +282,34 @@ class _InfoProfileState extends State<InfoProfile> {
             width: MediaQuery.of(context).size.width,
             color: const Color(0xFFDFE2EC),
           ),
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0),
-            child: Text('ข้อมูลส่วนตัว', style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 16.0),
-                  child: Text('ที่อยู่', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: Text(
-                    address,
-                    style: const TextStyle(fontSize: 14.0),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            height: 8.0,
-            width: MediaQuery.of(context).size.width,
-            color: const Color(0xFFDFE2EC),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.only(left: 16.0, top: 16.0),
+          //   child: Text('ข้อมูลส่วนตัว', style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w500)),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 10.0, bottom: 16.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       const Padding(
+          //         padding: EdgeInsets.only(left: 16.0),
+          //         child: Text('ที่อยู่', style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A9B6))),
+          //       ),
+          //       Padding(
+          //         padding: const EdgeInsets.only(right: 12.0),
+          //         child: Text(
+          //           address,
+          //           style: const TextStyle(fontSize: 14.0),
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   height: 8.0,
+          //   width: MediaQuery.of(context).size.width,
+          //   color: const Color(0xFFDFE2EC),
+          // ),
         ],
       ),
     );

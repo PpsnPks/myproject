@@ -61,19 +61,22 @@ class CustomerService {
       };
 
       final response = await http.get(Uri.parse(url), headers: headers);
+      var responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        var responseBody = jsonDecode(response.body);
-        if (responseBody == null || !responseBody.containsKey("customer")) {
-          return {"success": false, "message": "ไม่พบข้อมูลผู้ใช้"};
+        if (responseBody == null || responseBody["customer"] is! Map<String, dynamic>) {
+          return {"success": false, "message": "ข้อมูลผู้ใช้ไม่ถูกต้อง"};
         }
 
         return {
           "success": true,
           "customer": Customer.fromJson(responseBody["customer"]),
-          "userpost": (responseBody["userpost"] as List<dynamic>).map((e) => e as Map<String, dynamic>).toList(),
-          "userproduct": (responseBody["userproduct"] as List<dynamic>).map((e) => e as Map<String, dynamic>).toList(),
-          "userhistory": (responseBody["userhistory"] as List<dynamic>).map((e) => e as Map<String, dynamic>).toList(),
+          "userpost":
+              (responseBody["userpost"] is List) ? (responseBody["userpost"] as List).whereType<Map<String, dynamic>>().toList() : [],
+          "userproduct":
+              (responseBody["userproduct"] is List) ? (responseBody["userproduct"] as List).whereType<Map<String, dynamic>>().toList() : [],
+          "userhistory":
+              (responseBody["userhistory"] is List) ? (responseBody["userhistory"] as List).whereType<Map<String, dynamic>>().toList() : [],
         };
       } else {
         return {"success": false, "message": 'Error ${response.statusCode} ${response.body}'};

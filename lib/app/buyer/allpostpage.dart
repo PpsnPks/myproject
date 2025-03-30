@@ -249,16 +249,6 @@ class _AllPostPageState extends State<AllPostPage> {
                               ),
                             ),
                           ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
-                          child: IconButton(
-                            onPressed: () => {},
-                            icon: const Icon(
-                              Icons.chat_outlined,
-                              color: Color(0xFFA5A9B6),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),

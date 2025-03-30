@@ -273,14 +273,14 @@ class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixi
                   ],
                 ),
               ),
-              const SizedBox(
-                width: 30,
-                child: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: Color(0xFFA5A9B6),
-                  size: 24,
-                ),
-              )
+              // const SizedBox(
+              //   width: 30,
+              //   child: Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     color: Color(0xFFA5A9B6),
+              //     size: 24,
+              //   ),
+              // )
             ],
           ),
         ),
