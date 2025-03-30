@@ -36,7 +36,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     setState(() {
       isLoading = true;
     });
-    userId = await Securestorage().readSecureData('userId');
+    userId = await Securestorage().readSecureData('userId2');
     ProductDetail response = await ProductService().getProductById(widget.productId);
     setState(() {
       isLiked = response.isLiked;

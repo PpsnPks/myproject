@@ -157,9 +157,11 @@ void main() async {
       '/infoprofile': (context) => const InfoProfile(),
       '/viewprofile': (context) => const ViewProfilePage(),
       '/allpost': (context) => const AllPostPage(),
-      '/categoryform': (context) => const CategoryFormPage(),
+      '/categoryform': (context) => const CategoryFormPage(
+            userData: {},
+          ),
       '/tagform': (context) => const TagFormPage(
-            selectedCategories: [],
+            data: [],
           ),
       '/info1': (context) => const Info1Page(),
       '/info2': (context) => const Info2Page(),

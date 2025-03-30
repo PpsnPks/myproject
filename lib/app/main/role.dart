@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/Service/customerservice.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 
-class RolePage extends StatelessWidget {
+class RolePage extends StatefulWidget {
   const RolePage({super.key});
+
+  @override
+  State<RolePage> createState() => _RolePageState();
+}
+
+class _RolePageState extends State<RolePage> {
+  _saveUserdata() async {
+    print('data start');
+    await CustomerService().getUserByMyID();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _saveUserdata();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -47,8 +47,12 @@ class LoginService {
         // เก็บ data
         String token = data['token'];
         Securestorage().writeSecureData('token', token);
-        String userId = data['user_id'].toString();
+        print('kkk ${data['user_data']}');
+        print('kkk ${data['user_data'][0]['id']}');
+        String userId = data['user_data'][0]['id'].toString(); // ตอนนี้เก็บ id ตาราง customer
+        String userId2 = data['user_data'][0]['user_id'].toString(); // ตอนนี้เก็บ id ตาราง customer
         Securestorage().writeSecureData('userId', userId);
+        Securestorage().writeSecureData('userId2', userId2);
         Securestorage().writeSecureData('email', email);
         Securestorage().writeSecureData('password', password);
 

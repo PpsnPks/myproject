@@ -268,6 +268,7 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
             'department': selectedDepartment ?? '',
             'year': selectedYear ?? '',
             'role': role,
+            'guidetag': null
           },
         );
       } else {

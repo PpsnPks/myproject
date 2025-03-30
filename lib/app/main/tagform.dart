@@ -3,10 +3,11 @@ import 'package:myproject/Service/dropdownservice.dart';
 import 'package:myproject/Service/formservice.dart';
 
 class TagFormPage extends StatefulWidget {
-  const TagFormPage({super.key, required List selectedCategories});
+  final List data;
+  const TagFormPage({super.key, required this.data});
 
   @override
-  _TagFormPageState createState() => _TagFormPageState();
+  State<TagFormPage> createState() => _TagFormPageState();
 }
 
 class _TagFormPageState extends State<TagFormPage> {
@@ -20,6 +21,9 @@ class _TagFormPageState extends State<TagFormPage> {
 
     final arguments = ModalRoute.of(context)?.settings.arguments;
     print("📌 Raw arguments received: $arguments"); // ✅ Debug log
+    print('data: ${widget.data}');
+    print('data0: ${widget.data[0]}');
+    print('data1: ${widget.data[1]}');
 
     if (arguments != null && arguments is List) {
       selectedCategoryIds = List<int>.from(arguments);

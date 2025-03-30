@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String address = '';
 
   Future<void> getDataUser() async {
-    final id = await Securestorage().readSecureData('userId');
+    final id = await Securestorage().readSecureData('userId2');
     final response = await UserService().getUserById(int.parse(id));
 
     if (response['success']) {
@@ -169,48 +169,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                       ),
                       ListTile(
-                        leading: const Icon(Icons.info_outline_rounded),
-                        title: const Text('เกี่ยวกับ'),
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                                ListTile(
-                                  leading: const Icon(Icons.info_outline_rounded),
-                                  title: const Text('การใช้งาน'),
-                                  onTap: () {
-                                    // Handle personal info action
-                                    Navigator.pop(context); // Close the bottom sheet
-                                    Navigator.pushNamed(context, '');
-                                    // Navigate to personal information page if needed
-                                  },
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.info_outline_rounded),
-                                  title: const Text('การใช้งาน'),
-                                  onTap: () {
-                                    // Handle personal info action
-                                    Navigator.pop(context); // Close the bottom sheet
-                                    Navigator.pushNamed(context, '');
-                                    // Navigate to personal information page if needed
-                                  },
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.info_outline_rounded),
-                                  title: const Text('การใช้งาน'),
-                                  onTap: () {
-                                    // Handle personal info action
-                                    Navigator.pop(context); // Close the bottom sheet
-                                    Navigator.pushNamed(context, '');
-                                    // Navigate to personal information page if needed
-                                  },
-                                ),
-                              ]);
-                            },
-                          );
-                        },
-                      ),
+                          leading: const Icon(Icons.info_outline_rounded),
+                          title: const Text('เกี่ยวกับ'),
+                          onTap: () {
+                            Navigator.pop(context); // Close the bottom sheet
+                            Navigator.pushNamed(context, '/info1');
+                          }),
                       ListTile(
                         leading: const Icon(Icons.exit_to_app_outlined, color: Colors.red),
                         title: const Text(

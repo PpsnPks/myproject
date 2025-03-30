@@ -110,6 +110,9 @@ class _EditProductPageState extends State<EditProductPage> {
 
       print('all_url_images = ${uploadResponse['images']}');
     } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณาอัปโหลดรูปภาพเป็น jpeg, jpg, png เท่านั้น')),
+      );
       print('upload error = ${uploadResponse['message']}');
       return;
     }
@@ -164,7 +167,7 @@ class _EditProductPageState extends State<EditProductPage> {
         _productNameController.text = data.product_name;
         imagesPath = data.product_images;
         quantity = int.tryParse(data.product_qty) ?? 1;
-        _productPriceController.text = (double.parse(data.product_price).toInt()).toString();
+        _productPriceController.text = (int.parse(data.product_price.replaceAll(',', '')).toInt()).toString();
         _productDescriptionController.text = data.product_description;
         _productCategoryController.text = data.product_category;
         product_cate = data.product_category;
