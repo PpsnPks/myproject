@@ -47,7 +47,7 @@ class _Info3PageState extends State<Info3Page> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/role'); // ไปยังหน้าเริ่มใช้งาน
+                Navigator.pushNamed(context, '/profile'); // ไปยังหน้าเริ่มใช้งาน
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0XFFE35205),

@@ -35,6 +35,8 @@ class _EditProductPageState extends State<EditProductPage> {
   String? selectedPickupCategory;
 
   List<Uint8List> _imageBytesList = []; // เก็บภาพในรูปแบบ Uint8List
+  List<dynamic> tagList = [];
+  String? selectedTag;
   int currentIndex = 0; // ตัวแปรเพื่อเก็บตำแหน่งภาพที่กำลังแสดง
   final PageController _pageController = PageController();
   final TextEditingController _productNameController = TextEditingController();
@@ -700,10 +702,25 @@ class _EditProductPageState extends State<EditProductPage> {
                         validator: validateDetail,
                       ),
                       const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _tagController,
+                      DropdownButtonFormField<String>(
+                        items: [
+                          for (var tag in tagList)
+                            DropdownMenuItem<String>(
+                              value: tag['name'], // ป้องกัน null
+                              child: Text(tag['name']),
+                            ),
+                        ],
+                        onChanged: (value) {
+                          if (value == null || value.isEmpty) return; // ป้องกัน null
+
+                          setState(() {
+                            selectedTag = value;
+                            _tagController.text = value;
+                          });
+                        },
+                        value: selectedTag?.isNotEmpty == true ? selectedTag : null, // ป้องกันค่า null
+                        hint: const Text('แท็ก'),
                         decoration: InputDecoration(
-                          labelText: 'แท็ก',
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                             borderRadius: BorderRadius.circular(12),
@@ -712,21 +729,13 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                           errorStyle: TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),
                         ),
-                        validator: validateTag,
+                        validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
                       ),
                       const SizedBox(height: 8),
                       TextFormField(
