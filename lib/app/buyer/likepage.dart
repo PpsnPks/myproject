@@ -233,7 +233,7 @@ class _LikePageState extends State<LikePage> {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        (product.product_price == '0.00') // ✅ เช็กเป็น `double` แทน String
+                                        (product.product_price == '0' || product.product_price == '0.00') // ✅ เช็กเป็น `double` แทน String
                                             ? 'ฟรี'
                                             : '${product.product_price} ฿',
                                         style: const TextStyle(color: Color(0XFFE35205), fontSize: 18, fontWeight: FontWeight.bold),

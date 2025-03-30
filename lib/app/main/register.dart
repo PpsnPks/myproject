@@ -61,7 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String? validateName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'กรุณากรอกชื่อผู้ใช้';
+      return 'กรุณากรอกชื่อ - นามสกุลผู้ใช้';
     }
     return null;
   }
@@ -172,9 +172,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'ชื่อ',
+                      labelText: 'ชื่อ - นามสกุล',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
                       ),
                     ),
                     validator: validateName,
@@ -186,6 +189,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'อีเมล',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
                       ),
                     ),
                     validator: validateEmail,
@@ -206,6 +212,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           });
                         },
                       ),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
+                        // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                      ),
+                      errorMaxLines: 2,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -228,6 +239,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           });
                         },
                       ),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
+                        // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                      ),
+                      errorMaxLines: 2,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),

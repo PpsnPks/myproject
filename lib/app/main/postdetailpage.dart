@@ -97,7 +97,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                       image: ImageProvider,
-                                                      fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                                                      fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
                                                     ),
                                                   ),
                                                 );
@@ -128,7 +128,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             ),
                           const SizedBox(height: 10),
                           // Product Name
-                          Text(post.detail, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                          Text(post.detail, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 10),
 
                           // Product Price
@@ -181,7 +181,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/chat', arguments: {'sellerId': post.name});
+                          Navigator.pushNamed(context, '/message/${post.userId}', arguments: {'name': post.name});
+                          // Navigator.pushNamed(context, '/chat', arguments: {'sellerId': post.name});
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 15),

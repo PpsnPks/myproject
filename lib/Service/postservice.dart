@@ -9,13 +9,7 @@ class PostService {
   final String postUrl = "${Environment.baseUrl}/posts";
 
   // ฟังก์ชันสำหรับ post
-  Future<Map<String, dynamic>> addPost(
-    String image, 
-    String detail, 
-    String category, 
-    String tag, 
-    String price) 
-    async {
+  Future<Map<String, dynamic>> addPost(String image, String detail, String category, String tag, String price) async {
     try {
       // ดึง accessToken จาก AuthService
       AuthService authService = AuthService();
@@ -127,64 +121,64 @@ class PostService {
   }
 
   Future<Map<String, dynamic>> getPostUser(int userId) async {
-  String url = "${Environment.baseUrl}/postsid/$userId"; // URL ที่ต้องการ
+    String url = "${Environment.baseUrl}/postsid/$userId"; // URL ที่ต้องการ
 
-  try {
-    // ดึง accessToken จาก AuthService
-    AuthService authService = AuthService();
-    String? accessToken = await authService.getAccessToken();
+    try {
+      // ดึง accessToken จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
 
-    if (accessToken == null) {
-      return {
-        "success": false,
-        "message": "Access token is missing.",
-      };
-    }
-
-    // Header
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $accessToken',
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-    };
-
-    // ทำการ GET Request
-    final response = await http.get(Uri.parse(url), headers: headers);
-
-    // ตรวจสอบสถานะของ Response
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      final responseBody = jsonDecode(response.body);
-
-      // ตรวจสอบว่าข้อมูลที่ได้เป็น List หรือไม่
-      if (responseBody is List) {
-        List<Post> data = responseBody
-            .cast<Map<String, dynamic>>() // ป้องกัน TypeError
-            .map((postJson) => Post.fromJson(postJson))
-            .toList();
-
+      if (accessToken == null) {
         return {
-          "success": true,
-          "data": data,
+          "success": false,
+          "message": "Access token is missing.",
         };
+      }
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // ทำการ GET Request
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      // ตรวจสอบสถานะของ Response
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        final responseBody = jsonDecode(response.body);
+
+        // ตรวจสอบว่าข้อมูลที่ได้เป็น List หรือไม่
+        if (responseBody is List) {
+          List<Post> data = responseBody
+              .cast<Map<String, dynamic>>() // ป้องกัน TypeError
+              .map((postJson) => Post.fromJson(postJson))
+              .toList();
+
+          return {
+            "success": true,
+            "data": data,
+          };
+        } else {
+          return {
+            "success": false,
+            "message": "Unexpected response format.",
+          };
+        }
       } else {
         return {
           "success": false,
-          "message": "Unexpected response format.",
+          "message": "Error ${response.statusCode}: ${response.body}",
         };
       }
-    } else {
+    } catch (e) {
       return {
         "success": false,
-        "message": "Error ${response.statusCode}: ${response.body}",
+        "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ: $e",
       };
     }
-  } catch (e) {
-    return {
-      "success": false,
-      "message": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้นะจ๊ะ: $e",
-    };
   }
-}
 }
 
 class Post {
@@ -207,9 +201,15 @@ class Post {
   });
 
   factory Post.fromJson(Map<String, dynamic> data) {
-    print('aaa ${data['image']}');
+    print('aaa ${data}');
+    String userImg = '';
+    if (data['user'] != null) {
+      if (data['user']['pic'] != null) {
+        userImg = data['user']['pic'];
+      }
+    }
     return Post(
-      profile: "${Environment.imgUrl}/${data['user']['pic']}", // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
+      profile: userImg != '' ? "${Environment.imgUrl}/${data['user']['pic']}" : "",
       name: data['user']['name'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
       faculty: data['user']['faculty'], // ไม่มีข้อมูลใน JSON, คุณสามารถใส่ข้อมูล default หรือ null
       id: data['id'].toString(),

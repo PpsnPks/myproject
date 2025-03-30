@@ -1,73 +1,69 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/auth_service.dart';
 import 'package:myproject/environment.dart';
 
 class LikeService {
   Future<Map<String, dynamic>> getLikedProducts() async {
-  try {
-    String? accessToken = await AuthService().getAccessToken();
-    String userId = await Securestorage().readSecureData('userId');
-    String url = "${Environment.baseUrl}/userslikes/$userId";
+    try {
+      String? accessToken = await AuthService().getAccessToken();
+      String userId = await Securestorage().readSecureData('userId');
+      String url = "${Environment.baseUrl}/userslikes/$userId";
 
-    if (accessToken == null) {
-      return {
-        "success": false,
-        "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
-      };
-    }
-
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $accessToken',
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.get(Uri.parse(url), headers: headers);
-
-    if (response.statusCode == 200) {
-      var responseBody = jsonDecode(response.body);
-
-      if (responseBody == null) {
-        return {"success": false, "message": "No liked products found."};
+      if (accessToken == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
       }
 
-      if (responseBody is List) {
-        List<Product> data = responseBody.map((likeJson) {
-          // แปลงข้อมูลจาก likeJson ที่เป็น Product
-          return Product.fromJson(likeJson['product']);
-        }).toList();
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
 
-        return {"success": true, "data": data};
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.body);
+
+        if (responseBody == null) {
+          return {"success": false, "message": "No liked products found."};
+        }
+
+        if (responseBody is List) {
+          List<Product> data = responseBody.map((likeJson) {
+            // แปลงข้อมูลจาก likeJson ที่เป็น Product
+            return Product.fromJson(likeJson['product']);
+          }).toList();
+
+          return {"success": true, "data": data};
+        } else {
+          return {"success": false, "message": "Invalid response format"};
+        }
       } else {
-        return {"success": false, "message": "Invalid response format"};
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
       }
-    } else {
+    } catch (e) {
       return {
         "success": false,
-        "message": 'Error ${response.statusCode} ${response.body}',
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
       };
     }
-  } catch (e) {
-    return {
-      "success": false,
-      "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
-    };
   }
-}
-
-
 
   Future<bool> likeProduct(Product product) async {
     final url = Uri.parse('${Environment.baseUrl}/likes');
     try {
       String userId = Securestorage().readSecureData('userId');
 
-      Map<String, dynamic> body = {
-        "userlike_id": userId,
-        "product_id": product.id
-      };
+      Map<String, dynamic> body = {"userlike_id": userId, "product_id": product.id};
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -161,7 +157,7 @@ class Product {
       product_name: data['product_name'] ?? "",
       product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
       product_qty: data['product_qty'].toString(),
-      product_price: data['product_price'] ?? "",
+      product_price: NumberFormat("#,###").format(double.parse(data['product_price'])),
       product_description: data['product_description'] ?? "",
       product_category: data['product_category'] ?? "",
       product_type: data['product_type'] ?? "",

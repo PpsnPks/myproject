@@ -56,8 +56,10 @@ class _TagFormPageState extends State<TagFormPage> {
       if (selectedTags.contains(tagId)) {
         selectedTags.remove(tagId);
       } else {
-        if (selectedTags.length < 5) {
+        if (selectedTags.length < 4) {
           selectedTags.add(tagId);
+        } else if (selectedTags.length == 4) {
+          print('ครบ');
         }
       }
     });
@@ -104,13 +106,10 @@ class _TagFormPageState extends State<TagFormPage> {
                       return GestureDetector(
                         onTap: () => toggleSelection(tagId),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: isSelected
-                                  ? const Color(0XFFE35205)
-                                  : Colors.grey,
+                              color: isSelected ? const Color(0XFFE35205) : Colors.grey,
                               width: 2,
                             ),
                             borderRadius: BorderRadius.circular(8),
@@ -119,9 +118,7 @@ class _TagFormPageState extends State<TagFormPage> {
                             tagName,
                             style: TextStyle(
                               fontSize: 16,
-                              color: isSelected
-                                  ? const Color(0XFFE35205)
-                                  : Colors.black,
+                              color: isSelected ? const Color(0XFFE35205) : Colors.black,
                             ),
                           ),
                         ),
@@ -132,24 +129,24 @@ class _TagFormPageState extends State<TagFormPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: selectedTags.isNotEmpty
-                    ? () {
-                        print("Selected Tags: $selectedTags"); // ✅ Debugging log
-                        
-                        // เก็บค่า selectedTags ไปที่ UserService
-                        UserService userService = UserService();
-                        userService.setGuidetag(selectedTags);
+                onPressed: () {
+                  if (selectedTags.length == 4) {
+                    print("Selected Tags: $selectedTags"); // ✅ Debugging log
 
-                        // ส่งไปยังหน้าถัดไป
-                        Navigator.pushNamed(
-                          context,
-                          '/role',
-                          arguments: selectedTags,
-                        );
-                      }
-                    : null,
+                    // เก็บค่า selectedTags ไปที่ UserService
+                    UserService userService = UserService();
+                    userService.setGuidetag(selectedTags);
+
+                    // ส่งไปยังหน้าถัดไป
+                    Navigator.pushNamed(
+                      context,
+                      '/role',
+                      arguments: selectedTags,
+                    );
+                  }
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0XFFE35205),
+                  backgroundColor: selectedTags.length == 4 ? const Color(0XFFE35205) : const Color.fromARGB(255, 237, 187, 161),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

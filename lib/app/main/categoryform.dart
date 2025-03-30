@@ -10,7 +10,7 @@ class CategoryFormPage extends StatefulWidget {
 
 class _CategoryFormPageState extends State<CategoryFormPage> {
   List<dynamic> categories = [];
-  List<Map<String, dynamic>> selectedCategories = [];  // เปลี่ยนเป็น List<Map> เพื่อเก็บ id และ name
+  List<Map<String, dynamic>> selectedCategories = []; // เปลี่ยนเป็น List<Map> เพื่อเก็บ id และ name
 
   @override
   void initState() {
@@ -57,14 +57,14 @@ class _CategoryFormPageState extends State<CategoryFormPage> {
             const Text(
               "หมวดหมู่สินค้าที่คุณสนใจ",
               style: TextStyle(
-                fontSize: 48,
+                fontSize: 38,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 10),
             categories.isEmpty
                 ? const Center(
-                  child: CircularProgressIndicator(
+                    child: CircularProgressIndicator(
                     color: Color(0XFFE35205),
                     strokeWidth: 2.0,
                   ))
@@ -100,21 +100,21 @@ class _CategoryFormPageState extends State<CategoryFormPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: selectedCategories.isNotEmpty
-                    ? () {
-                        // ล็อกข้อมูลที่เลือกก่อนจะส่งไป
-                        List<dynamic> selectedCategoryIds = selectedCategories.map((category) => category['id']).toList();
-                        print("หมวดหมู่ที่เลือก (ID): $selectedCategoryIds"); // ✅ ล็อก id ที่เลือก
+                onPressed: () {
+                  if (selectedCategories.isNotEmpty) {
+                    List<dynamic> selectedCategoryIds = selectedCategories.map((category) => category['id']).toList();
+                    print("หมวดหมู่ที่เลือก (ID): $selectedCategoryIds"); // ✅ ล็อก id ที่เลือก
 
-                        Navigator.pushNamed(
-                          context,
-                          '/tagform',
-                          arguments: selectedCategoryIds, // ส่ง id ไปหน้า /tagform
-                        );
-                      }
-                    : null,
+                    Navigator.pushNamed(
+                      context,
+                      '/tagform',
+                      arguments: selectedCategoryIds, // ส่ง id ไปหน้า /tagform
+                    );
+                  }
+                  // ล็อกข้อมูลที่เลือกก่อนจะส่งไป
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0XFFE35205),
+                  backgroundColor: selectedCategories.isNotEmpty ? const Color(0XFFE35205) : const Color.fromARGB(255, 237, 187, 161),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert'; // เพิ่มการนำเข้า dart:convert
+import 'package:intl/intl.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/auth_service.dart';
 import 'package:http/http.dart' as http;
@@ -168,114 +169,110 @@ class ProductService {
   }
 
   Future<Map<String, dynamic>> getRecommendedProducts() async {
-  const url = "https://recommend-880011621471.asia-southeast1.run.app/recommend";
-  
-  try {
-    // ดึง accessToken และ user_id จาก AuthService
-    AuthService authService = AuthService();
-    String? accessToken = await authService.getAccessToken();
-    String? userId = await authService.getUserId();
+    const url = "https://recommend-880011621471.asia-southeast1.run.app/recommend";
 
-    if (accessToken == null || userId == null) {
-      return {
-        "success": false,
-        "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
-      };
-    }
+    try {
+      // ดึง accessToken และ user_id จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
+      String? userId = await authService.getUserId();
 
-    // Header
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $accessToken',
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-    };
-
-    // Body
-    Map<String, dynamic> body = {"user_id": userId};
-
-    // ส่ง Request
-    final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
-
-    if (response.statusCode == 200) {
-      var decodedResponse = jsonDecode(response.body);
-
-      if (decodedResponse != null && decodedResponse['recommendations'] != null) {
-        List<Product> data = (decodedResponse['recommendations'] as List)
-            .map((postJson) => Product.fromJson(postJson))
-            .toList();
-
-        return {"success": true, "data": data};
-      } else {
-        return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+      if (accessToken == null || userId == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
       }
-    } else {
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Body
+      Map<String, dynamic> body = {"user_id": userId};
+
+      // ส่ง Request
+      final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
+
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+
+        if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+          List<Product> data = (decodedResponse['recommendations'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+
+          return {"success": true, "data": data};
+        } else {
+          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        }
+      } else {
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
       return {
         "success": false,
-        "message": 'Error ${response.statusCode} ${response.body}',
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
       };
     }
-  } catch (e) {
-    return {
-      "success": false,
-      "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
-    };
   }
-}
 
   Future<Map<String, dynamic>> getRecommendedProductsfromPost() async {
-  const url = "https://recommend-product-form-post-880011621471.asia-southeast1.run.app/recommend";
-  
-  try {
-    // ดึง accessToken และ user_id จาก AuthService
-    AuthService authService = AuthService();
-    String? accessToken = await authService.getAccessToken();
-    String? userId = await authService.getUserId();
+    const url = "https://recommend-product-form-post-880011621471.asia-southeast1.run.app/recommend";
 
-    if (accessToken == null || userId == null) {
-      return {
-        "success": false,
-        "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
-      };
-    }
+    try {
+      // ดึง accessToken และ user_id จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
+      String? userId = await authService.getUserId();
 
-    // Header
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $accessToken',
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-    };
-
-    // Body
-    Map<String, dynamic> body = {"user_id": userId};
-
-    // ส่ง Request
-    final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
-
-    if (response.statusCode == 200) {
-      var decodedResponse = jsonDecode(response.body);
-
-      if (decodedResponse != null && decodedResponse['recommendations'] != null) {
-        List<Product> data = (decodedResponse['recommendations'] as List)
-            .map((postJson) => Product.fromJson(postJson))
-            .toList();
-
-        return {"success": true, "data": data};
-      } else {
-        return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+      if (accessToken == null || userId == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
       }
-    } else {
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Body
+      Map<String, dynamic> body = {"user_id": userId};
+
+      // ส่ง Request
+      final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
+
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+
+        if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+          List<Product> data = (decodedResponse['recommendations'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+
+          return {"success": true, "data": data};
+        } else {
+          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        }
+      } else {
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
       return {
         "success": false,
-        "message": 'Error ${response.statusCode} ${response.body}',
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
       };
     }
-  } catch (e) {
-    return {
-      "success": false,
-      "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
-    };
   }
-}
 
   Future<Map<String, dynamic>> getProductCategory(int page, int length, String category, String search, String sortPrice, String sortDate,
       String productCondition, String productType) async {
@@ -711,6 +708,79 @@ class CartService {
   }
 }
 
+class SearchService {
+  Future<Map<String, dynamic>> searchProduct(int page, int length, String category, String search, String sortPrice, String sortDate,
+      String productCondition, String productType) async {
+    const url = "${Environment.baseUrl}/getproducts";
+    try {
+      // ดึง accessToken จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
+
+      if (accessToken == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
+      }
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Body (แปลงข้อมูลให้เป็น JSON string)
+      Map<String, dynamic> body = {
+        "draw": 1,
+        "columns": [],
+        "order": [
+          {"column": 0, "dir": sortDate}
+        ],
+        "start": (page - 1) * length,
+        "length": length,
+        "search": {"value": search, "regex": false},
+        "product_type": productType,
+        "product_category": category, //category
+        "product_condition": productCondition,
+        "price_order": sortPrice, // "asc"  "desc"
+        "status": ""
+      };
+      print(body);
+
+      // แปลง Map เป็น JSON string ก่อนส่ง
+      String jsonBody = json.encode(body);
+      // Get Request
+      final response = await http.post(Uri.parse(url), headers: headers, body: jsonBody);
+      print('qqq ${response.statusCode} \n ${response.body}');
+
+      // ตรวจสอบสถานะของ Response
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        print('qqq $decodedResponse');
+        if (decodedResponse != null && decodedResponse['data'] != null) {
+          List<Product> data = (decodedResponse['data']['data'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+
+          return {"success": true, "data": data};
+        } else {
+          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        }
+      } else {
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+      };
+    }
+  }
+}
+
 class Product {
   final String id;
   final String product_name;
@@ -727,6 +797,8 @@ class Product {
   final String product_defect;
   final String product_years;
   final String tag;
+  final String deposit;
+  final String date_send;
 
   Product({
     required this.id,
@@ -744,6 +816,8 @@ class Product {
     required this.product_defect,
     required this.product_years,
     required this.tag,
+    required this.deposit,
+    required this.date_send,
   });
 
   @override
@@ -764,27 +838,42 @@ class Product {
         'product_defect: $product_defect, '
         'product_years: $product_years, '
         'tags: $tag'
+        'deposit: $deposit'
+        'date_send: $date_send'
         ')';
   }
 
   factory Product.fromJson(Map<String, dynamic> data) {
     print('qqq2 $data');
+    String defect = '';
+    String deposit = '';
+    String dateSend = '';
+
+    if (data['product_type'] == 'preorder') {
+      final temp = data['product_defect'].split(', ');
+      deposit = temp[0];
+      dateSend = temp[1];
+    } else {
+      defect = data['product_defect'] ?? '';
+    }
     return Product(
       id: data['id']?.toString() ?? "",
       product_name: data['product_name'] ?? "",
       product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
       product_qty: data['product_qty'].toString(),
-      product_price: data['product_price'] ?? "",
-      product_description: data['product_description'] ?? "",
+      product_price: NumberFormat("#,###").format(double.parse(data['product_price'])),
+      product_description: data['product_description'] ?? "", //data['product_description'],
       product_category: data['product_category'] ?? "",
       product_type: data['product_type'] ?? "",
       seller_id: data['seller_id'].toString(),
       date_exp: data['date_exp'] ?? "",
       product_location: data['product_location'] ?? "",
       product_condition: data['product_condition'] ?? "",
-      product_defect: data['product_defect'] ?? "",
+      product_defect: defect,
       product_years: data['product_years'] ?? "",
       tag: data['tag'] ?? "",
+      deposit: deposit,
+      date_send: dateSend,
     );
   }
 }
@@ -900,7 +989,7 @@ class Deal {
       product_name: data['product']['product_name'] ?? "",
       product_images: (data['product']['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
       product_qty: data['product']['product_qty'].toString(),
-      product_price: data['product']['product_price'] ?? "",
+      product_price: NumberFormat("#,###").format(double.parse(data['product']['product_price'])),
       product_description: data['product']['product_description'] ?? "",
       product_category: data['product']['product_category'] ?? "",
       product_type: data['product']['product_type'] ?? "",

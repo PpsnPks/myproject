@@ -212,7 +212,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
       onTap: () {
         if (tab == 1) {
           String temp =
-              '{"deal_id" : "${deal.deal_id}", "product_images" : "${deal.product_images[0]}", "product_name" : "${deal.product_name}", "product_condition" : "${deal.product_condition}", "stock": "${deal.product_qty}", "timeForSell": "${deal.product_date_exp}", "price": "${deal.product_price}", "seller_name": "${deal.seller_name}", "seller_faculty": "${deal.seller_faculty}", "seller_pic": "${deal.seller_pic}", "buyer_user_id": "${deal.buyer_user_id}", "product_id": "${deal.product_id}"}';
+              '{"deal_id" : "${deal.deal_id}", "product_images" : "${deal.product_images[0]}", "product_name" : "${deal.product_name}", "product_condition" : "${deal.product_condition}", "stock": "${deal.product_qty}", "timeForSell": "${deal.product_date_exp}", "price": "${deal.product_price}", "buyer_name": "${deal.buyer_name}", "buyer_faculty": "${deal.buyer_faculty}", "buyer_pic": "${deal.buyer_pic}", "buyer_user_id": "${deal.buyer_user_id}", "product_id": "${deal.product_id}"}';
           Navigator.pushReplacementNamed(context, '/confirm', arguments: {
             'data': temp,
           });
@@ -260,7 +260,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: ImageProvider,
-                              fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                              fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
                             ),
                           ),
                         );
@@ -276,7 +276,7 @@ class _CartPageState extends State<CartSPage> with SingleTickerProviderStateMixi
                         decoration: const BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       );

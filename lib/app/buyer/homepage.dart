@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
           loadingProduct = false;
           homeProducts = productResponse['data'];
           recommendedProducts = recommendedResponse['data'];
-          recommendedProductsformPost = recommendedfromPostResponse['data'];// อัปเดตสินค้าที่แนะนำ
+          recommendedProductsformPost = recommendedfromPostResponse['data']; // อัปเดตสินค้าที่แนะนำ
         });
       } else {
         setState(() {
@@ -166,78 +166,78 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(height: 10), // เพิ่มช่องว่างระหว่าง Row กับ FutureBuilder
                         loadingProduct
-                          ? const Center(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                        child: SizedBox(
-                                      width: 10.0,
-                                      height: 10.0,
-                                      child: CircularProgressIndicator(
-                                        color: Color(0XFFE35205),
-                                        strokeWidth: 2.0,
+                            ? const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 10.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min, // ทำให้ column มีขนาดเท่ากับเนื้อหาภายใน
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                          child: SizedBox(
+                                        width: 10.0,
+                                        height: 10.0,
+                                        child: CircularProgressIndicator(
+                                          color: Color(0XFFE35205),
+                                          strokeWidth: 2.0,
+                                        ),
+                                      )),
+                                      SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
+                                      Text(
+                                        'กำลังโหลดสินค้า',
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
                                       ),
-                                    )),
-                                    SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
-                                    Text(
-                                      'กำลังโหลดสินค้า',
-                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          : recommendedProducts.isNotEmpty // ถ้ามีสินค้าแนะนำ
-                              ? Column(
-                                  children: recommendedProducts
-                                      .map((product) => Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: productCard(product, context),
-                                          ))
-                                      .toList(),
-                                )
-                              : recommendedProductsformPost.isNotEmpty // ถ้าไม่มีสินค้าแนะนำ แต่มีสินค้าแนะนำตามโพสต์
-                                  ? Column(
-                                      children: recommendedProductsformPost
-                                          .map((product) => Padding(
-                                                padding: const EdgeInsets.all(4.0),
-                                                child: productCard(product, context),
-                                              ))
-                                          .toList(),
-                                    )
-                                  : homeProducts.isNotEmpty // ถ้าไม่มีสินค้าแนะนำตามโพสต์ ให้แสดงสินค้าทั้งหมด
-                                      ? Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  for (int i = 0; i < homeProducts.length; i += 2)
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(4.0),
-                                                      child: productCard(homeProducts[i], context),
-                                                    )
-                                                ],
+                              )
+                            : recommendedProducts.isNotEmpty // ถ้ามีสินค้าแนะนำ
+                                ? Column(
+                                    children: recommendedProducts
+                                        .map((product) => Padding(
+                                              padding: const EdgeInsets.all(4.0),
+                                              child: productCard(product, context),
+                                            ))
+                                        .toList(),
+                                  )
+                                : recommendedProductsformPost.isNotEmpty // ถ้าไม่มีสินค้าแนะนำ แต่มีสินค้าแนะนำตามโพสต์
+                                    ? Column(
+                                        children: recommendedProductsformPost
+                                            .map((product) => Padding(
+                                                  padding: const EdgeInsets.all(4.0),
+                                                  child: productCard(product, context),
+                                                ))
+                                            .toList(),
+                                      )
+                                    : homeProducts.isNotEmpty // ถ้าไม่มีสินค้าแนะนำตามโพสต์ ให้แสดงสินค้าทั้งหมด
+                                        ? Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    for (int i = 0; i < homeProducts.length; i += 2)
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(4.0),
+                                                        child: productCard(homeProducts[i], context),
+                                                      )
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  for (int i = 1; i < homeProducts.length; i += 2)
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(4.0),
-                                                      child: productCard(homeProducts[i], context),
-                                                    )
-                                                ],
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    for (int i = 1; i < homeProducts.length; i += 2)
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(4.0),
+                                                        child: productCard(homeProducts[i], context),
+                                                      )
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        )
-                                      : const Center(child: Text('ไม่พบสินค้าแนะนำ')),
+                                            ],
+                                          )
+                                        : const Center(child: Text('ไม่พบสินค้าแนะนำ')),
 
                         const SizedBox(height: 24),
                         // Padding(
@@ -402,7 +402,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: ImageProvider,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         );
@@ -437,25 +437,55 @@ class _HomePageState extends State<HomePage> {
                 maxLines: 1,
               ),
               const SizedBox(height: 5),
-              Text(
-                'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFFA5A9B6),
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
-              ),
-              const SizedBox(height: 5),
+              data.product_type != 'preorder'
+                  ? Text(
+                      'จำนวน: ${data.product_qty}\nสภาพสินค้า : ${data.product_condition}\nถึงวันที่: ${data.date_exp}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFA5A9B6),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    )
+                  : Text(
+                      'ค่ามัดจำ: ${data.deposit}\nวันส่งสินค้า : ${data.date_send}\nถึงวันที่: ${data.date_exp}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFA5A9B6),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                    ),
+              const SizedBox(height: 8),
               Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
-                  style: const TextStyle(
-                    color: Color(0XFFE35205),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: data.product_type == 'preorder' ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+                  children: [
+                    if (data.product_type == 'preorder')
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            width: 1,
+                            color: const Color(0XFFE35205),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 3.0),
+                        child: const Text(
+                          'พรีออเดอร์',
+                          style: TextStyle(color: Color(0XFFE35205), fontSize: 12, fontWeight: FontWeight.w600, height: 0),
+                        ),
+                      ),
+                    Text(
+                      data.product_price == '0' || data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
+                      style: const TextStyle(
+                        color: Color(0XFFE35205),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -610,46 +640,89 @@ class _HomePageState extends State<HomePage> {
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0, bottom: 10),
-        child: TextField(
-          onSubmitted: (value) {
-            setState(() {});
+        child: GestureDetector(
+          onTap: () {
+            // เมื่อกดที่ Text แล้วจะเปลี่ยนหน้า
+            Navigator.pushNamed(context, '/search'); // เปลี่ยน '/newPage' เป็นหน้าใหม่ที่คุณต้องการ
           },
-          decoration: InputDecoration(
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 14.0, right: 8.0), // Adjust the padding value as needed
-                child: SvgPicture.asset(
-                  'assets/icons/search-line.svg',
-                  width: 10.0, // Icon width
-                  height: 10.0, // Icon height
-                ),
-              ), // ไอคอนแว่นขยาย
-              hintText: 'ค้นหาสิ่งที่คุณต้องการ',
-              hintStyle: const TextStyle(
-                color: Color(0xFFA5A9B6), // Set the hintText color
-                fontSize: 16.0,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              border: Border.all(
+                color: Color(0xFFDFE2EC),
+                width: 2.0,
               ),
-              //enabledBorder: const OutlineInputBorder(
-              //  borderSide: BorderSide(width: 2, color: Color(0xFFDFE2EC)), //<-- SEE HERE
-              //),
-              filled: true, // เปิดใช้งานพื้นหลัง
-              fillColor: Colors.white, // กำหนดสีพื้นหลังเป็นสีขาว
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set the border radius
-                borderSide: BorderSide(
-                  width: 2.0, // Set border width
-                  color: Color(0xFFDFE2EC), // Set border color
-                ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: SvgPicture.asset(
+                      'assets/icons/search-line.svg',
+                      width: 28.0,
+                      height: 28.0,
+                    ),
+                  ),
+                  Text(
+                    'ค้นหาสิ่งที่คุณต้องการ',
+                    style: const TextStyle(
+                      color: Color(0xFFA5A9B6),
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ],
               ),
-              focusedBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Same radius for focused border
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Color.fromARGB(255, 174, 180, 192), // Border color when focused
-                ),
-              )),
+            ),
+          ),
         ),
       ),
     );
+    // return Container(
+    //   color: Colors.white,
+    //   child: Padding(
+    //     padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0, bottom: 10),
+    //     child: TextField(
+    //       onSubmitted: (value) {
+    //         setState(() {});
+    //       },
+    //       decoration: InputDecoration(
+    //           prefixIcon: Padding(
+    //             padding: const EdgeInsets.only(left: 14.0, right: 8.0), // Adjust the padding value as needed
+    //             child: SvgPicture.asset(
+    //               'assets/icons/search-line.svg',
+    //               width: 10.0, // Icon width
+    //               height: 10.0, // Icon height
+    //             ),
+    //           ), // ไอคอนแว่นขยาย
+    //           hintText: 'ค้นหาสิ่งที่คุณต้องการ',
+    //           hintStyle: const TextStyle(
+    //             color: Color(0xFFA5A9B6), // Set the hintText color
+    //             fontSize: 16.0,
+    //           ),
+    //           //enabledBorder: const OutlineInputBorder(
+    //           //  borderSide: BorderSide(width: 2, color: Color(0xFFDFE2EC)), //<-- SEE HERE
+    //           //),
+    //           filled: true, // เปิดใช้งานพื้นหลัง
+    //           fillColor: Colors.white, // กำหนดสีพื้นหลังเป็นสีขาว
+    //           enabledBorder: const OutlineInputBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set the border radius
+    //             borderSide: BorderSide(
+    //               width: 2.0, // Set border width
+    //               color: Color(0xFFDFE2EC), // Set border color
+    //             ),
+    //           ),
+    //           focusedBorder: const OutlineInputBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(10.0)), // Same radius for focused border
+    //             borderSide: BorderSide(
+    //               width: 2.0,
+    //               color: Color.fromARGB(255, 174, 180, 192), // Border color when focused
+    //             ),
+    //           )),
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -683,7 +756,7 @@ Column CatergoryButton(BuildContext context, String icon, String label, String r
       ),
     ),
     const SizedBox(height: 8.0), // ระยะห่างระหว่างไอคอนและข้อความ
-    Text(label, style: const TextStyle(fontSize: 12)),
+    Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500)),
   ]);
 }
 

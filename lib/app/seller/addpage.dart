@@ -47,6 +47,8 @@ class _AddProductPageState extends State<AddProductPage> {
   final TextEditingController _productDefectController = TextEditingController();
   final TextEditingController _productYearsController = TextEditingController();
   final TextEditingController _tagController = TextEditingController(); // ตัวควบคุม PageView
+  final TextEditingController _productDepositController = TextEditingController();
+  final TextEditingController _dateSendController = TextEditingController();
 
   resetData() {
     _productNameController.clear();
@@ -89,6 +91,23 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   Future<void> _add() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: SizedBox(
+            height: 90.0, // กำหนดความสูง
+            width: 90.0, // กำหนดความกว้าง
+            child: CircularProgressIndicator(
+              color: Color(0XFFE35205),
+              strokeWidth: 12.0, // ปรับความหนาของวงกลม
+              strokeCap: StrokeCap.round,
+            ),
+          ),
+        );
+      },
+    );
     final addService = AddService();
     Map<String, dynamic> uploadResponse = await UploadImgService().uploadImgs(files);
     List imagesPath = [];
@@ -97,27 +116,34 @@ class _AddProductPageState extends State<AddProductPage> {
       print('all_url_images = ${uploadResponse['images']}');
     } else {
       print('upload error = ${uploadResponse['message']}');
+      if (mounted) {
+        Navigator.pop(context);
+      }
       return;
     }
 
     // กำหนดราคาเป็น 0 หากเลือก "แจก" (isRenting == true)
     final productPrice = isRenting ? '0' : _productPriceController.text;
+    final defect = isPreOrder ? '${_productDepositController.text}, ${_dateSendController.text}' : _productDefectController.text;
 
     final result = await addService.addProduct(
       _productNameController.text,
       imagesPath, //_productImagesController.text,
       quantity, // _productQtyController.text
       productPrice,
-      _productDescriptionController.text,
+      _productDescriptionController.text, //descript,
       _productCategoryController.text,
       _productTypeController.text,
       _dateExpController.text,
       _productLocationController.text,
       _productConditionController.text,
-      _productDefectController.text,
+      defect, //_productDefectController.text,
       _productYearsController.text,
       _tagController.text,
     );
+    if (mounted) {
+      Navigator.pop(context);
+    }
 
     if (result['success']) {
       print("เพิ่มสินค้าสำเร็จ");
@@ -160,6 +186,15 @@ class _AddProductPageState extends State<AddProductPage> {
   String? validatePrice(String? value) {
     if (value == null || value.isEmpty) {
       return 'กรุณากรอกราคาสินค้า';
+    } else if (int.tryParse(value) == null) {
+      return 'กรุณากรอกเฉพาะตัวเลข';
+    }
+    return null;
+  }
+
+  String? validateDeposit(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'กรุณากรอกค่ามัดจำ';
     } else if (int.tryParse(value) == null) {
       return 'กรุณากรอกเฉพาะตัวเลข';
     }
@@ -399,6 +434,10 @@ class _AddProductPageState extends State<AddProductPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: validateName,
                 ),
@@ -407,8 +446,8 @@ class _AddProductPageState extends State<AddProductPage> {
                   items: [
                     for (var item in category)
                       DropdownMenuItem<String>(
-                        value: item['id']?.toString() ?? "", // ป้องกัน null
-                        child: Text(item['category_name'] ?? "ไม่ระบุ"), // แสดงค่าเริ่มต้นหากเป็น null
+                        value: item['category_name'], // ป้องกัน null
+                        child: Text(item['category_name']), // แสดงค่าเริ่มต้นหากเป็น null
                       ),
                   ],
                   onChanged: (value) async {
@@ -441,40 +480,42 @@ class _AddProductPageState extends State<AddProductPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกหมวดหมู่" : null,
                 ),
                 const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  items: [
-                    for (var tag in tagList)
-                      DropdownMenuItem<String>(
-                        value: tag['name'], // ป้องกัน null
-                        child: Text(tag['name'] ?? "ไม่มีชื่อแท็ก"),
-                      ),
-                  ],
-                  onChanged: (value) {
-                    if (value == null || value.isEmpty) return; // ป้องกัน null
-
-                    setState(() {
-                      selectedTag = value;
-                      _tagController.text = value;
-                    });
-                  },
-                  value: selectedTag?.isNotEmpty == true ? selectedTag : null, // ป้องกันค่า null
-                  hint: const Text('แท็ก'),
+                TextFormField(
+                  maxLines: 3,
+                  controller: _productDescriptionController,
                   decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    labelText: 'รายละเอียดสินค้า',
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
-                  validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
+                  validator: validateDetail,
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -502,43 +543,72 @@ class _AddProductPageState extends State<AddProductPage> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                            errorStyle: TextStyle(
+                              fontSize: 10,
+                              // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                            ),
                           ),
                           validator: validatePrice,
                         ),
                       ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  maxLines: 3,
-                  controller: _productDescriptionController,
-                  decoration: InputDecoration(
-                    labelText: 'รายละเอียดสินค้า',
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFE0E0E0)),
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFFE0E0E0)),
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                  ),
-                  validator: validateDetail,
+                if (isPreOrder) const SizedBox(height: 8),
+                Row(
+                  children: [
+                    if (isPreOrder)
+                      Expanded(
+                        child: TextFormField(
+                          controller: _productDepositController,
+                          decoration: InputDecoration(
+                            labelText: 'ค่ามัดจำ',
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                            errorStyle: TextStyle(
+                              fontSize: 10,
+                              // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                            ),
+                          ),
+                          validator: validateDeposit,
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 8),
-                TextFormField(
-                  controller: _tagController,
+                DropdownButtonFormField<String>(
+                  items: [
+                    for (var tag in tagList)
+                      DropdownMenuItem<String>(
+                        value: tag['name'], // ป้องกัน null
+                        child: Text(tag['name']),
+                      ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null || value.isEmpty) return; // ป้องกัน null
+
+                    setState(() {
+                      selectedTag = value;
+                      _tagController.text = value;
+                    });
+                  },
+                  value: selectedTag?.isNotEmpty == true ? selectedTag : null, // ป้องกันค่า null
+                  hint: const Text('แท็ก'),
                   decoration: InputDecoration(
-                    labelText: 'แท็ก',
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
@@ -547,23 +617,49 @@ class _AddProductPageState extends State<AddProductPage> {
                       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
-                      borderRadius: BorderRadius.circular(12),
-                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
-                  validator: validateTag,
+                  validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
                 ),
+
+                // const SizedBox(height: 8),
+                // TextFormField(
+                //   controller: _tagController,
+                //   decoration: InputDecoration(
+                //     labelText: 'แท็ก',
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                //       borderRadius: BorderRadius.circular(12),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                //       borderRadius: BorderRadius.circular(12),
+                //     ),
+                //     errorBorder: OutlineInputBorder(
+                //       borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                //       borderRadius: BorderRadius.circular(12),
+                //     ),
+                //     focusedErrorBorder: OutlineInputBorder(
+                //       borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                //       borderRadius: BorderRadius.circular(12),
+                //     ),
+                //     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                // errorStyle: TextStyle(
+                //         fontSize: 10,
+                //         // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                //       ),
+                //   ),
+                //   validator: validateTag,
+                // ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _dateExpController,
                   decoration: InputDecoration(
-                    labelText: 'ระยะเวลา',
+                    labelText: 'ระยะเวลาขายสินค้า',
                     suffixIcon: const Icon(Icons.calendar_today),
                     enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFFE0E0E0)),
@@ -582,6 +678,10 @@ class _AddProductPageState extends State<AddProductPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode()); // Hide the keyboard when tapping the TextField
@@ -593,11 +693,59 @@ class _AddProductPageState extends State<AddProductPage> {
                     );
                     if (selectedDate != null) {
                       // Format the selected date to a string
-                      _dateExpController.text = "${selectedDate.toLocal()}".split(' ')[0];
+                      print('aa ${selectedDate.toLocal()}');
+                      setState(() {
+                        _dateExpController.text = "${selectedDate.toLocal()}".split(' ')[0];
+                      });
                     }
                   },
                   validator: validateExp,
                 ),
+                if (isPreOrder) const SizedBox(height: 8),
+                if (isPreOrder)
+                  TextFormField(
+                    controller: _dateSendController,
+                    decoration: InputDecoration(
+                      labelText: 'วันส่งสินค้า',
+                      suffixIcon: const Icon(Icons.calendar_today),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
+                        // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                      ),
+                    ),
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode()); // Hide the keyboard when tapping the TextField
+                      DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.tryParse(_dateExpController.text) ?? DateTime.now(),
+                        firstDate: DateTime.tryParse(_dateExpController.text) ?? DateTime.now(),
+                        lastDate: DateTime(2100),
+                      );
+                      if (selectedDate != null) {
+                        // Format the selected date to a string
+                        print('aa ${selectedDate.toLocal()}');
+                        _dateSendController.text = "${selectedDate.toLocal()}".split(' ')[0];
+                      }
+                    },
+                    validator: validateExp,
+                  ),
                 // Quantity section
                 const SizedBox(height: 16),
                 Row(
@@ -675,6 +823,10 @@ class _AddProductPageState extends State<AddProductPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                      errorStyle: TextStyle(
+                        fontSize: 10,
+                        // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                      ),
                     ),
                     validator: validateCondition,
                   ),
@@ -684,8 +836,8 @@ class _AddProductPageState extends State<AddProductPage> {
                     DropdownButtonFormField<String>(
                       items: const [
                         DropdownMenuItem(value: 'น้อยกว่า 1 ปี', child: Text('น้อยกว่า 1 ปี')),
-                        DropdownMenuItem(value: 'มากกว่า 1 ปี', child: Text('มากกว่า 1 ปี')),
-                        DropdownMenuItem(value: '2-3 ปี', child: Text('2-3 ปี')),
+                        DropdownMenuItem(value: '1-3 ปี', child: Text('1-3 ปี')),
+                        DropdownMenuItem(value: '3-5 ปี', child: Text('3-5 ปี')),
                         DropdownMenuItem(value: 'มากกว่า 5 ปี', child: Text('มากกว่า 5 ปี')),
                       ],
                       onChanged: (value) {
@@ -714,6 +866,10 @@ class _AddProductPageState extends State<AddProductPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                        errorStyle: TextStyle(
+                          fontSize: 10,
+                          // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                        ),
                       ),
                       validator: validateProductYear,
                     ),
@@ -744,6 +900,10 @@ class _AddProductPageState extends State<AddProductPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                        errorStyle: TextStyle(
+                          fontSize: 10,
+                          // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                        ),
                       ),
                       validator: validateDefect,
                     ),
@@ -786,6 +946,10 @@ class _AddProductPageState extends State<AddProductPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: validateLocation,
                 ),

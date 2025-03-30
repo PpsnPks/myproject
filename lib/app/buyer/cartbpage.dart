@@ -189,7 +189,7 @@ class _CartPageState extends State<CartBPage> with SingleTickerProviderStateMixi
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: ImageProvider,
-                              fit: BoxFit.fill, // ปรับขนาดภาพให้เต็ม
+                              fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
                             ),
                           ),
                         );

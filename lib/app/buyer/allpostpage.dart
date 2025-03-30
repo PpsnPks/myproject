@@ -224,7 +224,6 @@ class _AllPostPageState extends State<AllPostPage> {
                                     ),
                                   ),
                                   imageBuilder: (context, ImageProvider) {
-                                    print('image ok');
                                     return Container(
                                       width: double.infinity,
                                       height: 360,
@@ -233,7 +232,6 @@ class _AllPostPageState extends State<AllPostPage> {
                                   },
                                   errorWidget: (context, url, error) => LayoutBuilder(
                                     builder: (context, constraints) {
-                                      print('image error');
                                       double size = constraints.maxWidth;
                                       return Container(
                                         width: size,

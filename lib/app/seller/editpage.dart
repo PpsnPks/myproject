@@ -584,6 +584,10 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                          errorStyle: TextStyle(
+                            fontSize: 10,
+                            // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                          ),
                         ),
                         validator: validateName,
                       ),
@@ -622,6 +626,10 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                          errorStyle: TextStyle(
+                            fontSize: 10,
+                            // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                          ),
                         ),
                         validator: validateCategory,
                       ),
@@ -651,6 +659,10 @@ class _EditProductPageState extends State<EditProductPage> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                  errorStyle: TextStyle(
+                                    fontSize: 10,
+                                    // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                                  ),
                                 ),
                                 validator: validatePrice,
                               ),
@@ -680,6 +692,10 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                          errorStyle: TextStyle(
+                            fontSize: 10,
+                            // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                          ),
                         ),
                         validator: validateDetail,
                       ),
@@ -705,6 +721,10 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                          errorStyle: TextStyle(
+                            fontSize: 10,
+                            // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                          ),
                         ),
                         validator: validateTag,
                       ),
@@ -731,6 +751,10 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                          errorStyle: TextStyle(
+                            fontSize: 10,
+                            // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                          ),
                         ),
                         onTap: () async {
                           FocusScope.of(context).requestFocus(FocusNode()); // Hide the keyboard when tapping the TextField
@@ -825,6 +849,10 @@ class _EditProductPageState extends State<EditProductPage> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                    errorStyle: TextStyle(
+                                      fontSize: 10,
+                                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                                    ),
                                   ),
                                   validator: validateCondition,
                                 ),
@@ -839,8 +867,8 @@ class _EditProductPageState extends State<EditProductPage> {
                                 DropdownButtonFormField<String>(
                                   items: const [
                                     DropdownMenuItem(value: 'น้อยกว่า 1 ปี', child: Text('น้อยกว่า 1 ปี')),
-                                    DropdownMenuItem(value: 'มากกว่า 1 ปี', child: Text('มากกว่า 1 ปี')),
-                                    DropdownMenuItem(value: '2-3 ปี', child: Text('2-3 ปี')),
+                                    DropdownMenuItem(value: '1-3 ปี', child: Text('1-3 ปี')),
+                                    DropdownMenuItem(value: '3-5 ปี', child: Text('3-5 ปี')),
                                     DropdownMenuItem(value: 'มากกว่า 5 ปี', child: Text('มากกว่า 5 ปี')),
                                   ],
                                   onChanged: (value) {
@@ -869,6 +897,10 @@ class _EditProductPageState extends State<EditProductPage> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                    errorStyle: TextStyle(
+                                      fontSize: 10,
+                                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                                    ),
                                   ),
                                   validator: validateProductYear,
                                 ),
@@ -899,6 +931,10 @@ class _EditProductPageState extends State<EditProductPage> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                    errorStyle: TextStyle(
+                                      fontSize: 10,
+                                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                                    ),
                                   ),
                                   validator: validateDefect,
                                 ),
@@ -943,6 +979,10 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                          errorStyle: TextStyle(
+                            fontSize: 10,
+                            // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                          ),
                         ),
                         validator: validateLocation,
                       ),

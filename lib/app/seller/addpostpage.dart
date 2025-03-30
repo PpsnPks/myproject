@@ -245,8 +245,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text('* รูปสินค้าควรมีขนาดใหญ่และชัดเจนเพื่อให้ลูกค้ามองเห็นรายละเอียดสินค้าได้',
-                    style: TextStyle(color: Colors.grey)),
+                const Text('* รูปสินค้าควรมีความคมชัดเพื่อให้มองเห็นรายละเอียดได้ชัดเจน', style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _detailController,
@@ -270,6 +269,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: validateDetail,
                 ),
@@ -320,6 +323,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกหมวดหมู่" : null,
                 ),
@@ -360,6 +367,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกแท็ก" : null,
                 ),
@@ -385,6 +396,10 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10,
+                      // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
+                    ),
                   ),
                   validator: validatePrice,
                 ),

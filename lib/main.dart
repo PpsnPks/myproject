@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/Service/loginservice.dart';
 import 'package:myproject/app/buyer/allpostpage.dart';
 import 'package:myproject/app/buyer/cartbpage.dart';
+import 'package:myproject/app/buyer/searchpage.dart';
 import 'package:myproject/app/main/categoryform.dart';
 import 'package:myproject/app/main/forgotpassword.dart';
 import 'package:myproject/app/main/formPage.dart';
@@ -16,7 +18,9 @@ import 'package:myproject/app/main/postdetailpage.dart';
 import 'package:myproject/app/main/productdetailpage.dart';
 import 'package:myproject/app/main/register.dart';
 import 'package:myproject/app/main/otp.dart';
+import 'package:myproject/app/main/secureStorage.dart';
 import 'package:myproject/app/main/tagform.dart';
+import 'package:myproject/app/main/waitinglogin.dart';
 import 'package:myproject/app/seller/addpostpage.dart';
 import 'package:myproject/app/seller/cartspage.dart';
 import 'package:myproject/app/buyer/category.dart';
@@ -36,13 +40,42 @@ import 'package:myproject/app/main/viewprofile.dart';
 
 import 'app/buyer/profilepage.dart';
 
-void main() {
+Future<void> loadUserData() async {
+  await Securestorage().printAllSecureData();
+}
+
+void main() async {
   //runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // โหลดข้อมูลจาก Secure Storage
+  String? email = await Securestorage().readSecureData('email');
+  String? password = await Securestorage().readSecureData('password');
+  String role = await Securestorage().readSecureData('role') ?? 'buy';
+  String firstpage = '';
+  if (email != null && password != null) {
+    print('start');
+    final result = await LoginService().login(email, password);
+    print('stop');
+    if (result['success']) {
+      if (result['first']) {
+        print("First Time");
+        firstpage = '/login'; //firstpage = '/infoform';
+      } else {
+        print("NOt First Time");
+        firstpage = '/role';
+      }
+    }
+  }
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "KMITL Exchange",
-    home: const LoginPage(),
+    home: firstpage == '/infoform'
+        ? const PersonalInfoForm(data: '')
+        : firstpage == '/role'
+            ? const RolePage()
+            : const LoginPage(),
     onGenerateRoute: (settings) {
       if (settings.name!.startsWith('/editproduct/')) {
         final id = settings.name!.split('/').last; // ดึง id จาก URL
@@ -114,13 +147,13 @@ void main() {
       '/fashion': (context) => const CategoryPage('แฟชั่น'),
       '/others': (context) => const CategoryPage('อื่นๆ'),
       '/noti': (context) => const NotiPage(),
-      '/chat': (context) => const Chatpage(),
+      '/chat': (context) => Chatpage(role: role!),
       '/profile': (context) => const ProfilePage(),
       '/login': (context) => const LoginPage(),
       '/register': (context) => const RegisterPage(),
       '/forgotpassword': (context) => const ForgotPasswordPage(),
       '/otp': (context) => const OtpPage(),
-      '/infoform': (context) => const PersonalInfoForm(),
+      '/infoform': (context) => const PersonalInfoForm(data: ''),
       '/infoprofile': (context) => const InfoProfile(),
       '/viewprofile': (context) => const ViewProfilePage(),
       '/allpost': (context) => const AllPostPage(),
@@ -131,6 +164,8 @@ void main() {
       '/info1': (context) => const Info1Page(),
       '/info2': (context) => const Info2Page(),
       '/info3': (context) => const Info3Page(),
+      '/search': (context) => const SearchPage(),
+      '/waitinglogin': (context) => WaitingLogin(email: email!, password: password!),
       // '/confirm': (context) => const ConfirmSellerPage(),
     },
   ));

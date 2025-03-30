@@ -567,7 +567,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
+                    data.product_price == '0' || data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
                     style: const TextStyle(
                       color: Color(0XFFE35205),
                       fontSize: 15,

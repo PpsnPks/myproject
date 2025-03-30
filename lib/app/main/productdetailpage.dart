@@ -212,7 +212,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          data.price == '0.00' ? 'ฟรี' : '฿${data.price}',
+                          data.price == '0' || data.price == '0.00' ? 'ฟรี' : '฿${data.price}',
                           style: const TextStyle(
                             fontSize: 20,
                             color: Colors.red,
@@ -238,12 +238,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     // รายละเอียดสินค้า
                     _buildDetailText('รายละเอียดสินค้า', data.description),
                     _buildDetailText('หมวดหมู่', data.category),
+                    if (data.type == 'preorder') _buildDetailText('ค่ามัดจำ', "${data.deposit} ฿"),
                     _buildDetailText('สภาพสินค้า', data.condition),
                     if (data.condition == 'มือสอง') ...[
                       _buildDetailText('ระยะเวลาการใช้งาน', data.durationUse),
                       _buildDetailText('ตำหนิสินค้า', data.defect),
                     ],
                     _buildDetailText('สถานที่นัดรับ', data.deliveryLocation),
+                    if (data.type == 'preorder') _buildDetailText('วันส่งสินค้า', data.date_send),
                     _buildDetailText('ระยะเวลาที่ลงขาย', data.timeForSell),
                     const SizedBox(height: 10),
 
@@ -298,7 +300,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 String temp =
-                                    '\$\$Product : {"id" : "${data.id}", "imageUrl" : "${data.imageUrl[0].replaceFirst(Environment.imgUrl, '')}", "name" : "${data.name}", "condition" : "${data.condition}", "stock": "${data.stock}", "timeForSell": "${data.timeForSell}", "price": "${data.price}"}';
+                                    '\$\$Product : {"id" : "${data.id}", "imageUrl" : "${data.imageUrl[0].replaceFirst(Environment.imgUrl, '')}", "name" : "${data.name}", "condition" : "${data.condition}", "stock": "${data.stock}", "timeForSell": "${data.timeForSell}", "price": "${data.price}", "deposit": "${data.deposit}", "date_send": "${data.date_send}", "type": "${data.type}"}';
                                 await createDeal(data.id);
                                 await sendProductToMessage(data.sellerId, temp);
                               },
