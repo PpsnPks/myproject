@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:myproject/Service/customerservice.dart';
 import 'package:myproject/Service/postservice.dart';
 import 'package:myproject/app/buyer/buyerfooter.dart';
 import '../../Service/addservice.dart';
@@ -19,6 +20,11 @@ class _HomePageState extends State<HomePage> {
   List<Product> homeProducts = [];
   List<Product> recommendedProducts = [];
   List<Product> recommendedProductsformPost = []; // ประกาศตัวแปรให้ถูกต้อง
+  List tags = [];
+
+  List userpost = [];
+  List userproduct = [];
+  List userhistory = [];
 
   void getProducts() async {
     try {
@@ -31,6 +37,7 @@ class _HomePageState extends State<HomePage> {
 
       // ดึงสินค้าที่แนะนำ
       final recommendedResponse = await ProductService().getRecommendedProducts();
+      final recommendedfromTagsResponse = await ProductService().getRecommendedfromTagsProducts(tags);
       final recommendedfromPostResponse = await ProductService().getRecommendedProductsfromPost();
 
       if (productResponse['success'] && recommendedResponse['success'] && recommendedfromPostResponse['success']) {
@@ -83,11 +90,79 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  getuserData() async {
+    Map<String, dynamic> response = await CustomerService().getUserByMyID();
+    if (response['success']) {
+      print('everything is OK');
+      print(response['userpost']);
+      print(response['userproduct']);
+      print(response['userhistory']);
+      print(response['tags']);
+      setState(() {
+        tags = response['tags'];
+        userpost = response['userpost'];
+        userproduct = response['userproduct'];
+        userhistory = response['userhistory'];
+      });
+      getReccomentProduct();
+    } else {
+      print('everything is SO BAD');
+    }
+  }
+
+  getReccomentProduct() {
+    if (userpost.isEmpty && userproduct.isEmpty && userhistory.isEmpty) {
+      getByTags();
+    }
+  }
+
+  getByTags() async {
+    setState(() {
+      loadingProduct = true;
+    });
+
+    final response = await ProductService().getRecommendedfromTagsProducts(tags);
+    if (response['success']) {
+      setState(() {
+        homeProducts = response['data'];
+        loadingProduct = false;
+      });
+    } else {
+      setState(() {
+        loadingProduct = false;
+      });
+      print("Error loading products: ${response['message']}");
+      return;
+    }
+  }
+
+  getByPosts() async {
+    setState(() {
+      loadingProduct = true;
+    });
+
+    final response = await ProductService().getRecommendedProducts();
+    if (response['success']) {
+      setState(() {
+        homeProducts = response['data'];
+        loadingProduct = false;
+      });
+    } else {
+      setState(() {
+        loadingProduct = false;
+      });
+      print("Error loading products: ${response['message']}");
+      return;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    getProducts(); // เรียกฟังก์ชันเพื่อโหลดข้อมูล
-    getPost();
+    print('ppppppppppppppppp');
+    getuserData();
+    // getProducts(); // เรียกฟังก์ชันเพื่อโหลดข้อมูล
+    // getPost();
   }
 
   @override

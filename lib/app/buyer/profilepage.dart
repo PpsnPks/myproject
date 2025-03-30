@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String address = '';
 
   Future<void> getDataUser() async {
-    final id = await Securestorage().readSecureData('userId2');
+    final id = await Securestorage().readSecureData('userId');
     final response = await UserService().getUserById(int.parse(id));
 
     if (response['success']) {

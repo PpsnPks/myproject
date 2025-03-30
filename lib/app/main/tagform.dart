@@ -3,8 +3,9 @@ import 'package:myproject/Service/dropdownservice.dart';
 import 'package:myproject/Service/formservice.dart';
 
 class TagFormPage extends StatefulWidget {
-  final List data;
-  const TagFormPage({super.key, required this.data});
+  final Map userData;
+  final List selectedCategoryIds;
+  const TagFormPage({super.key, required this.userData, required this.selectedCategoryIds});
 
   @override
   State<TagFormPage> createState() => _TagFormPageState();
@@ -12,7 +13,7 @@ class TagFormPage extends StatefulWidget {
 
 class _TagFormPageState extends State<TagFormPage> {
   List<dynamic> tags = [];
-  List<int> selectedTags = [];
+  List<String> selectedTags = [];
   List<int> selectedCategoryIds = [];
 
   @override
@@ -21,12 +22,11 @@ class _TagFormPageState extends State<TagFormPage> {
 
     final arguments = ModalRoute.of(context)?.settings.arguments;
     print("📌 Raw arguments received: $arguments"); // ✅ Debug log
-    print('data: ${widget.data}');
-    print('data0: ${widget.data[0]}');
-    print('data1: ${widget.data[1]}');
+    print('data: ${widget.userData}');
+    print('data0: ${widget.selectedCategoryIds}');
 
-    if (arguments != null && arguments is List) {
-      selectedCategoryIds = List<int>.from(arguments);
+    if (widget.selectedCategoryIds.isNotEmpty) {
+      selectedCategoryIds = widget.selectedCategoryIds.map((item) => item['id'] as int).toList(); // List<int>.from();
       print("✅ Selected Categories: $selectedCategoryIds"); // ✅ Debug log
       fetchTags(selectedCategoryIds);
     } else {
@@ -55,13 +55,13 @@ class _TagFormPageState extends State<TagFormPage> {
     }
   }
 
-  void toggleSelection(int tagId) {
+  void toggleSelection(String tagName) {
     setState(() {
-      if (selectedTags.contains(tagId)) {
-        selectedTags.remove(tagId);
+      if (selectedTags.contains(tagName)) {
+        selectedTags.remove(tagName);
       } else {
         if (selectedTags.length < 4) {
-          selectedTags.add(tagId);
+          selectedTags.add(tagName);
         } else if (selectedTags.length == 4) {
           print('ครบ');
         }
@@ -105,10 +105,10 @@ class _TagFormPageState extends State<TagFormPage> {
                     children: tags.map<Widget>((tag) {
                       int tagId = tag['id']; // ✅ ใช้เป็น int โดยตรง
                       String tagName = tag['name'] ?? 'ไม่ระบุ';
-                      bool isSelected = selectedTags.contains(tagId);
+                      bool isSelected = selectedTags.contains(tagName);
 
                       return GestureDetector(
-                        onTap: () => toggleSelection(tagId),
+                        onTap: () => toggleSelection(tagName),
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                           decoration: BoxDecoration(
@@ -133,20 +133,38 @@ class _TagFormPageState extends State<TagFormPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (selectedTags.length == 4) {
                     print("Selected Tags: $selectedTags"); // ✅ Debugging log
 
                     // เก็บค่า selectedTags ไปที่ UserService
-                    UserService userService = UserService();
-                    userService.setGuidetag(selectedTags);
-
-                    // ส่งไปยังหน้าถัดไป
-                    Navigator.pushNamed(
-                      context,
-                      '/role',
-                      arguments: selectedTags,
+                    // UserService userService = UserService();
+                    // userService.setGuidetag(selectedTags);
+                    String guidetag = selectedTags.join(', ');
+                    final result = await UserService().formEdit(
+                      widget.userData['name'],
+                      widget.userData['imgPath'],
+                      widget.userData['email'],
+                      widget.userData['phone'],
+                      'N/A', // Address field
+                      widget.userData['faculty'],
+                      widget.userData['department'],
+                      widget.userData['year'],
+                      widget.userData['role'],
+                      guidetag,
                     );
+
+                    if (result['success'] == true) {
+                      print('บันทึกข้อมูลสำเร็จ: ${result["data"]}');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('บันทึกข้อมูลสำเร็จ')), //: ${result["data"]}
+                      );
+                      // ส่งไปยังหน้าถัดไป
+                      Navigator.pushNamed(
+                        context,
+                        '/role',
+                      );
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(

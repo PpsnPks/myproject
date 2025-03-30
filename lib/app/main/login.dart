@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/loginservice.dart';
+import 'package:myproject/app/main/categoryform.dart';
 import 'package:myproject/app/main/formPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -64,6 +65,8 @@ class _LoginState extends State<LoginPage> {
         Navigator.pop(context);
       }
       if (result['first']) {
+        print('aaaa ${result['first']} ${result['second']}');
+
         print("First Time");
         print(result['data']);
         print(result['data']['user']['id']);
@@ -77,13 +80,31 @@ class _LoginState extends State<LoginPage> {
                     '{"id" : "${result['data']['user']['id']}", "name" : "${result['data']['user']['name']}", "email" : "${result['data']['user']['email']}"}'),
           ),
         );
-        // Navigator.pushReplacementNamed(context, '/infoform');
       } else {
-        print("NOt First Time");
-        Navigator.pushReplacementNamed(context, '/role');
+        if (result['second']) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CategoryFormPage(
+                userData: {
+                  'name': result['data']['user_data'][0]['name'],
+                  'imgPath': result['data']['user_data'][0]['pic'],
+                  'email': result['data']['user_data'][0]['email'],
+                  'phone': result['data']['user_data'][0]['mobile'],
+                  'faculty': result['data']['user_data'][0]['faculty'],
+                  'department': result['data']['user_data'][0]['department'],
+                  'year': result['data']['user_data'][0]['classyear'],
+                  'role': "buy",
+                  'guidetag': null
+                },
+              ),
+            ),
+          );
+        } else {
+          print("NOt First Time");
+          Navigator.pushReplacementNamed(context, '/role');
+        }
       }
-
-      // Navigator.pushNamed(context, '/role'); // แก้ไขตาม route ของคุณ
     } else {
       if (mounted) {
         Navigator.pop(context);

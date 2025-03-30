@@ -62,6 +62,7 @@ class Post {
   });
 
   factory Post.fromJson(Map<String, dynamic> data) {
+    print(data);
     return Post(
       profilePic: "${Environment.imgUrl}/${data['user']['pic']}",
       name: data['user']?['name'] ?? 'ไม่ระบุ',

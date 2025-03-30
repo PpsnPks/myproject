@@ -5,14 +5,14 @@ import 'package:myproject/auth_service.dart';
 import 'package:myproject/environment.dart';
 
 class CustomerService {
-  Future<void> getUserByMyID() async {
-    String userId = Securestorage().readSecureData('userId2');
+  Future<Map<String, dynamic>> getUserByMyID() async {
+    String userId = await Securestorage().readSecureData('userId');
     try {
       String? accessToken = await AuthService().getAccessToken();
       String url = "${Environment.baseUrl}/customers/$userId";
 
       if (accessToken == null) {
-        return;
+        return {"success": false, "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ"};
       }
 
       Map<String, String> headers = {
@@ -22,26 +22,29 @@ class CustomerService {
       };
 
       final response = await http.get(Uri.parse(url), headers: headers);
+      var responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        var responseBody = jsonDecode(response.body);
-        if (responseBody == null || !responseBody.containsKey("customer")) {
-          return;
+        if (responseBody == null || responseBody["customer"] is! Map<String, dynamic>) {
+          return {"success": false, "message": "ข้อมูลผู้ใช้ไม่ถูกต้อง"};
         }
-        String userpost = responseBody["userpost"];
-        String userproduct = responseBody["userproduct"];
-        String userhistory = responseBody["userhistory"];
-        Customer customer = Customer.fromJson(responseBody["customer"]);
-        print('data1 : ${userpost}');
-        print('data2 : ${userproduct}');
-        print('data3 : ${userhistory}');
-        // print('data4 : ${customer.toString()}');
-        return;
+
+        return {
+          "success": true,
+          "customer": Customer.fromJson(responseBody["customer"]),
+          "tags": responseBody["customer"]["guidetag"].split(', '),
+          "userpost":
+              (responseBody["userpost"] is List) ? (responseBody["userpost"] as List).whereType<Map<String, dynamic>>().toList() : [],
+          "userproduct":
+              (responseBody["userproduct"] is List) ? (responseBody["userproduct"] as List).whereType<Map<String, dynamic>>().toList() : [],
+          "userhistory":
+              (responseBody["userhistory"] is List) ? (responseBody["userhistory"] as List).whereType<Map<String, dynamic>>().toList() : [],
+        };
       } else {
-        return;
+        return {"success": false, "message": 'Error ${response.statusCode} ${response.body}'};
       }
     } catch (e) {
-      return;
+      return {"success": false, "message": "เกิดข้อผิดพลาด: $e"};
     }
   }
 

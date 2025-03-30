@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myproject/Service/uploadimgservice.dart';
+import 'package:myproject/app/main/categoryform.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:myproject/app/main/role.dart';
@@ -256,20 +257,23 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
         );
 
         // 🔹 เปลี่ยนเส้นทางไปที่ tagform พร้อมส่งข้อมูล
-        Navigator.pushNamed(
+        Navigator.push(
           context,
-          '/categoryform',
-          arguments: {
-            'name': '${firstNameController.text} ${lastNameController.text}',
-            'imgPath': imgPath,
-            'email': emailController.text,
-            'phone': phoneController.text,
-            'faculty': selectedFaculty ?? '',
-            'department': selectedDepartment ?? '',
-            'year': selectedYear ?? '',
-            'role': role,
-            'guidetag': null
-          },
+          MaterialPageRoute(
+            builder: (context) => CategoryFormPage(
+              userData: {
+                'name': '${firstNameController.text} ${lastNameController.text}',
+                'imgPath': imgPath,
+                'email': emailController.text,
+                'phone': phoneController.text,
+                'faculty': selectedFaculty ?? '',
+                'department': selectedDepartment ?? '',
+                'year': selectedYear ?? '',
+                'role': role,
+                'guidetag': null
+              },
+            ),
+          ),
         );
       } else {
         print('เกิดข้อผิดพลาด: ${result["message"]}');
@@ -300,8 +304,8 @@ class _PersonalInfoFormState extends State<PersonalInfoForm> {
         currentStep++;
       });
     } else {
-      print('before submit form');
-      if (_base64Image != null && _formKey.currentState?.validate() == null) {
+      print('before submit form ${_base64Image != null} ${_formKey.currentState?.validate()}');
+      if (_base64Image != null && _formKey.currentState!.validate()) {
         await _submitForm(); // Wait for the action to complete
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

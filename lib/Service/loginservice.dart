@@ -47,21 +47,27 @@ class LoginService {
         // เก็บ data
         String token = data['token'];
         Securestorage().writeSecureData('token', token);
-        print('kkk ${data['user_data']}');
-        print('kkk ${data['user_data'][0]['id']}');
-        String userId = data['user_data'][0]['id'].toString(); // ตอนนี้เก็บ id ตาราง customer
-        String userId2 = data['user_data'][0]['user_id'].toString(); // ตอนนี้เก็บ id ตาราง customer
-        Securestorage().writeSecureData('userId', userId);
-        Securestorage().writeSecureData('userId2', userId2);
+        if (data['user_data'].isNotEmpty) {
+          print('kkk1 ${data['user_data']}');
+          // print('kkk2 ${data['user_data'][0]['id']}');
+          String userId = data['user_data'][0]['id'].toString(); // ตอนนี้เก็บ id ตาราง customer
+          String userId2 = data['user_data'][0]['user_id'].toString(); // ตอนนี้เก็บ id ตาราง customer
+          Securestorage().writeSecureData('userId', userId);
+          Securestorage().writeSecureData('userId2', userId2);
+        }
         Securestorage().writeSecureData('email', email);
         Securestorage().writeSecureData('password', password);
 
         // final test = await Securestorage().readSecureData('token');
         // print('okk === $test');
         if (data['user_data'].isEmpty) {
-          return {"success": true, "data": jsonDecode(response.body), "first": true};
+          return {"success": true, "data": jsonDecode(response.body), "first": true}; // ไปที่ role
         } else {
-          return {"success": true, "data": jsonDecode(response.body), "first": false};
+          if (data['user_data'][0]['guidetag'] != null) {
+            return {"success": true, "data": jsonDecode(response.body), "first": false, "second": false}; // ไปที่ role
+          } else {
+            return {"success": true, "data": jsonDecode(response.body), "first": false, "second": true}; // ไปที่ categoryform
+          }
         }
       } else {
         // กรณีเกิดข้อผิดพลาดจาก API
