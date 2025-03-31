@@ -31,8 +31,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String classyear = '';
   String address = '';
 
+
   Future<void> getDataUser() async {
-    final id = await Securestorage().readSecureData('userId2');
+    final id = await Securestorage().readSecureData('userId');
     final response = await UserService().getUserById(int.parse(id));
 
     if (response['success']) {
@@ -181,6 +182,16 @@ class _ProfilePageState extends State<ProfilePage> {
     print('lllllllllll  $response');
     return;
   }
+
+  
+  Future<void> deletePost(String postId) async {
+  var result = await PostService().deletePostById(postId);
+  if (result['success']) {
+    print(result['message']);
+  } else {
+    print('Error: ${result['message']}');
+  }
+}
 
   @override
   void initState() {
@@ -376,69 +387,67 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           // Grid and History Buttons
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Row(
-              children: [
-                // ถ้าเป็นผู้ซื้อ (isBuyerSelected == true) จะแสดงไอคอน Grid View
-                if (isBuyerSelected)
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isGridSelected = true;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.grid_view,
-                            color: isGridSelected ? const Color(0xFFE35205) : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                // ถ้าเป็นผู้ขาย (isBuyerSelected == false) แสดงคำว่า "ประวัติการขาย" แทนไอคอน
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (!isBuyerSelected)
-                        Text(
-                          'ประวัติการขาย',
-                          style: TextStyle(
-                            color: Colors.grey, // สีสำหรับข้อความ
-                            fontSize: 16.0, // ขนาดตัวอักษร
-                            fontWeight: FontWeight.w400, // ตัวหนา
-                          ),
-                        )
-                      else
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isGridSelected = false;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.history,
-                            color: isGridSelected ? Colors.grey : const Color(0xFFE35205),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          //   child: Row(
+          //     children: [
+          //       // ถ้าเป็นผู้ซื้อ (isBuyerSelected == true) จะแสดงไอคอน Grid View
+          //       if (isBuyerSelected)
+          //         Expanded(
+          //           child: Column(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             crossAxisAlignment: CrossAxisAlignment.center,
+          //             children: [
+          //               IconButton(
+          //                 onPressed: () {
+          //                   setState(() {
+          //                     isGridSelected = true;
+          //                   });
+          //                 },
+          //                 icon: Icon(
+          //                   Icons.grid_view,
+          //                   color: isGridSelected ? const Color(0xFFE35205) : Colors.grey,
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       // ถ้าเป็นผู้ขาย (isBuyerSelected == false) แสดงคำว่า "ประวัติการขาย" แทนไอคอน
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           crossAxisAlignment: CrossAxisAlignment.center,
+          //           children: [
+          //             if (!isBuyerSelected)
+          //               Text(
+          //                 'ประวัติการขาย',
+          //                 style: TextStyle(
+          //                   color: Colors.grey, // สีสำหรับข้อความ
+          //                   fontSize: 16.0, // ขนาดตัวอักษร
+          //                   fontWeight: FontWeight.w400, // ตัวหนา
+          //                 ),
+          //               )
+          //             else
+          //               IconButton(
+          //                 onPressed: () {
+          //                   setState(() {
+          //                     isGridSelected = false;
+          //                   });
+          //                 },
+          //                 icon: Icon(
+          //                   Icons.history,
+          //                   color: isGridSelected ? Colors.grey : const Color(0xFFE35205),
+          //                 ),
+          //               ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           // Content Area
           Expanded(
-            child: isBuyerSelected
-                ? (isGridSelected ? buildBuyerGridView() : buildBuyerHistoryView(cartBProducts, cartSeller))
-                : buildSellerHistoryView(pendingCollection),
+            child: buildBuyerGridView(),
           ),
         ],
       ),
@@ -465,11 +474,6 @@ class _ProfilePageState extends State<ProfilePage> {
           final post = homePosts[index]; // ดึงโพสต์จาก homePosts
           return Column(
             children: [
-              // Container(
-              //   height: 2.0,
-              //   width: double.infinity,
-              //   color: Colors.grey[400],
-              // ),
               GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(
@@ -489,31 +493,40 @@ class _ProfilePageState extends State<ProfilePage> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 9.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดให้อยู่ซ้าย-ขวา
                           children: [
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(post.profile),
-                            ),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                Text(
-                                  post.name,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: NetworkImage(post.profile),
                                 ),
-                                const SizedBox(height: 1),
-                                Text(
-                                  post.faculty,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    color: Colors.grey,
-                                  ),
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      post.name,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 1),
+                                    Text(
+                                      post.faculty,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.grey),
+                              onPressed: () => confirmDelete(context, post.id),
                             ),
                           ],
                         ),
@@ -617,348 +630,30 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // Buyer History View
-  Widget buildBuyerHistoryView(List<Product> products, List<Seller> sellers) {
-    if (products.isEmpty) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.shopping_cart_outlined, size: 60, color: Colors.grey),
-            SizedBox(height: 16),
-            Text(
-              'ยังไม่มีประวัติการซื้อ',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(8.0),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        return buildProductBCard(products[index], sellers[index]);
-      },
-    );
-  }
-
-  // Seller History View
-  Widget buildSellerHistoryView(List<Deal> deals) {
-    if (deals.isEmpty) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.sell_outlined, size: 60, color: Colors.grey),
-            SizedBox(height: 16),
-            Text(
-              'ยังไม่มีประวัติการขาย',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      itemCount: deals.length,
-      itemBuilder: (context, index) {
-        return buildProductSCard(deals[index], 1); // tab = 1
-      },
-    );
-  }
-
-  Widget buildProductBCard(Product product, Seller seller) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, '/productdetail');
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-        decoration: BoxDecoration(
-          color: Colors.white, // Background color
-          border: Border.all(color: Colors.grey.shade300, width: 2), // Gray border
-          borderRadius: BorderRadius.circular(12), // Rounded corners
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: product.product_images.isNotEmpty
-                      ? product.product_images[0]
-                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                  placeholder: (context, url) => LayoutBuilder(
-                    builder: (context, constraints) {
-                      double size = constraints.maxHeight;
-                      return SizedBox(
-                        width: size,
-                        height: size, // ให้สูงเท่ากับกว้าง
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0XFFE35205),
-                            strokeCap: StrokeCap.round,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  imageBuilder: (context, ImageProvider) {
-                    return LayoutBuilder(
-                      builder: (context, constraints) {
-                        double size = constraints.maxHeight; // ใช้ maxWidth เป็นขนาดของ width และ height
-                        return Container(
-                          width: size,
-                          height: size, // ให้ height เท่ากับ width
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: ImageProvider,
-                              fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  errorWidget: (context, url, error) => LayoutBuilder(
-                    builder: (context, constraints) {
-                      double size = constraints.maxHeight;
-                      return Container(
-                        width: size,
-                        height: size,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Flexible(
-                fit: FlexFit.loose,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      product.product_name,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.6),
-                      maxLines: 1,
-                    ),
-                    Text(
-                      product.product_price == '0' || product.product_price == '0.00' ? 'ฟรี' : '${product.product_price} ฿',
-                      style: const TextStyle(color: Color(0XFFE35205), fontSize: 18, fontWeight: FontWeight.w500, height: 1.0),
-                    ),
-                    SizedBox(
-                      // constraints: const BoxConstraints(minHeight: 57.0),
-                      height: 44,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 17,
-                            backgroundImage: NetworkImage(seller.pic),
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                seller.name,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 1),
-                              Text(
-                                seller.faculty,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      // child: Text(
-                      //   product.product_description,
-                      //   style: const TextStyle(color: Colors.grey, fontSize: 10),
-                      //   overflow: TextOverflow.ellipsis,
-                      //   maxLines: 3,
-                      // ),
-                    ),
-                    // const SizedBox(height: 8),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                width: 30,
-                child: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: Color(0xFFA5A9B6),
-                  size: 24,
-                ),
-              )
-            ],
+ 
+  void confirmDelete(BuildContext context, String postId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("ยืนยันการลบ"),
+        content: Text("คุณต้องการลบโพสต์นี้หรือไม่?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("ยกเลิก"),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildProductSCard(Deal deal, int tab) {
-    return GestureDetector(
-      onTap: () {
-        if (tab == 1) {
-          String temp =
-              '{"deal_id" : "${deal.deal_id}", "product_images" : "${deal.product_images[0]}", "product_name" : "${deal.product_name}", "product_condition" : "${deal.product_condition}", "stock": "${deal.product_qty}", "timeForSell": "${deal.product_date_exp}", "price": "${deal.product_price}", "buyer_name": "${deal.buyer_name}", "buyer_faculty": "${deal.buyer_faculty}", "buyer_pic": "${deal.buyer_pic}", "buyer_user_id": "${deal.buyer_user_id}", "product_id": "${deal.product_id}"}';
-          Navigator.pushReplacementNamed(context, '/confirm', arguments: {
-            'data': temp,
-          });
-        }
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
-        decoration: BoxDecoration(
-          color: Colors.white, // Background color
-          border: Border.all(color: Colors.grey.shade300, width: 2), // Gray border
-          borderRadius: BorderRadius.circular(12), // Rounded corners
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: deal.product_images.isNotEmpty
-                      ? deal.product_images[0]
-                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
-                  placeholder: (context, url) => LayoutBuilder(
-                    builder: (context, constraints) {
-                      double size = constraints.maxHeight;
-                      return SizedBox(
-                        width: size,
-                        height: size, // ให้สูงเท่ากับกว้าง
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0XFFE35205),
-                            strokeCap: StrokeCap.round,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  imageBuilder: (context, ImageProvider) {
-                    return LayoutBuilder(
-                      builder: (context, constraints) {
-                        double size = constraints.maxHeight; // ใช้ maxWidth เป็นขนาดของ width และ height
-                        return Container(
-                          width: size,
-                          height: size, // ให้ height เท่ากับ width
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: ImageProvider,
-                              fit: BoxFit.cover, // ปรับขนาดภาพให้เต็ม
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  errorWidget: (context, url, error) => LayoutBuilder(
-                    builder: (context, constraints) {
-                      double size = constraints.maxHeight;
-                      return Container(
-                        width: size,
-                        height: size,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Flexible(
-                fit: FlexFit.loose,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      deal.product_name,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, height: 1.6),
-                      maxLines: 1,
-                    ),
-                    Text(
-                      deal.product_price == '0' || deal.product_price == '0.00' ? 'ฟรี' : '${deal.product_price} ฿',
-                      style: const TextStyle(color: Color(0XFFE35205), fontSize: 18, fontWeight: FontWeight.w500, height: 1.0),
-                    ),
-                    SizedBox(
-                      // constraints: const BoxConstraints(minHeight: 57.0),
-                      height: 44,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 17,
-                            backgroundImage: NetworkImage(deal.buyer_pic),
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                deal.buyer_name,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 1),
-                              Text(
-                                deal.buyer_faculty,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (tab == 1)
-                const SizedBox(
-                  width: 30,
-                  child: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: Color(0xFFA5A9B6),
-                    size: 24,
-                  ),
-                )
-            ],
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await deletePost(postId); // รอให้ลบเสร็จก่อน
+              Navigator.pushReplacementNamed(context, '/profile'); // อัปเดต UI หลังลบโพสต์
+            },
+            child: Text("ลบ", style: TextStyle(color: Colors.red)),
           ),
-        ),
-      ),
-    );
-  }
+        ],
+      );
+    },
+  );
+}
 }

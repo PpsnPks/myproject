@@ -35,6 +35,37 @@ class Dropdownservice {
     }
   }
 
+  Future<List<dynamic>> getLocation() async {
+    const url = "${Environment.baseUrl}/location";
+
+    try {
+      // ดึง accessToken จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // ส่ง GET request
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        List data = jsonDecode(response.body)['data']['data'];
+        return data;
+      } else {
+        print('❌ Error: ${response.statusCode} - ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('❌ Exception: $e');
+      return [];
+    }
+  }
+
   /// 🔹 ฟังก์ชันสำหรับดึง Tags ตาม categoryId
   Future<List<dynamic>> _fetchTagsForCategory(int categoryId) async {
     final String url = "${Environment.baseUrl}/tagsbycategories/$categoryId";

@@ -145,7 +145,7 @@ class _EditProductPageState extends State<EditProductPage> {
 
     if (result['success']) {
       print("เพิ่มสินค้าสำเร็จ");
-      Navigator.pushNamed(context, '/seller'); // Navigate to /seller after completion
+      Navigator.pushReplacementNamed(context, '/seller'); // Navigate to /seller after completion
     } else {
       print(result['message']);
     }
@@ -601,18 +601,30 @@ class _EditProductPageState extends State<EditProductPage> {
                         items: [
                           for (var item in category)
                             DropdownMenuItem<String>(
-                              value: item['category_name'], // ใช้การเข้าถึงข้อมูลแบบ Map
-                              child: Text(item['category_name']), // แสดง category_name
+                              value: item['category_name'], // ป้องกัน null
+                              child: Text(item['category_name']), // แสดงค่าเริ่มต้นหากเป็น null
                             ),
                         ],
-                        onChanged: (value) {
+                        onChanged: (value) async {
+                          if (value == null || value.isEmpty) return; // ป้องกันการตั้งค่าเป็น null
+
                           setState(() {
                             product_cate = value;
-                            _productCategoryController.text = value!;
+                            _productCategoryController.text = value;
+                            selectedTag = null; // รีเซ็ต tag ทุกครั้งที่เปลี่ยน category
+                            tagList = []; // รีเซ็ต dropdown tag
+                          });
+
+                          // 📌 เรียก API ดึงแท็กของหมวดหมู่ที่เลือก
+                          List<dynamic> tags =
+                              await Dropdownservice().getTag([(category.firstWhere((item) => item['category_name'] == value))['id']]);
+
+                          setState(() {
+                            tagList = tags;
                           });
                         },
-                        value: product_cate,
-                        hint: const Text('หมวดหมู่สินค้า'),
+                        value: product_cate?.isNotEmpty == true ? product_cate : null, // ป้องกันค่า null
+                        hint: const Text('หมวดหมู่'),
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -622,21 +634,13 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                           errorStyle: TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),
                         ),
-                        validator: validateCategory,
+                        validator: (value) => (value == null || value.isEmpty) ? "กรุณาเลือกหมวดหมู่" : null,
                       ),
                       const SizedBox(height: 8),
                       Row(

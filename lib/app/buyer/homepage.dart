@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
                               CatergoryButton(context, 'assets/icons/home_page/education-ruler-pen.svg', 'การศึกษา', '/education'),
                               CatergoryButton(context, 'assets/icons/home_page/furniture-bed.svg', 'เฟอร์นิเจอร์', '/furniture'),
                               CatergoryButton(context, 'assets/icons/home_page/fashion-shirt.svg', 'แฟชั่น', '/fashion'),
-                              CatergoryButton(context, 'assets/icons/home_page/other-3dots.svg', 'อื่นๆ', '/role'),
+                              CatergoryButton(context, 'assets/icons/home_page/other-3dots.svg', 'อื่นๆ', '/others'),
                             ],
                           ),
                         ),
