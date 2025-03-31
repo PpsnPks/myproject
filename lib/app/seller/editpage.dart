@@ -961,13 +961,21 @@ class _EditProductPageState extends State<EditProductPage> {
 
                       DropdownButtonFormField<String>(
                         items: const [
-                          DropdownMenuItem(value: 'เกกี 1', child: Text('เกกี 1')),
-                          DropdownMenuItem(value: 'เกกี 2', child: Text('เกกี 2')),
-                          DropdownMenuItem(value: 'เกกี 3', child: Text('เกกี 3')),
-                          DropdownMenuItem(value: 'เกกี 4', child: Text('เกกี 4')),
+                          DropdownMenuItem(value: 'เกกี', child: Text('เกกี')),
+                          DropdownMenuItem(value: 'RNP', child: Text('RNP')),
+                          DropdownMenuItem(value: 'FBT', child: Text('FBT')),
+                          DropdownMenuItem(value: 'จินดา', child: Text('จินดา')),
                           DropdownMenuItem(value: 'ตึกโหล', child: Text('ตึกโหล')),
-                          DropdownMenuItem(value: 'ECC', child: Text('ECC')),
+                          DropdownMenuItem(value: 'ตึก HM', child: Text('ตึก HM')),
+                          DropdownMenuItem(value: 'ร้านนางคาเฟ่', child: Text('ร้านนางคาเฟ่')),
+                          DropdownMenuItem(value: 'โรงอาหารพระเทพ', child: Text('โรงอาหารพระเทพ')),
+                          DropdownMenuItem(value: 'คลินิคสจล', child: Text('คลินิคสจล')),
+                          DropdownMenuItem(value: 'สนามกีฬา', child: Text('สนามกีฬา')),
+                          DropdownMenuItem(value: 'หอใน', child: Text('หอใน')),
+                          DropdownMenuItem(value: 'โรงอาหารคณะวิทย์', child: Text('โรงอาหารคณะวิทย์')),
+                          DropdownMenuItem(value: 'โรงอาหารคณะครุ', child: Text('โรงอาหารคณะครุ')),
                           DropdownMenuItem(value: 'หอสมุด', child: Text('หอสมุด')),
+                          DropdownMenuItem(value: 'หอประชุม (วร บุนนาค)', child: Text('หอประชุม (วร บุนนาค)')),
                         ],
                         onChanged: (value) {
                           setState(() {
