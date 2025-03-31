@@ -168,21 +168,13 @@ class ProductService {
     }
   }
 
-  Future<Map<String, dynamic>> getRecommendedProducts() async {
+  Future<Map<String, dynamic>> getRecommendedProducts(List ids) async {
     const url = "https://recommend-880011621471.asia-southeast1.run.app/recommend";
 
     try {
       // ดึง accessToken และ user_id จาก AuthService
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
-      String? userId = await authService.getUserId();
-
-      if (accessToken == null || userId == null) {
-        return {
-          "success": false,
-          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
-        };
-      }
 
       // Header
       Map<String, String> headers = {
@@ -192,7 +184,7 @@ class ProductService {
       };
 
       // Body
-      Map<String, dynamic> body = {"user_id": userId};
+      Map<String, dynamic> body = {"ids": ids};
 
       // ส่ง Request
       final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
@@ -200,13 +192,13 @@ class ProductService {
       if (response.statusCode == 200) {
         var decodedResponse = jsonDecode(response.body);
 
-        if (decodedResponse != null && decodedResponse['recommendations'] != null) {
-          List<Product> data = (decodedResponse['recommendations'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+        // if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+        List<ShortProduct> data = (decodedResponse as List).map((postJson) => ShortProduct.fromJson(postJson)).toList();
 
-          return {"success": true, "data": data};
-        } else {
-          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
-        }
+        return {"success": true, "data": data};
+        // } else {
+        // return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        // }
       } else {
         return {
           "success": false,
@@ -221,14 +213,14 @@ class ProductService {
     }
   }
 
-  Future<Map<String, dynamic>> getRecommendedProductsfromPost() async {
-    const url = "https://recommend-product-form-post-880011621471.asia-southeast1.run.app/recommend";
+  Future<Map<String, dynamic>> getRecommendedfromTagsProducts(List tags) async {
+    const url = "${Environment.baseUrl}/productstag";
 
     try {
       // ดึง accessToken และ user_id จาก AuthService
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
-      String? userId = await authService.getUserId();
+      String? userId = await Securestorage().readSecureData('userId');
 
       if (accessToken == null || userId == null) {
         return {
@@ -245,7 +237,52 @@ class ProductService {
       };
 
       // Body
-      Map<String, dynamic> body = {"user_id": userId};
+      Map<String, dynamic> body = {"tag": tags};
+
+      // ส่ง Request
+      final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
+
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        print(decodedResponse);
+        // if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+        List<Product> data = (decodedResponse as List).map((postJson) => Product.fromJson(postJson)).toList();
+
+        return {"success": true, "data": data};
+        // } else {
+        //   return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        // }
+      } else {
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> getRecommendedProductsfromPost(List posts) async {
+    const url = "https://recommend-product-form-post-880011621471.asia-southeast1.run.app/recommend";
+
+    try {
+      // ดึง accessToken และ user_id จาก AuthService
+      AuthService authService = AuthService();
+      String? accessToken = await authService.getAccessToken();
+
+      // Header
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      // Body
+      Map<String, dynamic> body = {"id": posts};
 
       // ส่ง Request
       final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
@@ -253,13 +290,14 @@ class ProductService {
       if (response.statusCode == 200) {
         var decodedResponse = jsonDecode(response.body);
 
-        if (decodedResponse != null && decodedResponse['recommendations'] != null) {
-          List<Product> data = (decodedResponse['recommendations'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+        print(decodedResponse);
+        // if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+        List<ShortProduct> data = (decodedResponse as List).map((postJson) => ShortProduct.fromJson(postJson)).toList();
 
-          return {"success": true, "data": data};
-        } else {
-          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
-        }
+        return {"success": true, "data": data};
+        // } else {
+        //   return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        // }
       } else {
         return {
           "success": false,
@@ -781,6 +819,56 @@ class SearchService {
   }
 }
 
+class ShortProduct {
+  final String id;
+  final String product_name;
+  final List<dynamic> product_images;
+  final String product_description;
+  final String product_price;
+  final String product_type;
+  final String status;
+  final double score;
+
+  ShortProduct({
+    required this.id,
+    required this.product_name,
+    required this.product_images,
+    required this.product_price,
+    required this.product_description,
+    required this.product_type,
+    required this.status,
+    required this.score,
+  });
+
+  @override
+  String toString() {
+    return 'ShortProduct('
+        'id: $id, '
+        'product_name: $product_name, '
+        'product_images: $product_images, ' //${product_images.join(", ")}
+        'product_price: $product_price, '
+        'product_description: $product_description, '
+        'product_type: $product_type, '
+        'status: $status, '
+        'score: $score, '
+        ')';
+  }
+
+  factory ShortProduct.fromJson(Map<String, dynamic> data) {
+    print('data : $data');
+    return ShortProduct(
+      id: data['id']?.toString() ?? "",
+      product_name: data['product_name'] ?? "",
+      product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
+      product_price: data['product_price'] == null ? '100' : NumberFormat("#,###").format(double.parse(data['product_price'])),
+      product_description: data['product_description'] ?? "", //data['product_description'],
+      product_type: data['product_type'] ?? "",
+      status: data['status'] ?? "",
+      score: data['sim_score'],
+    );
+  }
+}
+
 class Product {
   final String id;
   final String product_name;
@@ -856,7 +944,7 @@ class Product {
     } else {
       defect = data['product_defect'] ?? '';
     }
-    print('data : ${double.parse(data['product_price'])}');
+    // print('data : ${double.parse(data['product_price'])}');
     return Product(
       id: data['id']?.toString() ?? "",
       product_name: data['product_name'] ?? "",

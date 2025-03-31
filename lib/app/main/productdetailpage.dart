@@ -36,7 +36,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     setState(() {
       isLoading = true;
     });
-    userId = await Securestorage().readSecureData('userId2');
+    userId = await Securestorage().readSecureData('userId');
     ProductDetail response = await ProductService().getProductById(widget.productId);
     setState(() {
       isLiked = response.isLiked;
@@ -52,6 +52,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   createDeal(String productId) async {
     bool response = await ProductService().createDeal(productId);
     if (response) {
+      print('kkk');
+      print(data.sellerName);
       Navigator.pushNamed(context, '/message/${data.sellerId}', arguments: {'name': data.sellerName});
     }
   }

@@ -268,7 +268,7 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    // contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                     errorStyle: TextStyle(
                       fontSize: 10,
                       // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
@@ -322,7 +322,7 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    // contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                     errorStyle: TextStyle(
                       fontSize: 10,
                       // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
@@ -366,7 +366,7 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    // contentPadding: const EdgeInsets.only(bottom: 20, left: 12, right: 12),
                     errorStyle: TextStyle(
                       fontSize: 10,
                       // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
@@ -395,7 +395,7 @@ class _AddPostPageState extends State<AddPostPage> {
                       borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    // contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                     errorStyle: TextStyle(
                       fontSize: 10,
                       // กำหนดขนาดฟอนต์ของข้อความผิดพลาด

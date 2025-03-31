@@ -37,7 +37,6 @@ import 'package:myproject/app/seller/postpage.dart';
 import 'package:myproject/app/seller/seller.dart';
 import 'package:myproject/app/seller/addpage.dart';
 import 'package:myproject/app/main/viewprofile.dart';
-
 import 'app/buyer/profilepage.dart';
 
 Future<void> loadUserData() async {
@@ -160,9 +159,7 @@ void main() async {
       '/categoryform': (context) => const CategoryFormPage(
             userData: {},
           ),
-      '/tagform': (context) => const TagFormPage(
-            data: [],
-          ),
+      '/tagform': (context) => const TagFormPage(userData: {}, selectedCategoryIds: []),
       '/info1': (context) => const Info1Page(),
       '/info2': (context) => const Info2Page(),
       '/info3': (context) => const Info3Page(),

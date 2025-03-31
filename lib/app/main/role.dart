@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/Service/customerservice.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 
 class RolePage extends StatefulWidget {
@@ -10,16 +9,10 @@ class RolePage extends StatefulWidget {
 }
 
 class _RolePageState extends State<RolePage> {
-  _saveUserdata() async {
-    print('data start');
-    await CustomerService().getUserByMyID();
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _saveUserdata();
   }
 
   @override

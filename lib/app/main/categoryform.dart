@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/Service/dropdownservice.dart';
+import 'package:myproject/app/main/tagform.dart';
 
 class CategoryFormPage extends StatefulWidget {
   final Map userData;
@@ -111,6 +112,12 @@ class _CategoryFormPageState extends State<CategoryFormPage> {
                       context,
                       '/tagform',
                       arguments: [widget.userData, selectedCategoryIds], // ส่ง id ไปหน้า /tagform
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TagFormPage(userData: widget.userData, selectedCategoryIds: selectedCategories),
+                      ),
                     );
                   }
                   // ล็อกข้อมูลที่เลือกก่อนจะส่งไป
