@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:myproject/app/main/secureStorage.dart';
+import 'package:myproject/Service/loginservice.dart';
+import 'package:myproject/app/main/categoryform.dart';
+import 'package:myproject/app/main/formPage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,73 +12,107 @@ class LoginPage extends StatefulWidget {
 
 class _LoginState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  final LoginService _loginService = LoginService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false; // ใช้เพื่อตรวจสอบว่าอยู่ในระหว่างการทำงานหรือไม่
+  // bool _isLoading = false; // ใช้เพื่อตรวจสอบว่าอยู่ในระหว่างการทำงานหรือไม่
   bool _obscureText = true;
   String _errorMessage = "";
 
-  // ฟังก์ชันสำหรับล็อกอิน
-  Future<void> login() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+  @override
+  void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus(); // ปิด FocusNode ทิ้งเมื่อ Widget ถูกทำลาย
+    super.dispose();
+  }
 
-    // ตรวจสอบข้อมูลก่อน
+  void _handleLogin(BuildContext context) async {
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+    FocusScope.of(context).unfocus();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: SizedBox(
+            height: 90.0, // กำหนดความสูง
+            width: 90.0, // กำหนดความกว้าง
+            child: CircularProgressIndicator(
+              color: Color(0XFFE35205),
+              strokeWidth: 12.0, // ปรับความหนาของวงกลม
+              strokeCap: StrokeCap.round,
+            ),
+          ),
+        );
+      },
+    );
     if (email.isEmpty || password.isEmpty) {
-      // แสดงข้อความเตือนถ้าข้อมูลยังไม่ครบ
+      if (mounted) {
+        Navigator.pop(context);
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter username and password")),
+        const SnackBar(content: Text('กรุณากรอกอีเมลและรหัสผ่าน')),
       );
       return;
     }
 
-    setState(() {
-      _isLoading = true; // เปลี่ยนสถานะเป็นกำลังโหลด
-    });
+    final result = await _loginService.login(email, password);
 
-    try {
-      // สร้าง URL ของ API
-      final Uri apiUrl = Uri.parse('http://localhost:8000/api/auth/login');
-
-      // ส่งข้อมูล login (username, password) ผ่าน HTTP POST
-      final response = await http.post(
-        apiUrl,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-
-      // ตรวจสอบสถานะการตอบกลับ
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        // ตัวอย่างการใช้งานข้อมูลจาก API (เช่น token)
-        String token = data['token'];
-        Securestorage().writeSecureData('token', token);
-        final test = await Securestorage().readSecureData('token');
-        print('okk === $test');
-        Navigator.pushNamed(context, '/role');
-        // แสดงข้อความสำเร็จ
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("Login successful")),
-        // );
-      } else {
-        _errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง";
-        // หาก API ตอบกลับไม่สำเร็จ
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("Login failed")),
-        // );
+    if (result['success']) {
+      // เก็บ token หรือทำการ Redirect
+      if (mounted) {
+        Navigator.pop(context);
       }
-    } catch (e) {
-      // จัดการกับข้อผิดพลาดที่อาจเกิดขึ้น
+      if (result['first']) {
+        print('aaaa ${result['first']} ${result['second']}');
+
+        print("First Time");
+        print(result['data']);
+        print(result['data']['user']['id']);
+        print(result['data']['user']['name']);
+        print(result['data']['user']['email']);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PersonalInfoForm(
+                data:
+                    '{"id" : "${result['data']['user']['id']}", "name" : "${result['data']['user']['name']}", "email" : "${result['data']['user']['email']}"}'),
+          ),
+        );
+      } else {
+        if (result['second']) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CategoryFormPage(
+                userData: {
+                  'name': result['data']['user_data'][0]['name'],
+                  'imgPath': result['data']['user_data'][0]['pic'],
+                  'email': result['data']['user_data'][0]['email'],
+                  'phone': result['data']['user_data'][0]['mobile'],
+                  'faculty': result['data']['user_data'][0]['faculty'],
+                  'department': result['data']['user_data'][0]['department'],
+                  'year': result['data']['user_data'][0]['classyear'],
+                  'role': "buy",
+                  'guidetag': null
+                },
+              ),
+            ),
+          );
+        } else {
+          print("NOt First Time");
+          Navigator.pushReplacementNamed(context, '/role');
+        }
+      }
+    } else {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+      // แสดงข้อความผิดพลาด
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
+        SnackBar(content: Text(result['message'])),
       );
-    } finally {
-      setState(() {
-        _isLoading = false; // เปลี่ยนสถานะกลับมาเป็นไม่กำลังโหลด
-      });
     }
   }
 
@@ -122,9 +155,7 @@ class _LoginState extends State<LoginPage> {
                     labelText: 'รหัสผ่าน',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
+                        _obscureText ? Icons.visibility : Icons.visibility_off, // เปลี่ยนไอคอนตามสถานะ
                       ),
                       onPressed: () => {
                         setState(() {
@@ -153,16 +184,13 @@ class _LoginState extends State<LoginPage> {
                                 textBaseline: TextBaseline.alphabetic,
                                 letterSpacing: 0.4,
                                 fontWeight: FontWeight.normal,
-                                color: Color(
-                                    0xFFb3261e), // เปลี่ยนสีข้อความเป็นแดง
+                                color: Color(0xFFb3261e), // เปลี่ยนสีข้อความเป็นแดง
                               ),
                             ),
                           ],
                         ),
                       )
-                    : const SizedBox(
-                        height:
-                            10), // หากไม่มีข้อความผิดพลาด แสดงขนาดเว้นช่องว่าง
+                    : const SizedBox(height: 10), // หากไม่มีข้อความผิดพลาด แสดงขนาดเว้นช่องว่าง
                 // Forgot Password
                 Align(
                   alignment: Alignment.centerRight,
@@ -187,7 +215,8 @@ class _LoginState extends State<LoginPage> {
                     ),
                   ),
                   onPressed: () {
-                    login();
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    _handleLogin(context);
                     // Navigator.pushNamed(context, '/role');
                   },
                   child: const Text(

@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:myproject/auth_service.dart';
 import 'package:myproject/app/main/secureStorage.dart';
 
-class RolePage extends StatelessWidget {
+class RolePage extends StatefulWidget {
   const RolePage({super.key});
+
+  @override
+  State<RolePage> createState() => _RolePageState();
+}
+
+class _RolePageState extends State<RolePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +33,7 @@ class RolePage extends StatelessWidget {
               const Text(
                 'คุณสนใจที่จะเป็น',
                 style: TextStyle(
-                  fontSize: 47,
+                  fontSize: 36,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -39,16 +50,15 @@ class RolePage extends StatelessWidget {
                   SizedBox(
                     width: 150,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/home');
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'buy');
+                        Navigator.pushNamed(context, '/home');
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
-                        textStyle: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -60,16 +70,16 @@ class RolePage extends StatelessWidget {
                   SizedBox(
                     width: 150,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/post');
+                      onPressed: () async {
+                        await Securestorage().writeSecureData('role', 'sell');
+
+                        Navigator.pushNamed(context, '/post');
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.deepOrange,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
-                        textStyle: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
