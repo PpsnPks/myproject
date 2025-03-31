@@ -165,6 +165,19 @@ class _EditProductPageState extends State<EditProductPage> {
     if (response['success'] == true) {
       Product data = response['data'];
       print(data.product_images);
+      if (data.product_type == 'พรีออร์เดอร์') {
+        isPreOrder = true;
+        isRenting = false;
+        isSelling = false;
+      } else if (data.product_type == 'แจก') {
+        isPreOrder = false;
+        isRenting = false;
+        isSelling = true;
+      } else if (data.product_type == 'ขาย') {
+        isPreOrder = false;
+        isRenting = false;
+        isSelling = true;
+      }
       setState(() {
         _productNameController.text = data.product_name;
         imagesPath = data.product_images;
@@ -184,6 +197,7 @@ class _EditProductPageState extends State<EditProductPage> {
         product_years = data.product_years;
         _tagController.text = data.tag;
         isLoading = false;
+        selectedTag = data.tag;
       });
       return;
     } else {
@@ -311,7 +325,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             child: ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  _productTypeController.text = 'sell';
+                                  _productTypeController.text = 'ขาย';
                                   isSelling = true;
                                   isRenting = false;
                                   isPreOrder = false;
@@ -330,7 +344,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             child: ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  _productTypeController.text = 'free';
+                                  _productTypeController.text = 'แจก';
                                   isSelling = false;
                                   isRenting = true;
                                   isPreOrder = false;
@@ -349,7 +363,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             child: ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  _productTypeController.text = 'preorder';
+                                  _productTypeController.text = 'พรีออร์เดอร์';
                                   isSelling = false;
                                   isRenting = false;
                                   isPreOrder = true;
@@ -589,7 +603,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),
@@ -635,7 +649,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),
@@ -668,7 +682,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                  errorStyle: TextStyle(
+                                  errorStyle: const TextStyle(
                                     fontSize: 10,
                                     // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                                   ),
@@ -701,7 +715,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),
@@ -736,8 +750,16 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
                             borderRadius: BorderRadius.circular(12),
                           ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.red), // สีแดงเมื่อ error และโฟกัส
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),
@@ -767,7 +789,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),
@@ -865,7 +887,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                    errorStyle: TextStyle(
+                                    errorStyle: const TextStyle(
                                       fontSize: 10,
                                       // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                                     ),
@@ -913,7 +935,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                    errorStyle: TextStyle(
+                                    errorStyle: const TextStyle(
                                       fontSize: 10,
                                       // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                                     ),
@@ -947,7 +969,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                    errorStyle: TextStyle(
+                                    errorStyle: const TextStyle(
                                       fontSize: 10,
                                       // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                                     ),
@@ -1003,7 +1025,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                             fontSize: 10,
                             // กำหนดขนาดฟอนต์ของข้อความผิดพลาด
                           ),

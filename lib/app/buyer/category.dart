@@ -420,7 +420,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             )),
                             SizedBox(width: 10), // เพิ่มระยะห่างระหว่าง progress กับข้อความ
                             Text(
-                              'กำลังโหลดโพสต์เพิ่มเติม...',
+                              'กำลังโหลดสินค้าเพิ่มเติม...',
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
                             ),
                           ],
@@ -432,7 +432,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       padding: EdgeInsets.only(top: 8.0, bottom: 10.0),
                       child: Center(
                         child: Text(
-                          'ไม่มีโพสต์ที่จะแสดงเพิ่มเติม',
+                          'ไม่มีสินค้าที่จะแสดงเพิ่มเติม',
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
                         ),
                       ),

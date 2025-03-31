@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool loadingProduct = false;
+  bool loadingProduct = true;
   bool showRecommended = true;
   List<Product> homeProducts = [];
   List<ShortProduct> recommendedProducts = [];

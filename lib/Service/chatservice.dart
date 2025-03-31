@@ -113,7 +113,7 @@ class Chat {
       time = DateFormat('d MMM yyyy').format(dateTime); // แสดงเป็นวันที่และปี เช่น (22 ก.พ. 2568)
     }
     return Chat(
-      userId: data['id'].toString(), // ชั่วคราว
+      userId: data['user_id'].toString(), // ชั่วคราว
       pic: '${Environment.imgUrl}/${data['user']['pic']}',
       name: data['user']['name'],
       latestTime: data['latest_message_time'],

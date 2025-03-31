@@ -255,7 +255,7 @@ class ProductDetail {
       sellerPic: "${Environment.imgUrl}/${data['product']['seller']['pic']}",
       sellerName: data['product']['seller']?['name'] ?? 'ไม่ระบุ',
       sellerFaculty: data['product']['seller']?['faculty'] ?? 'ไม่ระบุ',
-      sellerId: data['product']['seller']!['id'].toString(), // ชั่วคราว
+      sellerId: data['product']['seller']!['user_id'].toString(), // ชั่วคราว
       createdAt: data['product']['created_at'] ?? '',
       stock: data['product']['product_qty'] ?? 1,
       isLiked: data['is_liked'],

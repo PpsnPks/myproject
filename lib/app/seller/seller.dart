@@ -58,14 +58,14 @@ class _SellerPageState extends State<SellerPage> {
         title: const Text("คลัง"),
         centerTitle: true,
         backgroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_active_outlined),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/noti');
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.notifications_active_outlined),
+        //     onPressed: () {
+        //       Navigator.of(context).pushNamed('/noti');
+        //     },
+        //   ),
+        // ],
       ),
       body: isLoading
           ? const Center(
@@ -369,7 +369,7 @@ class _SellerPageState extends State<SellerPage> {
                 // เรียกใช้ฟังก์ชันลบสินค้าที่นี่
                 ProductService().deleteProductById(product.id);
                 Navigator.pop(context); // ปิด dialog
-                loadall();
+                Navigator.pushReplacementNamed(context, '/seller');
               },
             ),
           ],

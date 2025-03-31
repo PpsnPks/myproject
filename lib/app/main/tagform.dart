@@ -164,6 +164,8 @@ class _TagFormPageState extends State<TagFormPage> {
                         context,
                         '/role',
                       );
+                    } else {
+                      print('error: ${result["message"]}');
                     }
                   }
                 },

@@ -102,7 +102,7 @@ class _ConfirmState extends State<ConfirmSellerPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(data)),
+                        child: SizedBox(height: 140, width: double.infinity, child: buildProductCard(data)),
                       ),
                       const SizedBox(
                         height: 15.0,
@@ -316,7 +316,7 @@ class _ConfirmState extends State<ConfirmSellerPage> {
                     Text(
                       'จำนวน: ${data['stock']}\nสภาพสินค้า : ${data['product_condition']}\nถึงวันที่: ${data['timeForSell']}',
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 10,
                         color: Color(0xFFA5A9B6),
                       ),
                       overflow: TextOverflow.ellipsis,

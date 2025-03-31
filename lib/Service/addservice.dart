@@ -169,7 +169,7 @@ class ProductService {
   }
 
   Future<Map<String, dynamic>> getRecommendedProducts(List ids) async {
-    const url = "https://recommend-880011621471.asia-southeast1.run.app/recommend";
+    const url = "https://recproduct-880011621471.asia-southeast1.run.app/recommend";
 
     try {
       // ดึง accessToken และ user_id จาก AuthService
@@ -827,7 +827,7 @@ class ShortProduct {
   final String product_price;
   final String product_type;
   final String status;
-  final double score;
+  // final double score;
 
   ShortProduct({
     required this.id,
@@ -837,7 +837,7 @@ class ShortProduct {
     required this.product_description,
     required this.product_type,
     required this.status,
-    required this.score,
+    // required this.score,
   });
 
   @override
@@ -850,21 +850,29 @@ class ShortProduct {
         'product_description: $product_description, '
         'product_type: $product_type, '
         'status: $status, '
-        'score: $score, '
+        // 'score: $score, '
         ')';
   }
 
   factory ShortProduct.fromJson(Map<String, dynamic> data) {
     print('data : $data');
+    String temp = '';
+    if (data['product_price'] is double) {
+      print('Double');
+      temp = NumberFormat("#,###").format(data['product_price']);
+    } else if (data['product_price'] is String) {
+      print('String');
+      temp = NumberFormat("#,###").format(double.parse(data['product_price']));
+    }
     return ShortProduct(
       id: data['id']?.toString() ?? "",
       product_name: data['product_name'] ?? "",
       product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
-      product_price: data['product_price'] == null ? '100' : NumberFormat("#,###").format(double.parse(data['product_price'])),
+      product_price: temp,
       product_description: data['product_description'] ?? "", //data['product_description'],
       product_type: data['product_type'] ?? "",
       status: data['status'] ?? "",
-      score: data['sim_score'],
+      // score: data['sim_score'],
     );
   }
 }

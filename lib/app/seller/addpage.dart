@@ -275,7 +275,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            _productTypeController.text = 'sell';
+                            _productTypeController.text = 'ขาย';
                             isSelling = true;
                             isRenting = false;
                             isPreOrder = false;
@@ -294,7 +294,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            _productTypeController.text = 'free';
+                            _productTypeController.text = 'แจก';
                             isSelling = false;
                             isRenting = true;
                             isPreOrder = false;
@@ -313,7 +313,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            _productTypeController.text = 'preorder';
+                            _productTypeController.text = 'พรีออร์เดอร์';
                             isSelling = false;
                             isRenting = false;
                             isPreOrder = true;

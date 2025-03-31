@@ -271,7 +271,7 @@ class NotificationCard extends StatelessWidget {
                     child: Text(
                       unread,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                         color: Colors.white,
                       ),

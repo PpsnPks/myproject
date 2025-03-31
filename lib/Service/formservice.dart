@@ -99,6 +99,8 @@ class UserService {
     try {
       String? token = await AuthService().getAccessToken();
       String? userId = await Securestorage().readSecureData('userId');
+
+      print('$registerUrl/$userId');
       // Header
       Map<String, String> headers = {
         'Authorization': 'Bearer $token',
@@ -132,6 +134,7 @@ class UserService {
       // ตรวจสอบสถานะของ Response
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
+        print('data $data');
         return {
           "success": true,
           "data": data, // รับข้อมูลจาก API
