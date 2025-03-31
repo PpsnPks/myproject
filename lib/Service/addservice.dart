@@ -168,21 +168,13 @@ class ProductService {
     }
   }
 
-  Future<Map<String, dynamic>> getRecommendedProducts() async {
+  Future<Map<String, dynamic>> getRecommendedProducts(List ids) async {
     const url = "https://recommend-880011621471.asia-southeast1.run.app/recommend";
 
     try {
       // ดึง accessToken และ user_id จาก AuthService
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
-      String? userId = await authService.getUserId();
-
-      if (accessToken == null || userId == null) {
-        return {
-          "success": false,
-          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
-        };
-      }
 
       // Header
       Map<String, String> headers = {
@@ -192,7 +184,7 @@ class ProductService {
       };
 
       // Body
-      Map<String, dynamic> body = {"user_id": userId};
+      Map<String, dynamic> body = {"ids": ids};
 
       // ส่ง Request
       final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
@@ -274,21 +266,13 @@ class ProductService {
     }
   }
 
-  Future<Map<String, dynamic>> getRecommendedProductsfromPost() async {
+  Future<Map<String, dynamic>> getRecommendedProductsfromPost(List posts) async {
     const url = "https://recommend-product-form-post-880011621471.asia-southeast1.run.app/recommend";
 
     try {
       // ดึง accessToken และ user_id จาก AuthService
       AuthService authService = AuthService();
       String? accessToken = await authService.getAccessToken();
-      String? userId = await authService.getUserId();
-
-      if (accessToken == null || userId == null) {
-        return {
-          "success": false,
-          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
-        };
-      }
 
       // Header
       Map<String, String> headers = {
@@ -298,7 +282,7 @@ class ProductService {
       };
 
       // Body
-      Map<String, dynamic> body = {"user_id": userId};
+      Map<String, dynamic> body = {"id": posts};
 
       // ส่ง Request
       final response = await http.post(Uri.parse(url), headers: headers, body: json.encode(body));
@@ -306,13 +290,14 @@ class ProductService {
       if (response.statusCode == 200) {
         var decodedResponse = jsonDecode(response.body);
 
-        if (decodedResponse != null && decodedResponse['recommendations'] != null) {
-          List<Product> data = (decodedResponse['recommendations'] as List).map((postJson) => Product.fromJson(postJson)).toList();
+        print(decodedResponse);
+        // if (decodedResponse != null && decodedResponse['recommendations'] != null) {
+        List<ShortProduct> data = (decodedResponse as List).map((postJson) => ShortProduct.fromJson(postJson)).toList();
 
-          return {"success": true, "data": data};
-        } else {
-          return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
-        }
+        return {"success": true, "data": data};
+        // } else {
+        //   return {"success": false, "message": "รูปแบบข้อมูลไม่ถูกต้อง"};
+        // }
       } else {
         return {
           "success": false,
@@ -870,16 +855,16 @@ class ShortProduct {
   }
 
   factory ShortProduct.fromJson(Map<String, dynamic> data) {
-    // print('data : ${double.parse(data['product_price'])}');
+    print('data : $data');
     return ShortProduct(
       id: data['id']?.toString() ?? "",
       product_name: data['product_name'] ?? "",
       product_images: (data['product_images'] as List).map((image) => '${Environment.imgUrl}/$image').toList(),
-      product_price: NumberFormat("#,###").format(double.parse(data['product_price'])),
+      product_price: data['product_price'] == null ? '100' : NumberFormat("#,###").format(double.parse(data['product_price'])),
       product_description: data['product_description'] ?? "", //data['product_description'],
       product_type: data['product_type'] ?? "",
       status: data['status'] ?? "",
-      score: data['score'],
+      score: data['sim_score'],
     );
   }
 }

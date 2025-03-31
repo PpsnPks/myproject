@@ -96,7 +96,7 @@ class MessageService {
       };
 
       Map<String, dynamic> body = {"sender_id": int.parse(senderId), "receiver_id": int.parse(receiveId), "message": message};
-
+      print('$url $body');
       final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
       if (response.statusCode == 201) {

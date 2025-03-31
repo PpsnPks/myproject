@@ -18,49 +18,49 @@ class _HomePageState extends State<HomePage> {
   bool loadingProduct = false;
   bool showRecommended = true;
   List<Product> homeProducts = [];
-  List<Product> recommendedProducts = [];
-  List<Product> recommendedProductsformPost = []; // ประกาศตัวแปรให้ถูกต้อง
+  List<ShortProduct> recommendedProducts = [];
+  List<ShortProduct> recommendedProductsformPost = []; // ประกาศตัวแปรให้ถูกต้อง
   List tags = [];
 
   List userpost = [];
   List userproduct = [];
   List userhistory = [];
 
-  void getProducts() async {
-    try {
-      setState(() {
-        loadingProduct = true;
-      });
+  // void getProducts() async {
+  //   try {
+  //     setState(() {
+  //       loadingProduct = true;
+  //     });
 
-      // ดึงสินค้าปกติ
-      final productResponse = await ProductService().getProduct(1, 10);
+  //     // ดึงสินค้าปกติ
+  //     final productResponse = await ProductService().getProduct(1, 10);
 
-      // ดึงสินค้าที่แนะนำ
-      final recommendedResponse = await ProductService().getRecommendedProducts();
-      final recommendedfromTagsResponse = await ProductService().getRecommendedfromTagsProducts(tags);
-      final recommendedfromPostResponse = await ProductService().getRecommendedProductsfromPost();
+  //     // ดึงสินค้าที่แนะนำ
+  //     final recommendedResponse = await ProductService().getRecommendedProducts();
+  //     final recommendedfromTagsResponse = await ProductService().getRecommendedfromTagsProducts(tags);
+  //     final recommendedfromPostResponse = await ProductService().getRecommendedProductsfromPost();
 
-      if (productResponse['success'] && recommendedResponse['success'] && recommendedfromPostResponse['success']) {
-        setState(() {
-          loadingProduct = false;
-          homeProducts = productResponse['data'];
-          recommendedProducts = recommendedResponse['data'];
-          recommendedProductsformPost = recommendedfromPostResponse['data']; // อัปเดตสินค้าที่แนะนำ
-        });
-      } else {
-        setState(() {
-          loadingProduct = false;
-        });
-        throw Exception('Failed to load products or recommended products');
-      }
-    } catch (e) {
-      setState(() {
-        loadingProduct = false;
-      });
-      print("Error loading products: $e");
-      return;
-    }
-  }
+  //     if (productResponse['success'] && recommendedResponse['success'] && recommendedfromPostResponse['success']) {
+  //       setState(() {
+  //         loadingProduct = false;
+  //         homeProducts = productResponse['data'];
+  //         recommendedProducts = recommendedResponse['data'];
+  //         recommendedProductsformPost = recommendedfromPostResponse['data']; // อัปเดตสินค้าที่แนะนำ
+  //       });
+  //     } else {
+  //       setState(() {
+  //         loadingProduct = false;
+  //       });
+  //       throw Exception('Failed to load products or recommended products');
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       loadingProduct = false;
+  //     });
+  //     print("Error loading products: $e");
+  //     return;
+  //   }
+  // }
 
   bool loadingPost = false;
   List<Post> homePosts = [];
@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage> {
       print(response['userhistory']);
       print(response['tags']);
       setState(() {
+        print('kkk8 ${response['tags']} ${response['userpost']} ${response['userproduct']} ${response['userhistory']}');
         tags = response['tags'];
         userpost = response['userpost'];
         userproduct = response['userproduct'];
@@ -111,7 +112,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   getReccomentProduct() {
-    if (userpost.isEmpty && userproduct.isEmpty && userhistory.isEmpty) {
+    if (userpost.isNotEmpty) {
+      print('kkk getByPosts');
+      getByPosts();
+    } else if (userhistory.isNotEmpty) {
+      print('kkk getByHistory');
+      getByHistory();
+    } else {
+      print('kkk getByTags $userpost $userhistory');
       getByTags();
     }
   }
@@ -141,12 +149,33 @@ class _HomePageState extends State<HomePage> {
       loadingProduct = true;
     });
 
-    final response = await ProductService().getRecommendedProducts();
+    final response = await ProductService().getRecommendedProductsfromPost(userpost);
     if (response['success']) {
       setState(() {
-        homeProducts = response['data'];
+        recommendedProductsformPost = response['data'];
         loadingProduct = false;
       });
+    } else {
+      setState(() {
+        loadingProduct = false;
+      });
+      print("Error loading products: ${response['message']}");
+      return;
+    }
+  }
+
+  getByHistory() async {
+    setState(() {
+      loadingProduct = true;
+    });
+
+    final response = await ProductService().getRecommendedProducts(userhistory);
+    if (response['success']) {
+      setState(() {
+        recommendedProducts = response['data'];
+        loadingProduct = false;
+      });
+      print('recommendedProducts $recommendedProducts');
     } else {
       setState(() {
         loadingProduct = false;
@@ -267,22 +296,60 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               )
                             : recommendedProducts.isNotEmpty // ถ้ามีสินค้าแนะนำ
-                                ? Column(
-                                    children: recommendedProducts
-                                        .map((product) => Padding(
-                                              padding: const EdgeInsets.all(4.0),
-                                              child: productCard(product, context),
-                                            ))
-                                        .toList(),
+                                ? Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            for (int i = 0; i < recommendedProducts.length; i += 2)
+                                              Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: productCardShort(recommendedProducts[i], context),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            for (int i = 1; i < recommendedProducts.length; i += 2)
+                                              Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: productCardShort(recommendedProducts[i], context),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 : recommendedProductsformPost.isNotEmpty // ถ้าไม่มีสินค้าแนะนำ แต่มีสินค้าแนะนำตามโพสต์
-                                    ? Column(
-                                        children: recommendedProductsformPost
-                                            .map((product) => Padding(
-                                                  padding: const EdgeInsets.all(4.0),
-                                                  child: productCard(product, context),
-                                                ))
-                                            .toList(),
+                                    ? Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                for (int i = 0; i < recommendedProductsformPost.length; i += 2)
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: productCardShort(recommendedProductsformPost[i], context),
+                                                  )
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                for (int i = 1; i < recommendedProductsformPost.length; i += 2)
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: productCardShort(recommendedProductsformPost[i], context),
+                                                  )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       )
                                     : homeProducts.isNotEmpty // ถ้าไม่มีสินค้าแนะนำตามโพสต์ ให้แสดงสินค้าทั้งหมด
                                         ? Row(
@@ -530,6 +597,157 @@ class _HomePageState extends State<HomePage> {
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
+                    ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: data.product_type == 'preorder' ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+                  children: [
+                    if (data.product_type == 'preorder')
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            width: 1,
+                            color: const Color(0XFFE35205),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 3.0),
+                        child: const Text(
+                          'พรีออเดอร์',
+                          style: TextStyle(color: Color(0XFFE35205), fontSize: 12, fontWeight: FontWeight.w600, height: 0),
+                        ),
+                      ),
+                    Text(
+                      data.product_price == '0' || data.product_price == '0.00' ? 'ฟรี' : '${data.product_price} ฿',
+                      style: const TextStyle(
+                        color: Color(0XFFE35205),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget productCardShort(ShortProduct data, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/productdetail/${data.id}',
+        );
+        print('click card');
+      },
+      child: Card(
+        color: const Color(0xFFFFFFFF),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Color(0xFFDFE2EC), width: 2.0),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: data.product_images.isNotEmpty
+                      ? data.product_images[0]
+                      : 'https://t3.ftcdn.net/jpg/05/04/28/96/360_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg',
+                  placeholder: (context, url) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth;
+                      return SizedBox(
+                        width: size,
+                        height: size,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0XFFE35205),
+                            strokeCap: StrokeCap.round,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  imageBuilder: (context, ImageProvider) {
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        double size = constraints.maxWidth;
+                        return Container(
+                          width: size,
+                          height: size,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: ImageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  errorWidget: (context, url, error) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      double size = constraints.maxWidth;
+                      return Container(
+                        width: size,
+                        height: size,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/notfound.png"), // รูปจาก assets
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                data.product_name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              const SizedBox(height: 5),
+              data.product_type != 'preorder'
+                  ? SizedBox(
+                      height: 46,
+                      child: Text(
+                        data.product_description,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFFA5A9B6),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 46,
+                      child: Text(
+                        data.product_description,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFFA5A9B6),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
                     ),
               const SizedBox(height: 8),
               Align(

@@ -10,7 +10,7 @@ class CustomerService {
     try {
       String? accessToken = await AuthService().getAccessToken();
       String url = "${Environment.baseUrl}/customers/$userId";
-
+      print('${Environment.baseUrl}/customers/$userId');
       if (accessToken == null) {
         return {"success": false, "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ"};
       }
@@ -28,17 +28,14 @@ class CustomerService {
         if (responseBody == null || responseBody["customer"] is! Map<String, dynamic>) {
           return {"success": false, "message": "ข้อมูลผู้ใช้ไม่ถูกต้อง"};
         }
-
+        print(responseBody);
         return {
           "success": true,
           "customer": Customer.fromJson(responseBody["customer"]),
           "tags": responseBody["customer"]["guidetag"].split(', '),
-          "userpost":
-              (responseBody["userpost"] is List) ? (responseBody["userpost"] as List).whereType<Map<String, dynamic>>().toList() : [],
-          "userproduct":
-              (responseBody["userproduct"] is List) ? (responseBody["userproduct"] as List).whereType<Map<String, dynamic>>().toList() : [],
-          "userhistory":
-              (responseBody["userhistory"] is List) ? (responseBody["userhistory"] as List).whereType<Map<String, dynamic>>().toList() : [],
+          "userpost": responseBody["userpost"],
+          "userproduct": responseBody["userproduct"],
+          "userhistory": responseBody["userhistory"],
         };
       } else {
         return {"success": false, "message": 'Error ${response.statusCode} ${response.body}'};
