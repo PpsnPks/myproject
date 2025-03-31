@@ -120,6 +120,52 @@ class PostService {
     }
   }
 
+  Future<Map<String, dynamic>> deletePostById(String post_id) async {
+    try {
+      // ดึง accessToken จาก AuthService
+      String? accessToken = await AuthService().getAccessToken();
+      String url = "${Environment.baseUrl}/posts/$post_id";
+
+      if (accessToken == null) {
+        return {
+          "success": false,
+          "message": "กรุณาเข้าสู่ระบบก่อนทำรายการ",
+        };
+      }
+
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      };
+
+      final response = await http.delete(Uri.parse(url), headers: headers);
+      print('qqq ${response.statusCode} \n ${response.body}');
+
+      // ตรวจสอบสถานะของ Response
+      if (response.statusCode == 200) {
+        var decodedResponse = jsonDecode(response.body);
+        print('qqq $decodedResponse');
+        if (decodedResponse != null && decodedResponse['data'] != null) {
+          List<Post> data = (decodedResponse['data']['data'] as List).map((postJson) => Post.fromJson(postJson)).toList();
+          return {"success": true, "data": data};
+        } else {
+          return {"success": false, "message": "status code: ${response.statusCode}"};
+        }
+      } else {
+        return {
+          "success": false,
+          "message": 'Error ${response.statusCode} ${response.body}',
+        };
+      }
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: $e",
+      };
+    }
+  }
+
   Future<Map<String, dynamic>> getPostUser(int userId) async {
     String url = "${Environment.baseUrl}/postsid/$userId"; // URL ที่ต้องการ
 

@@ -268,7 +268,7 @@ class _MessagepageState extends State<Messagepage> {
                                 ),
                               Padding(
                                 padding: const EdgeInsets.all(4.0),
-                                child: SizedBox(height: 130, width: double.infinity, child: buildProductCard(jsonDecode(b))),
+                                child: SizedBox(height: 140, width: double.infinity, child: buildProductCard(jsonDecode(b))),
                               ),
                             ],
                           );
@@ -506,12 +506,12 @@ class _MessagepageState extends State<Messagepage> {
                                         color: const Color.fromARGB(69, 80, 80, 81),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+                                      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
                                       child: Text(
                                         tempShowDate,
                                         style: const TextStyle(
                                           color: Colors.white,
-                                          fontSize: 14,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ),
@@ -592,7 +592,7 @@ class _MessagepageState extends State<Messagepage> {
                                                     children: [
                                                       Text(
                                                         'Location : ${location['name']}',
-                                                        style: const TextStyle(fontWeight: FontWeight.w600),
+                                                        style: const TextStyle(fontWeight: FontWeight.w600 ,fontSize: 12),
                                                       ),
                                                       GestureDetector(
                                                         onTap: () => {_openGoogleMaps(location['la'], location['long'])},
@@ -606,13 +606,10 @@ class _MessagepageState extends State<Messagepage> {
                                                             ),
                                                           ),
                                                           padding: const EdgeInsets.fromLTRB(15.0, 3.0, 15.0, 6.0),
-                                                          child: const Text(
-                                                            'ไปที่ google map',
-                                                            style: TextStyle(
-                                                                color: Color(0XFFE35205),
-                                                                fontSize: 15,
-                                                                fontWeight: FontWeight.w600,
-                                                                height: 0),
+                                                          child: const Icon(
+                                                            Icons.arrow_forward, // หรือ Icons.location_on
+                                                            color: Color(0XFFE35205),
+                                                            size: 24, // ปรับขนาดไอคอนได้
                                                           ),
                                                         ),
                                                       ),
@@ -1210,7 +1207,7 @@ class _MessagepageState extends State<Messagepage> {
                       product['name'],
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -1219,7 +1216,7 @@ class _MessagepageState extends State<Messagepage> {
                         ? Text(
                             'จำนวน: ${product['stock']}\nสภาพสินค้า : ${product['condition']}\nถึงวันที่: ${product['timeForSell']}',
                             style: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 10,
                               color: Color(0xFFA5A9B6),
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -1228,15 +1225,15 @@ class _MessagepageState extends State<Messagepage> {
                         : Text(
                             'ค่ามัดจำ: ${product['deposit']}\nวันส่งสินค้า : ${product['date_send']}\nถึงวันที่: ${product['timeForSell']}',
                             style: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 10,
                               color: Color(0xFFA5A9B6),
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
                           ),
-                    SizedBox(
-                      height: 4.0,
-                    ),
+                    // SizedBox(
+                    //   height: 4.0,
+                    // ),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Row(

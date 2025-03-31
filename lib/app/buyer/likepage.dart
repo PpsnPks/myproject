@@ -241,8 +241,8 @@ class _LikePageState extends State<LikePage> {
                                       const SizedBox(height: 4),
                                       Text(
                                         product.product_description,
-                                        style: const TextStyle(color: Colors.grey, fontSize: 13),
-                                        maxLines: 2,
+                                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                        maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
