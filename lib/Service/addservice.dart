@@ -1071,7 +1071,7 @@ class Deal {
       deal_status: data['status'],
       // deal_bill: data['id'],
 
-      buyer_user_id: data['buyer']['user_id']?.toString() ?? "",
+      buyer_user_id: data['buyer']['id']?.toString() ?? "",
       buyer_name: data['buyer']['name'],
       buyer_pic: '${Environment.imgUrl}/${data['buyer']['pic']}',
       buyer_email: data['buyer']['email'],
@@ -1097,7 +1097,7 @@ class Deal {
       product_defect: data['product']['product_defect'] ?? "",
       product_years: data['product']['product_years'] ?? "",
       product_tag: data['product']['tag'] ?? "",
-      seller_user_id: data['product']['seller']['user_id']?.toString() ?? "",
+      seller_user_id: data['product']['seller']['id']?.toString() ?? "",
       seller_name: data['product']['seller']['name'],
       seller_pic: '${Environment.imgUrl}/${data['product']['seller']['pic']}',
       seller_email: data['product']['seller']['email'],

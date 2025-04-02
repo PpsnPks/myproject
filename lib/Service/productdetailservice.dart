@@ -113,6 +113,7 @@ class ProductService {
 
   Future<bool> putDeal(String dealId, String buyerId, String productId, int qty) async {
     final url = Uri.parse('${Environment.baseUrl}/deals/$dealId');
+    print(url);
     try {
       String? accessToken = await AuthService().getAccessToken();
       // String userId = await Securestorage().readSecureData('userId');
@@ -125,11 +126,13 @@ class ProductService {
         "deal_date": formattedDate,
         "status": "success"
       };
+      print(json.encode(body));
       final response = await http.put(
         url,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
+          "Accept": "application/json",
         },
         body: json.encode(body),
       );
